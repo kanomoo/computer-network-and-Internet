@@ -79,14 +79,18 @@ mindmap
   - Transport-Layer Services & Relationship to Network Layer
   - Multiplexing & Demultiplexing (Connectionless Demux vs Connection-Oriented 4-Tuple Demux)
   - Connectionless Transport: UDP (Segment Structure, Checksum Calculation in 1's Complement)
-  - Principles of Reliable Data Transfer (RDT 1.0, 2.0, 2.1, 2.2, 3.0, Stop-and-Wait Utilization $U_{sender}$)
-  - Pipelined Protocols (Go-Back-N GBN vs Selective Repeat SR, Window Sizes, Sequence Number Constraints)
-  - Connection-Oriented Transport: TCP (Segment Format, Sequence & ACK Numbers, SYN/FIN Flags)
+  - Principles of Reliable Data Transfer (RDT 1.0, 2.0, 2.1, 2.2, 3.0, Extended FSMs, Stop-and-Wait Utilization $U_{sender}$)
+  - Pipelined Protocols (Go-Back-N GBN vs Selective Repeat SR, Extended Sender/Receiver FSMs, Window Sizes)
+  - Connection-Oriented Transport: TCP (Segment Format, Sequence & ACK Numbers, SYN/FIN/RST/PSH/URG Flags)
   - TCP Reliable Data Transfer (Fast Retransmit with 3 Duplicate ACKs, RTT Estimation: EstimatedRTT, DevRTT, TimeoutInterval)
   - TCP Flow Control (Receive Window $rwnd = RcvBuffer - [LastByteRcvd - LastByteRead]$)
-  - TCP Connection Management (3-Way Handshake, 4-Way Connection Teardown, TIME_WAIT State)
-  - Principles of Congestion Control (Causes & Costs of Congestion, End-to-End vs Network-Assisted)
-  - TCP Congestion Control Mechanisms (AIMD, Slow Start, Congestion Avoidance, Fast Recovery, TCP Tahoe vs Reno State Machine, ECN)
+  - TCP Connection Management & Extended FSM (3-Way Handshake, 4-Way Teardown, TIME_WAIT, CLOSE_WAIT, LAST_ACK States)
+  - Principles of Congestion Control (Causes & Costs of Congestion, AIMD Dynamics)
+  - TCP Congestion Control Mechanisms (Slow Start, Congestion Avoidance, Fast Recovery, TCP Tahoe vs Reno FSM)
+  - Explicit Congestion Notification (ECN - RFC 3168: ECT, CE, ECE, CWR Header Bits)
+  - Modern Congestion Control (TCP CUBIC - RFC 8312 cubic time growth & plateau probing, Google BBR rate/pacing control)
+  - TCP Performance on Long Fat Pipes (LFP) & Bandwidth-Delay Product (BDP) Analysis ($Throughput \le \frac{1.22 \times MSS}{RTT \sqrt{p}}$)
+  - Next-Gen Transport Protocol: QUIC over UDP (RFC 9000: 0-RTT/1-RTT Handshake, Stream Parallelism without HOL Blocking, Connection Migration via CID)
 
 ---
 
@@ -148,4 +152,5 @@ mindmap
 
 - 🔹 **[[Chapter 10 - Homework and Quiz Solution Guide]]**
   - Complete Step-by-Step Solutions for Homework 1 - 5 (Delay calculations, RTT, Subnetting, TCP Congestion Control Trace, Dijkstra Trace, CRC Polynomial Division)
+  - Assignments.pptx Special Exercise Solutions (Internet Checksum 16-bit binary/hex calculations with carry-around addition & TCP 3-Way Handshake + "hello" payload trace tables for ISN 300/500 and ISN 1000/2000)
   - Quiz Question Bank & Explanations

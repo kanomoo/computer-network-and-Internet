@@ -6,6 +6,7 @@ tags:
   - quiz
   - solutions
   - exercises
+  - assignments
 created: 2026-08-03
 updated: 2026-08-03
 type: wiki-note
@@ -14,7 +15,7 @@ type: wiki-note
 # Chapter 10: Homework and Quiz Solution Guide
 
 > [!SUMMARY] ภาพรวมประจำบท
-> โน้ตความรู้บทที่ 10 รวบรวมแนวทางการแก้โจทย์แบบฝึกหัด การบ้านประจำคอร์ส (Homework 1 - 5) และเฉลยคลังข้อสอบทดสอบความรู้ (Quiz Bank) พร้อมการแสดงวิธีทำแบบ Step-by-Step ครอบคลุมการคำนวณ ความล่าช้า (Delay), HTTP RTT, P2P File Distribution, RDT/TCP Congestion Control Tracing, IP Fragmentation, Subnetting VLSM, Dijkstra Shortest Path, CRC Division, และ Switch Self-Learning
+> โน้ตความรู้บทที่ 10 รวบรวมแนวทางการแก้โจทย์แบบฝึกหัด การบ้านประจำคอร์ส (Homework 1 - 5), แบบทดสอบทบทวนพิเศษ (Assignments.pptx) และเฉลยคลังข้อสอบทดสอบความรู้ (Quiz Bank) พร้อมการแสดงวิธีทำแบบ Step-by-Step ครอบคลุมการคำนวณ ความล่าช้า (Delay), HTTP RTT, P2P File Distribution, Internet Checksum, TCP 3-Way Handshake & Data Trace, RDT/TCP Congestion Control Tracing, IP Fragmentation, Subnetting VLSM, Dijkstra Shortest Path, CRC Division, และ Switch Self-Learning
 
 ---
 
@@ -116,7 +117,165 @@ type: wiki-note
 
 ---
 
-## 6. คลังเฉลยข้อสอบ Quiz (Quiz Screenshot Bank Solutions)
+## 6. เฉลยโจทย์แบบทดสอบทบทวนพิเศษ (Assignments.pptx Solution Guide)
+
+> [!IMPORTANT] เอกสารชุดนี้สกัดเฉลยและวิธีทำอย่างละเอียดจากสไลด์ `Assignments.pptx`
+
+### 6.1 โจทย์ข้อที่ 1: การคำนวณ Internet Checksum (1's Complement Sum)
+
+#### **ข้อ 1.1) คำนวณ Checksum ของ: `0001 0010 0011 0100` และ `0101 0110 0111 1000`**
+
+**ขั้นตอนการคำนวณแบบ Step-by-Step:**
+
+1. **ตั้งบวกคำขนาด 16-bit ทั้งสองคำ:**
+   $$\begin{array}{r@{\quad}l@{\quad}l}
+     & 0001 \; 0010 \; 0011 \; 0100 & \text{(Hex: 0x1234)} \\
+   + & 0101 \; 0110 \; 0111 \; 1000 & \text{(Hex: 0x5678)} \\
+   \hline
+     & \mathbf{0110 \; 1000 \; 1010 \; 1100} & \text{(Hex: 0x68AC)}
+   \end{array}$$
+
+2. **ตรวจสอบ Carry Out:**
+   ไม่มี Carry Bit เกินออกมาในตำแหน่งที่ 17 ($\text{Carry} = 0$)
+
+3. **ทำ 1's Complement Negation (กลับบิต 0 เป็น 1 และ 1 เป็น 0):**
+   $$\begin{array}{r@{\quad}l}
+   \text{Sum} & = 0110 \; 1000 \; 1010 \; 1100 \quad (0x68AC) \\
+   \mathbf{\text{Checksum}} & = \mathbf{1001 \; 0111 \; 0101 \; 0011} \quad (\text{Hex: } \mathbf{0x9753})
+   \end{array}$$
+
+4. **การตรวจสอบความถูกต้องฝั่งรับ (Receiver Verification):**
+   นำข้อมูลทั้งสองคำบวกกับ Checksum:
+   $$0x1234 + 0x5678 + 0x9753 = 0x68AC + 0x9753 = 0xFFFF \quad (\mathbf{1111 \; 1111 \; 1111 \; 1111})$$
+   เมื่อทำ 1's Complement ได้ `0000 0000 0000 0000` $\implies$ **ถูกต้อง ไม่พบ error!**
+
+---
+
+#### **ข้อ 1.2) คำนวณ Checksum ของ: `1010 1011 1100 1101` และ `0101 0110 0111 1000`**
+
+**ขั้นตอนการคำนวณแบบ Step-by-Step:**
+
+1. **ตั้งบวกคำขนาด 16-bit ทั้งสองคำ:**
+   $$\begin{array}{r@{\quad}l@{\quad}l}
+     & 1010 \; 1011 \; 1100 \; 1101 & \text{(Hex: 0xABCD)} \\
+   + & 0101 \; 0110 \; 0111 \; 1000 & \text{(Hex: 0x5678)} \\
+   \hline
+   1 & 0000 \; 0010 \; 0100 \; 0101 & \text{(เกิด Carry Bit 1 ในตำแหน่งที่ 17)}
+   \end{array}$$
+
+2. **ทำ End-Around Carry (นำ Carry Bit 1 มาบวกทบเข้าหลักหน่วย):**
+   $$\begin{array}{r@{\quad}l@{\quad}l}
+     & 0000 \; 0010 \; 0100 \; 0101 & \text{(0x0245)} \\
+   + & 0000 \; 0000 \; 0000 \; 0001 & \text{(Carry 1)} \\
+   \hline
+     & \mathbf{0000 \; 0010 \; 0100 \; 0110} & \text{(Hex: 0x0246)}
+   \end{array}$$
+
+3. **ทำ 1's Complement Negation (กลับบิต 0 เป็น 1 และ 1 เป็น 0):**
+   $$\begin{array}{r@{\quad}l}
+   \text{Sum (after carry)} & = 0000 \; 0010 \; 0100 \; 0110 \quad (0x0246) \\
+   \mathbf{\text{Checksum}} & = \mathbf{1111 \; 1101 \; 1011 \; 1009} \quad (\text{Hex: } \mathbf{0xFD89})
+   \end{array}$$
+
+4. **การตรวจสอบความถูกต้องฝั่งรับ (Receiver Verification):**
+   $$\text{Sum} = 0x0246 + 0xFD89 = 0xFFFF \quad (\mathbf{1111 \; 1111 \; 1111 \; 1111})$$
+   เมื่อทำ 1's Complement ได้ `0000 0000 0000 0000` $\implies$ **ถูกต้อง ไม่พบ error!**
+
+---
+
+### 6.2 โจทย์ข้อที่ 2: การวาด TCP 3-Way Handshake พร้อมการส่งข้อมูล "hello"
+
+> [!INFO] รายละเอียดข้อความ "hello"
+> ข้อความ `"hello"` ประกอบด้วยตัวอักษร ASCII 5 ตัว $= \mathbf{5\text{ Bytes}}$
+> ดังนั้น การส่ง Payload นี้จะใช้ Sequence Number จำนวน 5 บิต/ไบต์ (เช่น ส่งจากไบต์ $N$ ถึง $N+4$ ฝั่งรับจะตอบ ACK $= N+5$)
+
+---
+
+#### **ข้อ 2.1) กำหนด ISN: Client = 300, Server = 500**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client
+    participant Server
+
+    Note over Server: State: LISTEN
+    Note over Client: State: CLOSED
+
+    Client->>Server: 1. SYN Segment (Seq=300, Ack=0, Flags: SYN=1, ACK=0, Len=0)
+    Note over Client: State: SYN_SENT
+    Note over Server: State: SYN_RCVD
+
+    Server-->>Client: 2. SYN-ACK Segment (Seq=500, Ack=301, Flags: SYN=1, ACK=1, Len=0)
+    Note over Client: State: ESTABLISHED
+
+    Client->>Server: 3. ACK Segment (Seq=301, Ack=501, Flags: SYN=0, ACK=1, Len=0)
+    Note over Server: State: ESTABLISHED
+
+    Note over Client,Server: === TCP 3-Way Handshake Completed ===
+
+    Client->>Server: 4. Data Segment "hello" (Seq=301, Ack=501, Flags: ACK=1, PSH=1, Len=5)
+    Note over Server: Received Bytes 301-305 ("hello")
+
+    Server-->>Client: 5. ACK Segment for Data (Seq=501, Ack=306, Flags: ACK=1, Len=0)
+    Note over Client: Data Transfer Acknowledged!
+```
+
+**ตารางบันทึกสถานะการส่งแพ็กเก็ต (Packet Trace Table):**
+
+| ขั้นตอน (Step) | ทิศทาง (Direction) | Flags | Seq Number | Ack Number | Payload / Length | สถานะ Client | สถานะ Server | คำอธิบายรายละเอียด |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **1** | Client $\to$ Server | `SYN` | **300** | - | 0 Bytes | `SYN_SENT` | `SYN_RCVD` | Client ส่ง SYN ขอสถาปนาเซสชันที่ ISN = 300 |
+| **2** | Server $\to$ Client | `SYN, ACK` | **500** | **301** | 0 Bytes | `ESTABLISHED` | `SYN_RCVD` | Server ตอบรับ `Ack=301` (300+1) พร้อมส่ง SYN ของตนเอง ISN = 500 |
+| **3** | Client $\to$ Server | `ACK` | **301** | **501** | 0 Bytes | `ESTABLISHED` | `ESTABLISHED` | Client ตอบรับ `Ack=501` (500+1) เซสชันพร้อมส่งข้อมูล |
+| **4** | Client $\to$ Server | `ACK, PSH` | **301** | **501** | `"hello"` (5B) | `ESTABLISHED` | `ESTABLISHED` | Client ส่งข้อมูล "hello" ครอบคลุมไบต์ 301, 302, 303, 304, 305 |
+| **5** | Server $\to$ Client | `ACK` | **501** | **306** | 0 Bytes | `ESTABLISHED` | `ESTABLISHED` | Server ตอบรับ `Ack=306` (301+5) แสดงว่ารับไบต์ 301-305 เรียบร้อย |
+
+---
+
+#### **ข้อ 2.2) กำหนด ISN: Client = 1000, Server = 2000**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client
+    participant Server
+
+    Note over Server: State: LISTEN
+    Note over Client: State: CLOSED
+
+    Client->>Server: 1. SYN Segment (Seq=1000, Ack=0, Flags: SYN=1, ACK=0, Len=0)
+    Note over Client: State: SYN_SENT
+    Note over Server: State: SYN_RCVD
+
+    Server-->>Client: 2. SYN-ACK Segment (Seq=2000, Ack=1001, Flags: SYN=1, ACK=1, Len=0)
+    Note over Client: State: ESTABLISHED
+
+    Client->>Server: 3. ACK Segment (Seq=1001, Ack=2001, Flags: SYN=0, ACK=1, Len=0)
+    Note over Server: State: ESTABLISHED
+
+    Note over Client,Server: === TCP 3-Way Handshake Completed ===
+
+    Client->>Server: 4. Data Segment "hello" (Seq=1001, Ack=2001, Flags: ACK=1, PSH=1, Len=5)
+    Note over Server: Received Bytes 1001-1005 ("hello")
+
+    Server-->>Client: 5. ACK Segment for Data (Seq=2001, Ack=1006, Flags: ACK=1, Len=0)
+    Note over Client: Data Transfer Acknowledged!
+```
+
+**ตารางบันทึกสถานะการส่งแพ็กเก็ต (Packet Trace Table):**
+
+| ขั้นตอน (Step) | ทิศทาง (Direction) | Flags | Seq Number | Ack Number | Payload / Length | สถานะ Client | สถานะ Server | คำอธิบายรายละเอียด |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **1** | Client $\to$ Server | `SYN` | **1000** | - | 0 Bytes | `SYN_SENT` | `SYN_RCVD` | Client ส่ง SYN ที่ ISN = 1000 |
+| **2** | Server $\to$ Client | `SYN, ACK` | **2000** | **1001** | 0 Bytes | `ESTABLISHED` | `SYN_RCVD` | Server ตอบรับ `Ack=1001` (1000+1) พร้อมส่ง SYN ที่ ISN = 2000 |
+| **3** | Client $\to$ Server | `ACK` | **1001** | **2001** | 0 Bytes | `ESTABLISHED` | `ESTABLISHED` | Client ตอบรับ `Ack=2001` (2000+1) |
+| **4** | Client $\to$ Server | `ACK, PSH` | **1001** | **2001** | `"hello"` (5B) | `ESTABLISHED` | `ESTABLISHED` | Client ส่งข้อมูล "hello" ครอบคลุมไบต์ 1001 ถึง 1005 |
+| **5** | Server $\to$ Client | `ACK` | **2001** | **1006** | 0 Bytes | `ESTABLISHED` | `ESTABLISHED` | Server ตอบรับ `Ack=1006` (1001+5) ยืนยันการรับไบต์ 1001-1005 |
+
+---
+
+## 7. คลังเฉลยข้อสอบ Quiz (Quiz Screenshot Bank Solutions)
 
 ### Quiz Question 1: การจำแนกประเภทอุปกรณ์ L2 vs L3
 - **คำถาม:** อุปกรณ์ใดที่ทำการแยก Collision Domain แต่ไม่แยก Broadcast Domain?
@@ -140,6 +299,6 @@ type: wiki-note
 
 ## 📚 อ้างอิงและโน้ตที่เกี่ยวข้อง
 - 🔹 **[[Chapter 1 - Computer Networks and the Internet]]** - ทฤษฎีและสูตรคำนวณ Delay
-- 🔹 **[[Chapter 3 - Transport Layer]]** - กลไก TCP Congestion Control
+- 🔹 **[[Chapter 3 - Transport Layer]]** - กลไก TCP Checksum, 3-Way Handshake และ Congestion Control
 - 🔹 **[[Chapter 8 - IP Addressing, Subnetting and VLSM]]** - ขั้นตอนการทำ Subnetting VLSM
 - 🔹 **[[Chapter 6 - Link Layer and LANs]]** - ทฤษฎีการคำนวณ CRC Modulo-2

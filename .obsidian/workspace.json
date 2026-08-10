@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Wiki/Chapter 3 - Transport Layer.md",
+                "file": "Wiki/Chapter 10 - Homework and Quiz Solution Guide.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Chapter 3 - Transport Layer"
+              "title": "Chapter 10 - Homework and Quiz Solution Guide"
             }
           },
           {
@@ -51,7 +51,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "File explorer"
@@ -195,11 +197,11 @@
   },
   "active": "c72bfd3d0baf9d28",
   "lastOpenFiles": [
+    "Wiki/Chapter 3 - Transport Layer.md",
     "Wiki/Chapter 10 - Homework and Quiz Solution Guide.md",
     "Wiki/Chapter 1 - Computer Networks and the Internet.md",
     "Wiki/Progress Checklist.md",
     "Web.md",
-    "Wiki/Chapter 3 - Transport Layer.md",
     "Wiki/Chapter 2 - Application Layer.md"
   ]
 }

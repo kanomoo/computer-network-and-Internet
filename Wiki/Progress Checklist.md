@@ -3,7 +3,7 @@ tags:
   - networking
   - checklist
 created: 2026-08-03
-updated: 2026-08-03
+updated: 2026-08-10
 type: checklist
 ---
 
@@ -13,7 +13,7 @@ type: checklist
 - [x] **[[Computer Networking Index]]** - Master Index สารบัญดัชนีรวมทุกบทเรียน
 - [x] **[[Chapter 1 - Computer Networks and the Internet]]** - ภาพรวมคอมพิวเตอร์เน็ตเวิร์ก, Delay, Packet Switching, Layering & Security
 - [x] **[[Chapter 2 - Application Layer]]** - HTTP/1.1-3, DNS, Email (SMTP/IMAP), P2P (BitTorrent), Streaming (DASH/CDN), Socket Programming
-- [x] **[[Chapter 3 - Transport Layer]]** - UDP/TCP, Multiplexing, RDT 1.0-3.0, GBN & SR Extended FSMs, Flow Control, Congestion Control (Tahoe/Reno, ECN, TCP CUBIC, BBR), Long Fat Pipes (LFP), QUIC over UDP (RFC 9000) *(Kurose 9th Ed Updated)*
+- [x] **[[Chapter 3 - Transport Layer]]** - UDP/TCP, Multiplexing, RDT 1.0-3.0, GBN & SR Extended FSMs, Flow Control, Congestion Control (Tahoe/Reno, ECN, TCP CUBIC, BBR), Long Fat Pipes (LFP), QUIC over UDP (RFC 9000) *(Kurose & Ross 9th Ed Slides 1-154 Fully Synchronized)*
 - [x] **[[Chapter 4 - Network Data Plane]]** - Router Architecture, IPv4 Datagram/Fragmentation, CIDR/Subnetting, DHCP, NAT, IPv6, SDN Generalized Forwarding (OpenFlow)
 - [x] **[[Chapter 5 - Network Control Plane]]** - Routing Algorithms (Dijkstra LS, Distance Vector DV), OSPF, BGP-4, SDN Controller, ICMP, SNMP
 - [x] **[[Chapter 6 - Link Layer and LANs]]** - Framing, Error Detection (CRC/Checksum), Multiple Access (ALOHA, CSMA/CD, CSMA/CA), MAC/ARP, Ethernet 802.3, Switch Self-Learning, VLANs, MPLS

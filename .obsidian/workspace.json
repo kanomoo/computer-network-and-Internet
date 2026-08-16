@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Wiki/Chapter 10 - Homework and Quiz Solution Guide.md",
-                "mode": "preview",
+                "file": "Wiki/Lecture 2 - Network Models and Layered Architecture.md",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Chapter 10 - Homework and Quiz Solution Guide"
+              "title": "Lecture 2 - Network Models and Layered Architecture"
             }
           },
           {
@@ -197,6 +197,31 @@
   },
   "active": "c72bfd3d0baf9d28",
   "lastOpenFiles": [
+    "Wiki/Lecture 1 - Fundamental of Computer Network.md",
+    "tools/audit_markdown_render.mjs",
+    "Wiki/Lecture 4 - Transport Layer Protocols and Mechanics.md",
+    "Wiki/Lecture 5 - Network Layer, Routing, and IP Addressing.md",
+    "Wiki/Lecture 3 - Application Layer Protocols and Architectures.md",
+    "Wiki/Lecture 2 - Network Models and Layered Architecture.md",
+    "tools/upgrade_generic_visuals.js",
+    "tools/validate_tables.js",
+    "tools/inject_remaining_visuals.js",
+    "tools/inject_visuals_all_lectures.js",
+    "tools/audit_visual_coverage.js",
+    "tools/check_code_blocks.js",
+    "Wiki/Lecture 6 - Link Layer, Local Area Networks, and Wireless.md",
+    "tools/wrap_all_ascii_boxes.js",
+    "tools/wrap_ascii_headers_in_code_blocks.js",
+    "tools/test_table_syntax.js",
+    "Wiki/Exam Preparation Guide and Master 80-Question Bank.md",
+    "Wiki/Interactive Lab Guide - Chapter 3 Application Layer Protocols.md",
+    "Wiki/Interactive Lab Guide - Chapter 2 Network Models & Layered Stack.md",
+    "Wiki/Interactive Lab Guide - Chapter 1 Network Fundamentals.md",
+    "Wiki/Computer Network and Internet Master Index.md",
+    "Old_Wiki/Chapter 1 - Computer Networks and the Internet.md",
+    "Wiki/Calculations and Trace Workbook.md",
+    "New/exam.md",
+    "Old_Wiki/Chapter 6 - Link Layer and LANs.md",
     "Wiki/Chapter 3 - Transport Layer.md",
     "Wiki/Chapter 10 - Homework and Quiz Solution Guide.md",
     "Wiki/Chapter 1 - Computer Networks and the Internet.md",

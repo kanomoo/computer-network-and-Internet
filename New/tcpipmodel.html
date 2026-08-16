@@ -1,0 +1,2623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DCCN Interactive: Sending www.google.com through TCP/IP Layers</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --ink:#101828;
+      --muted:#667085;
+      --line:#e4e7ec;
+      --soft:#f2f4f7;
+      --blue:#2563eb;
+      --blue-soft:#eff6ff;
+      --green:#16a34a;
+      --green-soft:#f0fdf4;
+      --purple:#7c3aed;
+      --purple-soft:#f5f3ff;
+      --orange:#f97316;
+      --orange-soft:#fff7ed;
+      --teal:#0d9488;
+      --teal-soft:#f0fdfa;
+      --red:#dc2626;
+      --red-soft:#fef2f2;
+      --app:#2563eb;
+      --app-soft:#eff6ff;
+      --transport:#7c3aed;
+      --transport-soft:#f5f3ff;
+      --network:#0891b2;
+      --network-soft:#ecfeff;
+      --link:#16a34a;
+      --link-soft:#f0fdf4;
+      --physical:#f97316;
+      --physical-soft:#fff7ed;
+      --path:#64748b;
+      --path-soft:#f8fafc;
+      --server:#0d9488;
+      --server-soft:#f0fdfa;
+      --shadow:0 18px 45px rgba(16,24,40,.10);
+      --radius:22px;
+      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);font-family:var(--font);color:var(--ink)}
+    .page{min-height:100%;padding:18px;display:grid;place-items:center}
+    .shell{
+      width:min(1440px,100%);
+      min-height:calc(100vh - 36px);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+    }
+    .header{
+      display:grid;
+      grid-template-columns:minmax(360px,1fr) auto;
+      gap:20px;
+      align-items:start;
+      padding:20px 22px 14px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fff,#fbfcfe);
+    }
+    .kicker{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+    .tag{font-size:11px;font-weight:900;color:#1d4ed8;background:var(--blue-soft);border:1px solid #bfdbfe;border-radius:999px;padding:6px 9px;letter-spacing:.03em;text-transform:uppercase}
+    h1{font-size:28px;line-height:1.08;letter-spacing:-.035em;margin:0 0 7px}
+    .subtitle{margin:0;color:var(--muted);font-size:14px;line-height:1.45;max-width:760px}
+    .toolbar{min-width:420px;display:grid;justify-items:end;gap:10px}
+    .progress-wrap{display:flex;align-items:center;gap:10px}
+    .step-count{font-size:13px;font-weight:900;color:#1d4ed8;background:var(--blue-soft);border:1px solid #bfdbfe;border-radius:999px;padding:7px 11px;white-space:nowrap}
+    .progress{width:155px;height:8px;border-radius:999px;background:#eaf0f8;overflow:hidden}
+    .progress span{display:block;height:100%;width:0;background:var(--blue);border-radius:999px;transition:width .25s ease}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .control{border:1px solid var(--line);background:white;color:#344054;border-radius:12px;padding:9px 12px;font:inherit;font-size:13px;font-weight:850;cursor:pointer;transition:.18s ease}
+    .control.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    .control:hover{transform:translateY(-1px);box-shadow:0 8px 16px rgba(16,24,40,.08)}
+    .step-nav{padding:10px 22px 12px;border-bottom:1px solid var(--line);background:#fff}
+    .steps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+    .step-btn{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:#475467;border-radius:999px;padding:6px 9px 6px 7px;font:inherit;font-size:11.5px;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.18s ease;white-space:nowrap}
+    .step-no{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:#667085;font-size:10px;font-weight:950}
+    .step-btn.active{border-color:#93c5fd;background:var(--blue-soft);color:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+    .step-btn.active .step-no{background:var(--blue);color:#fff}
+    .content{display:grid;grid-template-columns:minmax(760px,1fr) 380px;min-height:0}
+    .stage-wrap{padding:18px;border-right:1px solid var(--line);min-width:0;background:#fff}
+    .stage{
+      position:relative;
+      min-height:625px;
+      border:1px solid #e4e8f0;
+      border-radius:20px;
+      overflow:hidden;
+      background:
+        linear-gradient(#eef2f7 1px, transparent 1px),
+        linear-gradient(90deg,#eef2f7 1px, transparent 1px),
+        #fbfcfe;
+      background-size:42px 42px;
+    }
+    .stage-grid{position:absolute;inset:18px;display:grid;grid-template-columns:270px minmax(220px,1fr) 270px;gap:18px;z-index:2}
+    .side-col{display:grid;grid-template-rows:auto auto 1fr;gap:14px;min-width:0}
+    .role-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .role-title .pill{font-size:12px;font-weight:950;letter-spacing:.08em;color:#475467;background:white;border:1px solid var(--line);border-radius:999px;padding:7px 10px;text-transform:uppercase}
+    .device-card{height:112px;border:1px solid var(--line);border-radius:18px;background:white;box-shadow:0 10px 20px rgba(16,24,40,.06);padding:12px;display:grid;align-content:center}
+    .browser{border:2px solid #263348;border-radius:14px;background:white;overflow:hidden;height:88px}
+    .browser-top{height:28px;display:flex;align-items:center;gap:7px;padding:0 9px;background:#f0f2f6;border-bottom:1px solid var(--line)}
+    .dot3{display:flex;gap:4px}.dot3 i{display:block;width:7px;height:7px;border-radius:50%;background:#c6ccd7}.urlbar{height:18px;flex:1;border:1px solid #d0d5dd;background:#fff;border-radius:999px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:800;color:#344054;white-space:nowrap;overflow:hidden}.screen-text{text-align:center;padding:13px 10px;font-weight:900;color:#1d4ed8;font-size:14px}
+    .server-icon{height:96px;display:grid;place-items:center;filter:drop-shadow(0 10px 14px rgba(16,24,40,.10))}
+    .tower-server{position:relative;width:64px;height:90px;border-radius:14px;background:linear-gradient(180deg,#334155,#1f2937);border:1px solid #475569;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+    .tower-server:before{content:"";position:absolute;left:10px;right:10px;top:12px;height:10px;border-radius:999px;background:rgba(255,255,255,.06)}
+    .tower-server .bay{position:absolute;left:12px;right:12px;height:12px;border-radius:6px;background:#0f172a;border:1px solid rgba(255,255,255,.05);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+    .tower-server .bay.b1{top:24px}
+    .tower-server .bay.b2{top:42px}
+    .tower-server .bay.b3{top:60px}
+    .tower-server .leds{position:absolute;right:10px;bottom:10px;display:grid;gap:6px}
+    .tower-server .led{width:8px;height:8px;border-radius:50%}
+    .tower-server .led.green{background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.14)}
+    .tower-server .led.blue{background:#38bdf8;box-shadow:0 0 0 4px rgba(56,189,248,.14)}
+    .tower-server .port{position:absolute;left:12px;bottom:12px;width:20px;height:6px;border-radius:4px;background:#94a3b8;opacity:.9}
+    .stack{display:grid;gap:9px;align-content:start}.layer{height:68px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:10px;display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:center;transition:.22s ease}.layer .ico{width:36px;height:36px;border-radius:12px;background:var(--soft);display:grid;place-items:center;color:#475467;font-weight:950}.layer b{display:block;font-size:15px;line-height:1.05}.layer small{display:block;margin-top:4px;color:var(--muted);font-size:11.5px;font-weight:700}.layer.active{border-color:var(--blue);background:var(--blue-soft);box-shadow:0 0 0 3px rgba(37,99,235,.12);transform:translateX(4px)}.server-col .layer.active{transform:translateX(-4px)}.layer.active .ico{background:var(--blue);color:#fff}.layer.done{background:#f8fafc;color:#667085}.layer.done .ico{background:#edf1f7;color:#98a2b3}
+
+    /* Light colorful layer coding */
+    .side-col{border-radius:20px;padding:10px;border:1px solid rgba(148,163,184,.18);background:rgba(255,255,255,.62)}
+    .client-col{background:linear-gradient(180deg,rgba(239,246,255,.72),rgba(255,255,255,.58))}
+    .server-col{background:linear-gradient(180deg,rgba(240,253,250,.72),rgba(255,255,255,.58))}
+    .role-title .pill{box-shadow:0 6px 14px rgba(16,24,40,.05)}
+    .client-col .role-title .pill{background:var(--app-soft);border-color:#bfdbfe;color:#1d4ed8}
+    .server-col .role-title .pill{background:var(--server-soft);border-color:#99f6e4;color:#0f766e}
+    .device-card{background:linear-gradient(180deg,#fff,#f8fbff)}
+    .server-col .device-card{background:linear-gradient(180deg,#fff,var(--server-soft))}
+    .layer[data-layer="application"]{background:var(--app-soft);border-color:#bfdbfe}
+    .layer[data-layer="application"] .ico{background:#dbeafe;color:#1d4ed8}
+    .layer[data-layer="transport"]{background:var(--transport-soft);border-color:#ddd6fe}
+    .layer[data-layer="transport"] .ico{background:#ede9fe;color:#6d28d9}
+    .layer[data-layer="network"]{background:var(--network-soft);border-color:#a5f3fc}
+    .layer[data-layer="network"] .ico{background:#cffafe;color:#0e7490}
+    .layer[data-layer="link"]{background:var(--link-soft);border-color:#bbf7d0}
+    .layer[data-layer="link"] .ico{background:#dcfce7;color:#15803d}
+    .layer[data-layer="physical"]{background:var(--physical-soft);border-color:#fed7aa}
+    .layer[data-layer="physical"] .ico{background:#ffedd5;color:#c2410c}
+    .layer.done{filter:saturate(.78);opacity:.82}
+    .layer[data-layer="application"].active{border-color:var(--app);background:#dbeafe;box-shadow:0 0 0 4px rgba(37,99,235,.14)}
+    .layer[data-layer="application"].active .ico{background:var(--app);color:#fff}
+    .layer[data-layer="transport"].active{border-color:var(--transport);background:#ede9fe;box-shadow:0 0 0 4px rgba(124,58,237,.14)}
+    .layer[data-layer="transport"].active .ico{background:var(--transport);color:#fff}
+    .layer[data-layer="network"].active{border-color:var(--network);background:#cffafe;box-shadow:0 0 0 4px rgba(8,145,178,.14)}
+    .layer[data-layer="network"].active .ico{background:var(--network);color:#fff}
+    .layer[data-layer="link"].active{border-color:var(--link);background:#dcfce7;box-shadow:0 0 0 4px rgba(22,163,74,.14)}
+    .layer[data-layer="link"].active .ico{background:var(--link);color:#fff}
+    .layer[data-layer="physical"].active{border-color:var(--physical);background:#ffedd5;box-shadow:0 0 0 4px rgba(249,115,22,.14)}
+    .layer[data-layer="physical"].active .ico{background:var(--physical);color:#fff}
+    .path-area{background:linear-gradient(180deg,rgba(248,250,252,.82),rgba(239,246,255,.58));border-color:#cbd5e1}
+    .router{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
+    .network-label{background:#f8fafc;border-color:#cbd5e1;color:#334155}
+    .direction{background:linear-gradient(135deg,#111827,#334155)}
+    .hint:first-child{background:var(--app-soft);border-color:#bfdbfe;color:#1d4ed8}
+    .hint:last-child{background:var(--server-soft);border-color:#99f6e4;color:#0f766e}
+    .hint.active:first-child{background:#dbeafe;border-color:#60a5fa}
+    .hint.active:last-child{background:#ccfbf1;border-color:#2dd4bf}
+    .panel{background:linear-gradient(180deg,#fcfcfd,#f8fafc)}
+    .card:nth-child(1){border-color:#bfdbfe;background:linear-gradient(180deg,#fff,#eff6ff)}
+    .card:nth-child(2){border-color:#ddd6fe;background:linear-gradient(180deg,#fff,#f5f3ff)}
+    .card:nth-child(3){border-color:#bbf7d0;background:linear-gradient(180deg,#fff,#f0fdf4)}
+    .packet.single-box{border-color:#f5b2b2;background:linear-gradient(180deg,#fff7f7,#fef2f2)}
+    .packet.single-box .part{border-color:#fecaca;background:white}
+    .packet.single-box .part .label{font-weight:950;color:#991b1b}
+    .packet-label{background:linear-gradient(180deg,#fff,#f8fafc)}
+
+    .center-col{position:relative;min-width:0;display:grid;grid-template-rows:64px 1fr 78px;gap:12px;align-items:stretch}.direction{align-self:start;justify-self:center;background:#111827;color:white;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:900;box-shadow:0 10px 16px rgba(16,24,40,.12);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}.path-area{position:relative;border:1px dashed #d0d5dd;border-radius:22px;background:rgba(255,255,255,.72);display:grid;place-items:center;min-height:360px}.path-line{position:absolute;left:10%;right:10%;top:50%;height:2px;background:repeating-linear-gradient(90deg,#b6c2d3 0 12px,transparent 12px 22px)}.path-line.hot{background:repeating-linear-gradient(90deg,var(--blue) 0 12px,transparent 12px 22px);animation:dash 1s linear infinite}@keyframes dash{to{background-position:22px 0}}.router-line{position:absolute;left:12%;right:12%;top:calc(50% + 44px);display:flex;justify-content:space-between}.router{width:46px;height:34px;border:1px solid var(--line);border-radius:12px;background:white;display:grid;place-items:center;color:#475467;font-size:20px}.network-label{position:absolute;left:50%;top:calc(50% - 40px);transform:translateX(-50%);font-size:12px;font-weight:950;color:#475467;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 12px;white-space:nowrap}.color-legend{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;gap:6px;width:min(96%,380px)}.lg{font-size:10.5px;font-weight:900;border-radius:999px;padding:5px 7px;border:1px solid transparent;white-space:nowrap}.lg.app{background:var(--app-soft);border-color:#bfdbfe;color:#1d4ed8}.lg.trans{background:var(--transport-soft);border-color:#ddd6fe;color:#6d28d9}.lg.net{background:var(--network-soft);border-color:#a5f3fc;color:#0e7490}.lg.link{background:var(--link-soft);border-color:#bbf7d0;color:#15803d}.lg.phy{background:var(--physical-soft);border-color:#fed7aa;color:#c2410c}.flow-hint{align-self:end;display:grid;grid-template-columns:1fr 1fr;gap:10px}.hint{padding:8px 10px;border:1px solid var(--line);border-radius:999px;background:white;color:#667085;font-size:11.5px;font-weight:900;text-align:center}.hint.active{border-color:#bfdbfe;background:var(--blue-soft);color:#1d4ed8}
+    .packet-label{position:absolute;left:0;top:0;transform:translate(-9999px,-9999px);z-index:15;min-width:260px;max-width:330px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 22px rgba(16,24,40,.10);padding:8px 10px;display:grid;grid-template-columns:auto 1fr;column-gap:8px;row-gap:2px;transition:transform .48s cubic-bezier(.2,.7,.2,1),opacity .2s ease}.packet-label .badge{grid-row:1 / span 2;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--blue-soft);color:#1d4ed8;font-weight:950}.packet-label .unit{font-size:11px;line-height:1;font-weight:950;color:#1d4ed8;letter-spacing:.08em;text-transform:uppercase}.packet-label .message{font-size:13px;line-height:1.18;font-weight:850;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.packet-label.hidden{opacity:0;pointer-events:none}
+    .packet{position:absolute;left:0;top:0;transform:translate(-9999px,-9999px);z-index:14;width:315px;background:#fff;border:2px solid var(--blue);border-radius:16px;box-shadow:0 16px 26px rgba(37,99,235,.15);padding:10px;transition:transform .48s cubic-bezier(.2,.7,.2,1),opacity .2s ease}.packet.hidden{opacity:0;pointer-events:none}.parts{display:flex;gap:4px;align-items:stretch;overflow:hidden;border-radius:11px}.part{flex:1 1 0;min-width:0;border:1px solid var(--line);border-radius:10px;padding:6px;line-height:1.05;background:#f8fafc}.part .role{display:block;font-size:8px;letter-spacing:.08em;text-transform:uppercase;font-weight:950;opacity:.68;white-space:nowrap}.part .label{display:block;margin-top:3px;font-size:10px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.part.data{background:#fff;color:#111827}.part.tls{background:var(--orange-soft);border-color:#fed7aa;color:#92400e}.part.tcp{background:var(--purple-soft);border-color:#ddd6fe;color:#5b21b6}.part.ip{background:var(--blue-soft);border-color:#bfdbfe;color:#1d4ed8}.part.mac{background:var(--green-soft);border-color:#bbf7d0;color:#166534}.part.fcs{background:var(--teal-soft);border-color:#99f6e4;color:#0f766e}.part.bits{background:var(--red-soft);border-color:#fecaca;color:#991b1b;flex:1 1 100%}.bits-string{display:none;margin-top:8px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:#991b1b;word-break:break-all}.packet.bits-mode .parts{display:block}.packet.bits-mode .bits-string{display:block}.packet.single-box{width:310px;padding:8px;border-color:#f5b2b2;box-shadow:0 12px 20px rgba(220,38,38,.10);background:linear-gradient(180deg,#fff7f7,#fef2f2)}.packet.single-box .parts{display:block}.packet.single-box .part{min-height:52px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;text-align:center}.packet.single-box .part .role{display:none}.packet.single-box .part .label{margin-top:0;font-size:12.5px;color:#111827;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.25}
+    .panel{padding:18px;background:#fcfcfd;display:grid;grid-template-rows:auto auto 1fr;gap:14px;min-width:0}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.card h2,.card h3{margin:0 0 8px;font-size:18px;letter-spacing:-.02em}.card p{margin:0;color:#344054;line-height:1.5;font-size:14px}.kv{display:grid;gap:8px;margin-top:12px}.kv-row{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:9px 0;border-top:1px solid #eef1f6;font-size:13px;line-height:1.35}.kv-row:first-child{border-top:0}.kv-row b{color:#667085;font-size:11px;text-transform:uppercase;letter-spacing:.08em}.kv-row span{font-weight:750;color:#111827}.assembly{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.chip{padding:7px 9px;border-radius:999px;font-size:12px;font-weight:850;border:1px solid var(--line);color:#98a2b3;background:#f8fafc;transition:.2s ease}.chip.on{color:#111827;background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.08)}.chip.mac.on{border-color:#86efac;background:var(--green-soft);color:#166534}.chip.ip.on{border-color:#bfdbfe;background:var(--blue-soft);color:#1d4ed8}.chip.tcp.on{border-color:#ddd6fe;background:var(--purple-soft);color:#5b21b6}.chip.tls.on{border-color:#fed7aa;background:var(--orange-soft);color:#92400e}.chip.data.on{border-color:#cbd5e1;background:#fff;color:#111827}.chip.fcs.on{border-color:#99f6e4;background:var(--teal-soft);color:#0f766e}.chip.bits.on{border-color:#fecaca;background:var(--red-soft);color:#991b1b}.teacher{overflow:auto;min-height:0}.point{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:11px 0;border-top:1px solid #eef1f6;font-size:13.5px;line-height:1.45;color:#344054}.point:first-of-type{border-top:0}.num{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;background:var(--soft);color:#475467;font-weight:950;font-size:12px}.footer{border-top:1px solid var(--line);padding:10px 18px 12px;color:#667085;font-size:12.5px;line-height:1.4;background:#fff}
+    @media (max-width:1180px){.content{grid-template-columns:1fr}.stage-wrap{border-right:0;border-bottom:1px solid var(--line)}.panel{grid-template-columns:1fr 1fr;grid-template-rows:auto;align-items:start}.teacher{grid-column:1/-1;max-height:260px}.toolbar{min-width:0}.header{grid-template-columns:1fr}.toolbar{justify-items:start}.controls{justify-content:flex-start}}
+    @media (max-width:860px){.page{padding:8px;place-items:start}.shell{min-height:calc(100vh - 16px);border-radius:16px}.header{padding:16px}.stage-wrap{overflow-x:auto;padding:12px}.stage{width:960px}.stage-grid{grid-template-columns:250px 340px 250px}.panel{grid-template-columns:1fr;padding:12px}.footer{padding:10px 12px 12px}h1{font-size:23px}}
+  
+    /* Keep the network path hidden normally, but show a minimal router path in Step 9 */
+    .path-area{
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      transition:.22s ease;
+    }
+    .path-area .network-label,
+    .path-area .router-line,
+    .path-area .path-line,
+    .path-area .color-legend{
+      opacity:0;
+      pointer-events:none;
+      transition:.22s ease;
+    }
+    .path-area.show-path{
+      border:1px dashed #d0d5dd !important;
+      background:rgba(255,255,255,.72) !important;
+      box-shadow:inset 0 0 0 1px rgba(148,163,184,.08) !important;
+    }
+    .path-area.show-path .network-label,
+    .path-area.show-path .router-line,
+    .path-area.show-path .path-line{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .path-area.show-path .network-label{
+      display:block !important;
+    }
+    .path-area.show-path .router-line{
+      display:flex !important;
+    }
+    .path-area.show-path .path-line{
+      display:block !important;
+    }
+    .center-col{
+      grid-template-rows:64px 1fr 78px;
+    }
+
+  
+    /* Larger step/status box text */
+    .direction{
+      font-size:15px !important;
+      line-height:1.25 !important;
+      padding:12px 16px !important;
+      border-radius:16px !important;
+      white-space:normal !important;
+      text-align:center !important;
+      max-width:420px !important;
+      min-height:48px !important;
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+    }
+
+    /* Clearly distinguish device area from layer area */
+    .device-card{
+      position:relative !important;
+      border-width:2px !important;
+      min-height:124px !important;
+      margin-bottom:4px !important;
+    }
+    .client-col .device-card{
+      border-color:#93c5fd !important;
+      background:linear-gradient(180deg,#ffffff,#eff6ff) !important;
+    }
+    .server-col .device-card{
+      border-color:#5eead4 !important;
+      background:linear-gradient(180deg,#ffffff,#f0fdfa) !important;
+    }
+    .device-card::before{
+      position:absolute;
+      top:-12px;
+      left:14px;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:10.5px;
+      font-weight:950;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      background:#fff;
+      border:1px solid var(--line);
+    }
+    .client-col .device-card::before{
+      content:"Client device";
+      color:#1d4ed8;
+      border-color:#bfdbfe;
+      background:#eff6ff;
+    }
+    .server-col .device-card::before{
+      content:"Server machine";
+      color:#0f766e;
+      border-color:#99f6e4;
+      background:#f0fdfa;
+    }
+
+    .stack{
+      position:relative !important;
+      padding:22px 10px 10px !important;
+      border-radius:20px !important;
+      border:2px solid transparent !important;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.65), 0 10px 22px rgba(16,24,40,.04);
+    }
+    .client-col .stack{
+      border-color:#bfdbfe !important;
+      background:linear-gradient(180deg,rgba(239,246,255,.78),rgba(255,255,255,.72)) !important;
+    }
+    .server-col .stack{
+      border-color:#99f6e4 !important;
+      background:linear-gradient(180deg,rgba(240,253,250,.82),rgba(255,255,255,.72)) !important;
+    }
+    .stack::before{
+      position:absolute;
+      top:-12px;
+      left:14px;
+      padding:4px 9px;
+      border-radius:999px;
+      font-size:10.5px;
+      font-weight:950;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      background:#fff;
+      border:1px solid var(--line);
+      z-index:2;
+    }
+    .client-col .stack::before{
+      content:"Client layers";
+      color:#1d4ed8;
+      border-color:#bfdbfe;
+      background:#eff6ff;
+    }
+    .server-col .stack::before{
+      content:"Server layers";
+      color:#0f766e;
+      border-color:#99f6e4;
+      background:#f0fdfa;
+    }
+
+    .layer b{
+      font-size:16px !important;
+    }
+    .layer small{
+      font-size:12.5px !important;
+    }
+    .layer .ico{
+      font-size:17px !important;
+    }
+
+    /* Make Client and Server column headers clearer */
+    .role-title .pill{
+      font-size:13px !important;
+      padding:8px 12px !important;
+    }
+
+  
+    /* Expand the left client card so all elements fit inside the border */
+    .stage{
+      min-height:690px !important;
+      overflow:visible !important;
+    }
+    .stage-wrap{
+      overflow:visible !important;
+    }
+    .stage-grid{
+      inset:24px !important;
+      grid-template-columns:315px minmax(160px,1fr) 285px !important;
+      gap:18px !important;
+    }
+    .client-col{
+      padding:22px 16px 18px !important;
+      border-width:2px !important;
+      overflow:visible !important;
+      min-width:315px !important;
+      align-self:start !important;
+    }
+    .client-col .role-title{
+      margin-bottom:4px !important;
+    }
+    .client-col .device-card{
+      height:132px !important;
+      padding:18px 14px 14px !important;
+      margin-top:8px !important;
+      overflow:visible !important;
+    }
+    .client-col .stack{
+      margin-top:12px !important;
+      padding:32px 14px 14px !important;
+      overflow:visible !important;
+    }
+    .client-col .layer{
+      min-height:72px !important;
+    }
+    .client-col .device-card::before,
+    .client-col .stack::before{
+      top:-14px !important;
+      left:16px !important;
+    }
+
+    /* Keep server visually balanced after expanding the left card */
+    .server-col{
+      padding:20px 14px 16px !important;
+      border-width:2px !important;
+      overflow:visible !important;
+    }
+    .server-col .device-card{
+      margin-top:8px !important;
+      overflow:visible !important;
+    }
+    .server-col .stack{
+      margin-top:12px !important;
+      padding-top:32px !important;
+      overflow:visible !important;
+    }
+
+    @media (max-width:1180px){
+      .stage-grid{
+        grid-template-columns:315px minmax(160px,1fr) 285px !important;
+      }
+    }
+    @media (max-width:860px){
+      .stage{
+        width:1040px !important;
+        min-height:700px !important;
+      }
+      .stage-grid{
+        grid-template-columns:315px 350px 285px !important;
+      }
+    }
+
+  
+    /* Move all right-side cards to the bottom and expand the diagram */
+    .content{
+      display:block !important;
+      min-height:0 !important;
+    }
+    .stage-wrap{
+      border-right:0 !important;
+      border-bottom:1px solid var(--line) !important;
+      padding:22px 24px !important;
+      background:#fff !important;
+      overflow:visible !important;
+    }
+    .stage{
+      min-height:790px !important;
+      width:100% !important;
+      overflow:visible !important;
+    }
+    .stage-grid{
+      inset:30px !important;
+      grid-template-columns:minmax(340px,380px) minmax(300px,1fr) minmax(320px,360px) !important;
+      gap:28px !important;
+      align-items:start !important;
+    }
+
+    /* Expand device and layer components */
+    .side-col{
+      padding:24px 18px 20px !important;
+      min-height:720px !important;
+    }
+    .client-col{
+      min-width:340px !important;
+    }
+    .server-col{
+      min-width:320px !important;
+    }
+    .device-card{
+      min-height:150px !important;
+      height:150px !important;
+      padding:22px 16px 16px !important;
+    }
+    .browser{
+      height:110px !important;
+    }
+    .browser-top{
+      height:34px !important;
+    }
+    .urlbar{
+      height:22px !important;
+      font-size:12.5px !important;
+    }
+    .screen-text{
+      font-size:16px !important;
+      padding:19px 12px !important;
+    }
+    .server-icon{
+      height:116px !important;
+    }
+    .tower-server{
+      width:78px !important;
+      height:108px !important;
+      border-radius:17px !important;
+    }
+    .tower-server .bay{
+      height:14px !important;
+      left:14px !important;
+      right:14px !important;
+    }
+    .tower-server .bay.b1{top:30px !important}
+    .tower-server .bay.b2{top:51px !important}
+    .tower-server .bay.b3{top:72px !important}
+
+    .stack{
+      padding:36px 16px 16px !important;
+      gap:11px !important;
+    }
+    .layer{
+      min-height:82px !important;
+      height:82px !important;
+      grid-template-columns:46px 1fr !important;
+      gap:13px !important;
+      padding:13px !important;
+      border-radius:18px !important;
+    }
+    .layer .ico{
+      width:44px !important;
+      height:44px !important;
+      border-radius:14px !important;
+      font-size:20px !important;
+    }
+    .layer b{
+      font-size:18px !important;
+    }
+    .layer small{
+      font-size:13.5px !important;
+      line-height:1.2 !important;
+    }
+
+    /* Make middle area wider and path display cleaner */
+    .center-col{
+      min-height:720px !important;
+      grid-template-rows:76px 1fr 82px !important;
+      gap:16px !important;
+    }
+    .direction{
+      font-size:17px !important;
+      min-height:58px !important;
+      max-width:560px !important;
+      padding:14px 18px !important;
+    }
+    .path-area{
+      min-height:500px !important;
+      border-radius:26px !important;
+    }
+    .path-area.show-path{
+      background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(248,250,252,.76)) !important;
+    }
+    .router{
+      width:58px !important;
+      height:42px !important;
+      border-radius:15px !important;
+      font-size:24px !important;
+    }
+    .network-label{
+      font-size:13px !important;
+      padding:8px 14px !important;
+    }
+    .flow-hint{
+      gap:14px !important;
+    }
+    .hint{
+      font-size:13px !important;
+      padding:10px 12px !important;
+    }
+
+    /* Larger moving packet / APP DATA box */
+    .packet{
+      width:360px !important;
+      border-radius:18px !important;
+      padding:12px !important;
+    }
+    .packet.single-box{
+      width:350px !important;
+      padding:10px !important;
+    }
+    .packet.single-box .part{
+      min-height:62px !important;
+      padding:14px 16px !important;
+    }
+    .packet.single-box .part .label{
+      font-size:14px !important;
+    }
+    .part{
+      padding:8px !important;
+      border-radius:12px !important;
+    }
+    .part .role{
+      font-size:9px !important;
+    }
+    .part .label{
+      font-size:11.5px !important;
+    }
+    .bits-string{
+      font-size:12px !important;
+    }
+
+    /* Bottom cards layout */
+    .panel{
+      display:grid !important;
+      grid-template-columns:1fr 1fr 1fr !important;
+      grid-template-rows:auto !important;
+      gap:16px !important;
+      padding:18px 24px 22px !important;
+      background:linear-gradient(180deg,#fff,#f8fafc) !important;
+      border-top:1px solid var(--line) !important;
+    }
+    .card{
+      min-height:190px !important;
+      padding:18px !important;
+    }
+    .card h2,
+    .card h3{
+      font-size:20px !important;
+    }
+    .card p{
+      font-size:15px !important;
+    }
+    .kv-row{
+      grid-template-columns:115px 1fr !important;
+      font-size:14px !important;
+    }
+    .teacher{
+      max-height:230px !important;
+    }
+    .point{
+      font-size:14.5px !important;
+    }
+
+    /* Footer adjusted for new bottom-card layout */
+    .footer{
+      padding:12px 24px 14px !important;
+    }
+
+    @media (max-width:1180px){
+      .stage{
+        width:1160px !important;
+      }
+      .stage-wrap{
+        overflow-x:auto !important;
+      }
+      .stage-grid{
+        grid-template-columns:340px 390px 320px !important;
+      }
+      .panel{
+        grid-template-columns:1fr !important;
+      }
+      .teacher{
+        max-height:none !important;
+      }
+    }
+
+  
+    /* APP DATA now uses the same packet-label + packet-body structure as other layers */
+    .part.data{
+      background:#fef2f2 !important;
+      border-color:#fecaca !important;
+      color:#991b1b !important;
+    }
+    .part.data .role{
+      color:#b91c1c !important;
+      opacity:.9 !important;
+    }
+    .part.data .label{
+      color:#7f1d1d !important;
+    }
+    .chip.data.on{
+      border-color:#fecaca !important;
+      background:#fef2f2 !important;
+      color:#991b1b !important;
+    }
+    .packet:not(.single-box){
+      background:#fff !important;
+    }
+    .packet-label .badge{
+      background:#fef2f2 !important;
+      color:#b91c1c !important;
+    }
+    .packet-label .unit{
+      color:#b91c1c !important;
+    }
+    .packet-label .message{
+      white-space:normal !important;
+      overflow:visible !important;
+      text-overflow:clip !important;
+    }
+
+  
+    /* Replace text hints with arrow indicators */
+    .flow-hint{
+      grid-template-columns:1fr 1fr !important;
+      align-items:center !important;
+    }
+    .hint{
+      min-height:54px !important;
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+      font-size:30px !important;
+      font-weight:1000 !important;
+      line-height:1 !important;
+      letter-spacing:0 !important;
+    }
+    .hint#downLabel{color:#1d4ed8 !important}
+    .hint#upLabel{color:#0f766e !important}
+    .hint.active#downLabel{
+      background:#dbeafe !important;
+      border-color:#60a5fa !important;
+      box-shadow:0 0 0 3px rgba(37,99,235,.10) !important;
+    }
+    .hint.active#upLabel{
+      background:#ccfbf1 !important;
+      border-color:#2dd4bf !important;
+      box-shadow:0 0 0 3px rgba(13,148,136,.10) !important;
+    }
+
+    /* Clearer central router path for step 9 */
+    .path-area.show-path{
+      display:grid !important;
+      place-items:center !important;
+      position:relative !important;
+    }
+    .router-line{
+      left:12% !important;
+      right:12% !important;
+      top:54% !important;
+      align-items:center !important;
+    }
+    .router{
+      position:relative !important;
+      width:64px !important;
+      height:48px !important;
+      border-radius:16px !important;
+      border:1px solid #cbd5e1 !important;
+      background:linear-gradient(180deg,#ffffff,#eef2f7) !important;
+      color:#334155 !important;
+      font-size:0 !important;
+      box-shadow:0 10px 18px rgba(16,24,40,.08) !important;
+      display:grid !important;
+      place-items:center !important;
+    }
+    .router span{
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#eff6ff;
+      color:#2563eb;
+      border:1px solid #bfdbfe;
+      font-size:14px;
+      font-weight:950;
+    }
+    .router::before,
+    .router::after{
+      content:"";
+      position:absolute;
+      top:10px;
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 0 3px rgba(34,197,94,.12);
+    }
+    .router::before{left:10px}
+    .router::after{right:10px}
+
+    .network-label{
+      top:24% !important;
+      font-size:14px !important;
+      padding:9px 16px !important;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+    .path-line{
+      left:10% !important;
+      right:10% !important;
+      top:54% !important;
+      height:3px !important;
+      background:repeating-linear-gradient(90deg,#94a3b8 0 14px,transparent 14px 26px) !important;
+    }
+    .path-line.hot{
+      background:repeating-linear-gradient(90deg,#2563eb 0 14px,transparent 14px 26px) !important;
+    }
+    .media-links{
+      position:absolute;
+      left:50%;
+      bottom:18%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      opacity:0;
+      pointer-events:none;
+      transition:.22s ease;
+    }
+    .path-area.show-path .media-links{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .media-chip{
+      border-radius:999px;
+      padding:7px 12px;
+      font-size:12px;
+      font-weight:900;
+      border:1px solid #d0d5dd;
+      background:#fff;
+      color:#475467;
+      box-shadow:0 8px 14px rgba(16,24,40,.05);
+      white-space:nowrap;
+    }
+
+  
+    /* Long vertical flow arrows across the diagram area */
+    .center-col{
+      position:relative !important;
+    }
+    .flow-hint{
+      position:absolute !important;
+      top:88px !important;
+      bottom:24px !important;
+      left:6px !important;
+      right:6px !important;
+      display:flex !important;
+      justify-content:space-between !important;
+      align-items:stretch !important;
+      gap:0 !important;
+      pointer-events:none !important;
+      z-index:4 !important;
+    }
+    .hint{
+      width:64px !important;
+      height:100% !important;
+      min-height:0 !important;
+      padding:0 !important;
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      border-radius:0 !important;
+      font-size:0 !important;
+      position:relative !important;
+      display:block !important;
+      opacity:.32;
+    }
+    .hint.active{
+      opacity:.88 !important;
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+    }
+    .hint::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      width:6px;
+      transform:translateX(-50%);
+      border-radius:999px;
+      background:currentColor;
+      opacity:.85;
+    }
+    .hint::after{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      font-size:54px;
+      line-height:1;
+      font-weight:1000;
+      color:currentColor;
+      text-shadow:0 6px 14px rgba(16,24,40,.12);
+    }
+    .hint#downLabel{
+      color:#2563eb !important;
+    }
+    .hint#downLabel::before{
+      top:4px;
+      bottom:46px;
+    }
+    .hint#downLabel::after{
+      content:"↓";
+      bottom:0;
+    }
+    .hint#upLabel{
+      color:#0f766e !important;
+    }
+    .hint#upLabel::before{
+      top:46px;
+      bottom:4px;
+    }
+    .hint#upLabel::after{
+      content:"↑";
+      top:0;
+    }
+
+    /* Keep Step 9 path clear: routers/media stay in center, packet is moved above them */
+    .path-area.show-path .network-label{
+      top:14% !important;
+    }
+    .path-area.show-path .path-line{
+      top:58% !important;
+    }
+    .path-area.show-path .router-line{
+      top:58% !important;
+    }
+    .path-area.show-path .media-links{
+      bottom:14% !important;
+    }
+
+  
+    /* Step 9: place routers and link media at the Physical-layer level */
+    .path-area.show-path{
+      overflow:visible !important;
+    }
+    .path-area.show-path .network-label{
+      top:68% !important;
+      transform:translateX(-50%) !important;
+      background:#fff7ed !important;
+      border-color:#fed7aa !important;
+      color:#c2410c !important;
+    }
+    .path-area.show-path .path-line{
+      top:84% !important;
+      left:2% !important;
+      right:2% !important;
+      height:4px !important;
+      background:repeating-linear-gradient(90deg,#2563eb 0 18px,transparent 18px 30px) !important;
+    }
+    .path-area.show-path .router-line{
+      top:84% !important;
+      left:4% !important;
+      right:4% !important;
+      transform:translateY(-50%) !important;
+      z-index:6 !important;
+    }
+    .path-area.show-path .media-links{
+      bottom:3% !important;
+      z-index:6 !important;
+      background:rgba(255,255,255,.82);
+      border:1px solid #e5e7eb;
+      border-radius:999px;
+      padding:6px 8px;
+      box-shadow:0 10px 18px rgba(16,24,40,.06);
+    }
+    .path-area.show-path::before,
+    .path-area.show-path::after{
+      position:absolute;
+      top:84%;
+      transform:translateY(-50%);
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:11.5px;
+      font-weight:950;
+      border:1px solid #fed7aa;
+      background:#fff7ed;
+      color:#c2410c;
+      z-index:7;
+      white-space:nowrap;
+      box-shadow:0 8px 14px rgba(16,24,40,.06);
+    }
+    .path-area.show-path::before{
+      content:"Client Physical";
+      left:-8px;
+    }
+    .path-area.show-path::after{
+      content:"Server Physical";
+      right:-8px;
+    }
+
+  
+    /* Recheck fix: stronger long arrows and physical-level router path alignment */
+    .flow-hint{
+      top:82px !important;
+      bottom:-4px !important;
+      left:-28px !important;
+      right:-28px !important;
+      z-index:3 !important;
+      pointer-events:none !important;
+    }
+    .hint{
+      width:90px !important;
+      opacity:.45 !important;
+    }
+    .hint.active{
+      opacity:.95 !important;
+    }
+    .hint::before{
+      width:9px !important;
+      box-shadow:0 0 0 5px rgba(37,99,235,.06);
+    }
+    .hint#upLabel::before{
+      box-shadow:0 0 0 5px rgba(13,148,136,.06);
+    }
+    .hint::after{
+      font-size:76px !important;
+    }
+    .hint#downLabel::before{
+      top:0 !important;
+      bottom:72px !important;
+    }
+    .hint#downLabel::after{
+      bottom:-4px !important;
+    }
+    .hint#upLabel::before{
+      top:72px !important;
+      bottom:0 !important;
+    }
+    .hint#upLabel::after{
+      top:-4px !important;
+    }
+
+    /* Align Step 9 routers and links from Client Physical to Server Physical */
+    .path-area.show-path{
+      overflow:visible !important;
+    }
+    .path-area.show-path .network-label{
+      top:calc(100% + 20px) !important;
+      transform:translateX(-50%) !important;
+      z-index:8 !important;
+      background:#fff7ed !important;
+      border-color:#fed7aa !important;
+      color:#c2410c !important;
+      box-shadow:0 8px 14px rgba(16,24,40,.06) !important;
+    }
+    .path-area.show-path .path-line{
+      top:calc(100% + 88px) !important;
+      left:-72px !important;
+      right:-72px !important;
+      height:5px !important;
+      z-index:5 !important;
+      background:repeating-linear-gradient(90deg,#2563eb 0 20px,transparent 20px 34px) !important;
+    }
+    .path-area.show-path .router-line{
+      top:calc(100% + 88px) !important;
+      left:-36px !important;
+      right:-36px !important;
+      transform:translateY(-50%) !important;
+      z-index:7 !important;
+    }
+    .path-area.show-path .media-links{
+      bottom:auto !important;
+      top:calc(100% + 116px) !important;
+      z-index:8 !important;
+      background:rgba(255,255,255,.92) !important;
+      border:1px solid #e5e7eb !important;
+      border-radius:999px !important;
+      padding:6px 8px !important;
+      box-shadow:0 10px 18px rgba(16,24,40,.06) !important;
+    }
+    .path-area.show-path::before,
+    .path-area.show-path::after{
+      top:calc(100% + 88px) !important;
+      transform:translateY(-50%) !important;
+      z-index:9 !important;
+    }
+    .path-area.show-path::before{
+      left:-98px !important;
+    }
+    .path-area.show-path::after{
+      right:-98px !important;
+    }
+
+  
+    /* Final render check fix: true long arrows + visible central routers */
+    .flow-hint{
+      position:absolute !important;
+      top:88px !important;
+      bottom:0 !important;
+      left:-36px !important;
+      right:-36px !important;
+      height:auto !important;
+      display:block !important;
+      pointer-events:none !important;
+      z-index:3 !important;
+    }
+    .hint#downLabel,
+    .hint#upLabel{
+      position:absolute !important;
+      top:0 !important;
+      bottom:0 !important;
+      width:92px !important;
+      height:auto !important;
+      min-height:620px !important;
+      padding:0 !important;
+      margin:0 !important;
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      font-size:0 !important;
+      opacity:.45 !important;
+    }
+    .hint#downLabel{left:0 !important;color:#2563eb !important}
+    .hint#upLabel{right:0 !important;color:#0f766e !important}
+    .hint#downLabel.active,
+    .hint#upLabel.active{opacity:.95 !important}
+    .hint#downLabel::before,
+    .hint#upLabel::before{
+      content:"" !important;
+      position:absolute !important;
+      left:50% !important;
+      width:10px !important;
+      transform:translateX(-50%) !important;
+      border-radius:999px !important;
+      background:currentColor !important;
+      opacity:.9 !important;
+    }
+    .hint#downLabel::before{top:0 !important;bottom:82px !important}
+    .hint#upLabel::before{top:82px !important;bottom:0 !important}
+    .hint#downLabel::after,
+    .hint#upLabel::after{
+      position:absolute !important;
+      left:50% !important;
+      transform:translateX(-50%) !important;
+      font-size:82px !important;
+      line-height:1 !important;
+      font-weight:1000 !important;
+      color:currentColor !important;
+      text-shadow:0 8px 16px rgba(16,24,40,.14) !important;
+    }
+    .hint#downLabel::after{content:"↓" !important;bottom:-12px !important}
+    .hint#upLabel::after{content:"↑" !important;top:-12px !important}
+
+    .path-area.show-path .router-line{
+      left:14% !important;
+      right:14% !important;
+    }
+    .path-area.show-path .media-links{
+      flex-wrap:nowrap !important;
+      width:max-content !important;
+      max-width:none !important;
+      gap:8px !important;
+    }
+    .path-area.show-path .media-chip{
+      padding:6px 10px !important;
+      font-size:11.5px !important;
+    }
+
+  
+    /* Final anchor fix: arrows are contained inside the center diagram column, not bottom cards */
+    .center-col > .flow-hint{
+      grid-area:1 / 1 / -1 / -1 !important;
+      align-self:stretch !important;
+      justify-self:stretch !important;
+      position:absolute !important;
+      top:88px !important;
+      bottom:0 !important;
+      left:-36px !important;
+      right:-36px !important;
+      width:auto !important;
+      height:auto !important;
+      min-height:0 !important;
+      display:block !important;
+      pointer-events:none !important;
+      z-index:3 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel,
+    .center-col > .flow-hint .hint#upLabel{
+      position:absolute !important;
+      top:0 !important;
+      bottom:0 !important;
+      height:auto !important;
+      min-height:0 !important;
+    }
+
+  
+    /* Step 9 packet is now closer to the Physical link path but remains above routers/media */
+    .path-area.show-path .path-line,
+    .path-area.show-path .router-line,
+    .path-area.show-path .media-links{
+      z-index:6 !important;
+    }
+    .packet,
+    .packet-label{
+      z-index:14 !important;
+    }
+
+  
+    /* Single clean arrow lines only: one blue down arrow + one green up arrow */
+    .center-col > .flow-hint{
+      position:absolute !important;
+      top:88px !important;
+      bottom:0 !important;
+      left:-24px !important;
+      right:-24px !important;
+      width:auto !important;
+      height:auto !important;
+      min-height:0 !important;
+      display:block !important;
+      pointer-events:none !important;
+      z-index:3 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel,
+    .center-col > .flow-hint .hint#upLabel{
+      position:absolute !important;
+      top:0 !important;
+      bottom:0 !important;
+      width:52px !important;
+      height:auto !important;
+      min-height:0 !important;
+      padding:0 !important;
+      margin:0 !important;
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      border-radius:0 !important;
+      font-size:0 !important;
+      opacity:.26 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel.active,
+    .center-col > .flow-hint .hint#upLabel.active{
+      opacity:.9 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel{
+      left:0 !important;
+      color:#2563eb !important;
+    }
+    .center-col > .flow-hint .hint#upLabel{
+      right:0 !important;
+      color:#0f766e !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::before,
+    .center-col > .flow-hint .hint#upLabel::before{
+      content:"" !important;
+      position:absolute !important;
+      left:50% !important;
+      transform:translateX(-50%) !important;
+      width:4px !important;
+      border-radius:999px !important;
+      background:currentColor !important;
+      box-shadow:none !important;
+      opacity:1 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::before{
+      top:0 !important;
+      bottom:46px !important;
+    }
+    .center-col > .flow-hint .hint#upLabel::before{
+      top:46px !important;
+      bottom:0 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::after,
+    .center-col > .flow-hint .hint#upLabel::after{
+      position:absolute !important;
+      left:50% !important;
+      transform:translateX(-50%) !important;
+      font-size:46px !important;
+      line-height:1 !important;
+      font-weight:900 !important;
+      color:currentColor !important;
+      text-shadow:none !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::after{
+      content:"↓" !important;
+      bottom:0 !important;
+    }
+    .center-col > .flow-hint .hint#upLabel::after{
+      content:"↑" !important;
+      top:0 !important;
+    }
+
+  
+    /* Connected arrow lines: make the shaft meet the arrowhead */
+    .center-col > .flow-hint .hint#downLabel::before{
+      top:0 !important;
+      bottom:34px !important;
+    }
+    .center-col > .flow-hint .hint#upLabel::before{
+      top:34px !important;
+      bottom:0 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::after{
+      bottom:-2px !important;
+    }
+    .center-col > .flow-hint .hint#upLabel::after{
+      top:-2px !important;
+    }
+
+  
+    /* Replace arrows with two plain continuous lines only: one blue, one green */
+    .center-col > .flow-hint{
+      position:absolute !important;
+      top:88px !important;
+      bottom:0 !important;
+      left:-24px !important;
+      right:-24px !important;
+      width:auto !important;
+      height:auto !important;
+      min-height:0 !important;
+      display:block !important;
+      pointer-events:none !important;
+      z-index:3 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel,
+    .center-col > .flow-hint .hint#upLabel{
+      position:absolute !important;
+      top:0 !important;
+      bottom:0 !important;
+      width:52px !important;
+      height:auto !important;
+      min-height:0 !important;
+      padding:0 !important;
+      margin:0 !important;
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      border-radius:0 !important;
+      font-size:0 !important;
+      opacity:.28 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel.active,
+    .center-col > .flow-hint .hint#upLabel.active{
+      opacity:.9 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel{
+      left:0 !important;
+      color:#2563eb !important;
+    }
+    .center-col > .flow-hint .hint#upLabel{
+      right:0 !important;
+      color:#0f766e !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::before,
+    .center-col > .flow-hint .hint#upLabel::before{
+      content:"" !important;
+      position:absolute !important;
+      left:50% !important;
+      top:0 !important;
+      bottom:0 !important;
+      transform:translateX(-50%) !important;
+      width:5px !important;
+      border-radius:999px !important;
+      background:currentColor !important;
+      box-shadow:none !important;
+      opacity:1 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::after,
+    .center-col > .flow-hint .hint#upLabel::after{
+      content:none !important;
+      display:none !important;
+    }
+
+  
+    /* Add one arrowhead at the end of each flow line */
+    .center-col > .flow-hint .hint#downLabel::before{
+      top:0 !important;
+      bottom:28px !important;
+    }
+    .center-col > .flow-hint .hint#upLabel::before{
+      top:28px !important;
+      bottom:0 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::after,
+    .center-col > .flow-hint .hint#upLabel::after{
+      content:"" !important;
+      display:block !important;
+      position:absolute !important;
+      left:50% !important;
+      transform:translateX(-50%) !important;
+      width:0 !important;
+      height:0 !important;
+      border-left:10px solid transparent !important;
+      border-right:10px solid transparent !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::after{
+      bottom:0 !important;
+      border-top:18px solid #2563eb !important;
+      border-bottom:0 !important;
+    }
+    .center-col > .flow-hint .hint#upLabel::after{
+      top:0 !important;
+      border-bottom:18px solid #0f766e !important;
+      border-top:0 !important;
+    }
+
+  
+    /* Connect arrowheads directly to the line shafts */
+    .center-col > .flow-hint .hint#downLabel::before{
+      top:0 !important;
+      bottom:18px !important;
+    }
+    .center-col > .flow-hint .hint#upLabel::before{
+      top:18px !important;
+      bottom:0 !important;
+    }
+    .center-col > .flow-hint .hint#downLabel::after{
+      bottom:0 !important;
+      border-left:10px solid transparent !important;
+      border-right:10px solid transparent !important;
+      border-top:18px solid #2563eb !important;
+      border-bottom:0 !important;
+    }
+    .center-col > .flow-hint .hint#upLabel::after{
+      top:0 !important;
+      border-left:10px solid transparent !important;
+      border-right:10px solid transparent !important;
+      border-bottom:18px solid #0f766e !important;
+      border-top:0 !important;
+    }
+
+  
+    /* Return/way-back flow: reverse arrowhead directions while keeping one blue and one green line */
+    .center-col > .flow-hint.return-flow .hint#downLabel::before{
+      top:18px !important;
+      bottom:0 !important;
+    }
+    .center-col > .flow-hint.return-flow .hint#downLabel::after{
+      top:0 !important;
+      bottom:auto !important;
+      border-bottom:18px solid #2563eb !important;
+      border-top:0 !important;
+    }
+    .center-col > .flow-hint.return-flow .hint#upLabel::before{
+      top:0 !important;
+      bottom:18px !important;
+    }
+    .center-col > .flow-hint.return-flow .hint#upLabel::after{
+      bottom:0 !important;
+      top:auto !important;
+      border-top:18px solid #0f766e !important;
+      border-bottom:0 !important;
+    }
+    .path-area.return-path .path-line.hot{
+      background:repeating-linear-gradient(90deg,#0f766e 0 20px,transparent 20px 34px) !important;
+    }
+    .path-area.return-path .network-label{
+      background:#ecfdf5 !important;
+      border-color:#99f6e4 !important;
+      color:#0f766e !important;
+    }
+
+    /* More steps: keep the navigation usable when the return path is added */
+    .steps{
+      max-height:92px !important;
+      overflow-y:auto !important;
+      align-content:flex-start !important;
+      padding-right:4px !important;
+    }
+    .step-btn{
+      flex:0 0 auto !important;
+    }
+
+  
+    /* Fix after adding return flow: do not collapse or hide slide components */
+    .steps{
+      max-height:none !important;
+      overflow-x:auto !important;
+      overflow-y:hidden !important;
+      flex-wrap:nowrap !important;
+      align-content:normal !important;
+      padding-right:0 !important;
+      padding-bottom:4px !important;
+    }
+    .step-nav{
+      flex:0 0 auto !important;
+    }
+    .content{
+      min-height:0 !important;
+    }
+    .stage-wrap,
+    .stage,
+    .stage-grid,
+    .side-col,
+    .center-col,
+    .server-col,
+    .client-col,
+    .panel{
+      visibility:visible !important;
+    }
+    .stage-grid{
+      z-index:2 !important;
+    }
+    .packet,
+    .packet-label{
+      visibility:visible !important;
+      opacity:1;
+    }
+    .packet.hidden,
+    .packet-label.hidden{
+      opacity:0 !important;
+      pointer-events:none !important;
+    }
+
+  
+    /* Critical visibility fix: prevent the 25-step navigation from widening the whole slide */
+    html,
+    body{
+      max-width:100vw !important;
+      overflow-x:hidden !important;
+    }
+    .page{
+      width:100% !important;
+      max-width:100vw !important;
+      overflow-x:hidden !important;
+    }
+    .shell{
+      width:min(1440px, calc(100vw - 36px)) !important;
+      max-width:calc(100vw - 36px) !important;
+      min-width:0 !important;
+      grid-template-columns:minmax(0,1fr) !important;
+      overflow:hidden !important;
+    }
+    .header,
+    .step-nav,
+    .content,
+    .stage-wrap,
+    .panel,
+    .footer{
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+    }
+    .header{
+      grid-template-columns:minmax(0,1fr) minmax(240px,auto) !important;
+    }
+    .toolbar{
+      min-width:0 !important;
+      max-width:100% !important;
+    }
+    .step-nav{
+      overflow:hidden !important;
+    }
+    .steps{
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      overflow-x:auto !important;
+      overflow-y:hidden !important;
+      flex-wrap:nowrap !important;
+      max-height:none !important;
+      scrollbar-width:thin !important;
+      padding-bottom:6px !important;
+    }
+    .step-btn{
+      flex:0 0 auto !important;
+    }
+    .content{
+      display:block !important;
+      overflow:hidden !important;
+    }
+    .stage-wrap{
+      overflow:hidden !important;
+      padding:22px 24px !important;
+    }
+    .stage{
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      overflow:visible !important;
+    }
+    .stage-grid{
+      grid-template-columns:minmax(300px,360px) minmax(260px,1fr) minmax(300px,340px) !important;
+      gap:24px !important;
+    }
+    .panel{
+      overflow:hidden !important;
+    }
+
+    /* Make the router path fit inside the visible center column */
+    .path-area.show-path .path-line{
+      left:0 !important;
+      right:0 !important;
+    }
+    .path-area.show-path .router-line{
+      left:10% !important;
+      right:10% !important;
+    }
+    .path-area.show-path::before{
+      left:0 !important;
+      transform:translateY(-50%) translateX(-8%) !important;
+    }
+    .path-area.show-path::after{
+      right:0 !important;
+      transform:translateY(-50%) translateX(8%) !important;
+    }
+
+    @media (max-width:1180px){
+      .shell{
+        width:calc(100vw - 20px) !important;
+        max-width:calc(100vw - 20px) !important;
+      }
+      .stage-wrap{
+        overflow-x:auto !important;
+      }
+      .stage{
+        min-width:1060px !important;
+        max-width:none !important;
+      }
+      .stage-grid{
+        grid-template-columns:315px 360px 315px !important;
+        gap:22px !important;
+      }
+    }
+
+  
+    /* Full visibility fix: keep every diagram component inside the visible stage */
+    .stage{
+      min-height:720px !important;
+      height:720px !important;
+      overflow:visible !important;
+    }
+    .stage-grid{
+      inset:24px 30px !important;
+      align-items:stretch !important;
+      grid-template-columns:minmax(300px,350px) minmax(300px,1fr) minmax(300px,330px) !important;
+      gap:24px !important;
+    }
+    .side-col{
+      min-height:0 !important;
+      height:100% !important;
+      padding:18px 14px 14px !important;
+      gap:10px !important;
+    }
+    .device-card{
+      height:118px !important;
+      min-height:118px !important;
+      padding:14px 12px !important;
+    }
+    .client-col .device-card{
+      height:118px !important;
+    }
+    .browser{
+      height:86px !important;
+    }
+    .screen-text{
+      font-size:15px !important;
+      padding:14px 10px !important;
+    }
+    .server-icon{
+      height:92px !important;
+    }
+    .tower-server{
+      width:66px !important;
+      height:92px !important;
+    }
+    .stack{
+      gap:9px !important;
+      padding:24px 12px 12px !important;
+      min-height:0 !important;
+    }
+    .layer{
+      min-height:58px !important;
+      padding:10px 12px !important;
+      gap:10px !important;
+    }
+    .layer b{
+      font-size:17px !important;
+    }
+    .layer small{
+      font-size:12px !important;
+      line-height:1.15 !important;
+    }
+    .layer .ico{
+      width:36px !important;
+      height:36px !important;
+      border-radius:11px !important;
+      font-size:15px !important;
+    }
+
+    /* Keep Step 9 / Step 19 physical-link path inside the central path area, not below it */
+    .path-area{
+      min-height:430px !important;
+    }
+    .path-area.show-path .network-label{
+      top:66% !important;
+      z-index:8 !important;
+      transform:translateX(-50%) !important;
+    }
+    .path-area.show-path .path-line{
+      top:82% !important;
+      left:3% !important;
+      right:3% !important;
+      height:5px !important;
+      z-index:5 !important;
+    }
+    .path-area.show-path .router-line{
+      top:82% !important;
+      left:13% !important;
+      right:13% !important;
+      transform:translateY(-50%) !important;
+      z-index:7 !important;
+    }
+    .path-area.show-path .media-links{
+      top:calc(82% + 34px) !important;
+      bottom:auto !important;
+      z-index:8 !important;
+      max-width:96% !important;
+    }
+    .path-area.show-path::before,
+    .path-area.show-path::after{
+      top:82% !important;
+      transform:translateY(-50%) !important;
+      z-index:8 !important;
+      font-size:10.5px !important;
+      padding:6px 8px !important;
+    }
+    .path-area.show-path::before{
+      left:0 !important;
+    }
+    .path-area.show-path::after{
+      right:0 !important;
+    }
+
+    /* Keep moving packet near, but not overlapping, the physical link path */
+    .packet{
+      max-width:340px !important;
+    }
+    .packet-label{
+      max-width:330px !important;
+    }
+
+    @media (max-width:1180px){
+      .stage{
+        min-width:1040px !important;
+        height:720px !important;
+        min-height:720px !important;
+      }
+      .stage-grid{
+        grid-template-columns:305px 360px 305px !important;
+        gap:20px !important;
+      }
+    }
+
+  
+    /* Grouped navigator: Way to server + Way back to client */
+    .steps{
+      display:grid !important;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+      gap:12px !important;
+      overflow:visible !important;
+      padding-bottom:0 !important;
+      max-height:none !important;
+    }
+    .nav-group{
+      min-width:0;
+      border:1px solid #e4e8f0;
+      border-radius:16px;
+      background:#fff;
+      padding:8px 10px 10px;
+      box-shadow:0 8px 16px rgba(16,24,40,.04);
+    }
+    .nav-group-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:8px;
+      font-size:12px;
+      line-height:1.1;
+      font-weight:950;
+      color:#475467;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      white-space:nowrap;
+    }
+    .nav-group-title span{
+      font-size:10.5px;
+      font-weight:900;
+      color:#98a2b3;
+      text-transform:none;
+      letter-spacing:0;
+    }
+    .nav-go.active-group{
+      border-color:#93c5fd;
+      background:linear-gradient(180deg,#fff,#eff6ff);
+    }
+    .nav-back.active-group{
+      border-color:#99f6e4;
+      background:linear-gradient(180deg,#fff,#ecfdf5);
+    }
+    .nav-group-steps{
+      display:flex;
+      gap:6px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      scrollbar-width:thin;
+      padding-bottom:4px;
+    }
+    .nav-back .step-btn.active{
+      border-color:#5eead4 !important;
+      background:#ccfbf1 !important;
+      color:#0f766e !important;
+      box-shadow:0 0 0 3px rgba(13,148,136,.08) !important;
+    }
+    .nav-back .step-btn.active .step-no{
+      background:#0f766e !important;
+      color:#fff !important;
+    }
+
+    /* Keep Step 9 and Step 19 floating packet clear of the Physical link path */
+    .path-area.show-path .network-label{
+      top:68% !important;
+    }
+    .path-area.show-path .path-line{
+      top:84% !important;
+    }
+    .path-area.show-path .router-line{
+      top:84% !important;
+    }
+    .path-area.show-path .media-links{
+      top:calc(84% + 34px) !important;
+    }
+    .path-area.show-path::before,
+    .path-area.show-path::after{
+      top:84% !important;
+    }
+    .packet,
+    .packet-label{
+      z-index:14 !important;
+    }
+
+    @media (max-width:900px){
+      .steps{
+        grid-template-columns:1fr !important;
+      }
+    }
+
+  
+    /* Recheck improvement: keep all components visible and navigation readable */
+    .step-nav{
+      padding:10px 22px 12px !important;
+      overflow:visible !important;
+    }
+    .steps{
+      display:grid !important;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+      gap:14px !important;
+      overflow:visible !important;
+      max-height:none !important;
+    }
+    .nav-group{
+      min-width:0 !important;
+      padding:8px 10px 10px !important;
+    }
+    .nav-group-steps{
+      display:flex !important;
+      flex-wrap:wrap !important;
+      align-items:center !important;
+      gap:6px !important;
+      overflow:visible !important;
+      padding-bottom:0 !important;
+      max-height:none !important;
+    }
+    .step-btn{
+      flex:0 0 auto !important;
+      padding:5px 8px 5px 6px !important;
+      font-size:10.8px !important;
+      line-height:1 !important;
+      gap:5px !important;
+    }
+    .step-no{
+      width:18px !important;
+      height:18px !important;
+      font-size:9.5px !important;
+    }
+    .nav-group-title{
+      margin-bottom:7px !important;
+    }
+
+    /* Keep client/server components inside the stage */
+    .stage{
+      height:740px !important;
+      min-height:740px !important;
+      overflow:visible !important;
+    }
+    .stage-grid{
+      inset:22px 30px 26px 30px !important;
+      height:auto !important;
+      align-items:stretch !important;
+      grid-template-columns:minmax(300px,350px) minmax(300px,1fr) minmax(300px,330px) !important;
+      gap:24px !important;
+    }
+    .side-col,
+    .client-col,
+    .server-col{
+      min-height:0 !important;
+      height:auto !important;
+      align-self:stretch !important;
+      padding:16px 14px 14px !important;
+      gap:10px !important;
+    }
+    .device-card,
+    .client-col .device-card{
+      height:112px !important;
+      min-height:112px !important;
+      padding:12px !important;
+      margin-top:6px !important;
+    }
+    .server-icon{
+      height:88px !important;
+    }
+    .tower-server{
+      width:64px !important;
+      height:88px !important;
+    }
+    .stack,
+    .client-col .stack,
+    .server-col .stack{
+      min-height:0 !important;
+      margin-top:10px !important;
+      padding:24px 12px 12px !important;
+      gap:8px !important;
+    }
+    .layer,
+    .client-col .layer{
+      min-height:56px !important;
+      padding:9px 12px !important;
+      gap:10px !important;
+    }
+    .layer b{
+      font-size:16px !important;
+    }
+    .layer small{
+      font-size:11.8px !important;
+      line-height:1.15 !important;
+    }
+    .layer .ico{
+      width:34px !important;
+      height:34px !important;
+      font-size:14px !important;
+    }
+
+    /* Path steps: packet close to the physical path but not overlapping the label/routers/media */
+    .path-area.show-path .network-label{
+      top:70% !important;
+    }
+    .path-area.show-path .path-line,
+    .path-area.show-path .router-line{
+      top:84% !important;
+    }
+    .path-area.show-path .media-links{
+      top:calc(84% + 34px) !important;
+    }
+    .path-area.show-path::before,
+    .path-area.show-path::after{
+      top:84% !important;
+    }
+
+    @media (max-width:1180px){
+      .steps{
+        grid-template-columns:1fr !important;
+      }
+      .stage{
+        min-width:1040px !important;
+        height:740px !important;
+        min-height:740px !important;
+      }
+      .stage-wrap{
+        overflow-x:auto !important;
+      }
+      .stage-grid{
+        grid-template-columns:305px 360px 305px !important;
+        gap:20px !important;
+      }
+    }
+
+  
+    /* Final adjustment: place the Physical link path at the Physical-layer level */
+    .path-area.show-path .network-label{
+      top:76% !important;
+    }
+    .path-area.show-path .path-line,
+    .path-area.show-path .router-line{
+      top:90% !important;
+    }
+    .path-area.show-path .media-links{
+      top:calc(90% + 28px) !important;
+    }
+    .path-area.show-path::before,
+    .path-area.show-path::after{
+      top:90% !important;
+    }
+
+  
+    /* True Physical-layer alignment: path is visible from first to last step */
+    .center-col,
+    .path-area{
+      overflow:visible !important;
+    }
+    .path-area{
+      border:1px dashed #d0d5dd !important;
+      background:rgba(255,255,255,.68) !important;
+      box-shadow:inset 0 0 0 1px rgba(148,163,184,.08) !important;
+    }
+    .path-area .network-label,
+    .path-area .router-line,
+    .path-area .path-line,
+    .path-area .media-links{
+      opacity:1 !important;
+      pointer-events:auto !important;
+    }
+    .path-area .network-label{
+      display:block !important;
+      top:calc(var(--physical-path-y, 430px) - 78px) !important;
+      left:50% !important;
+      transform:translateX(-50%) !important;
+      z-index:8 !important;
+      background:#fff7ed !important;
+      border-color:#fed7aa !important;
+      color:#c2410c !important;
+    }
+    .path-area .path-line{
+      display:block !important;
+      top:var(--physical-path-y, 430px) !important;
+      left:0 !important;
+      right:0 !important;
+      height:5px !important;
+      z-index:5 !important;
+      background:repeating-linear-gradient(90deg,#94a3b8 0 20px,transparent 20px 34px) !important;
+    }
+    .path-area .path-line.hot{
+      background:repeating-linear-gradient(90deg,#2563eb 0 20px,transparent 20px 34px) !important;
+    }
+    .path-area.return-path .path-line.hot{
+      background:repeating-linear-gradient(90deg,#0f766e 0 20px,transparent 20px 34px) !important;
+    }
+    .path-area .router-line{
+      display:flex !important;
+      top:var(--physical-path-y, 430px) !important;
+      left:12% !important;
+      right:12% !important;
+      transform:translateY(-50%) !important;
+      z-index:7 !important;
+    }
+    .path-area .media-links{
+      display:flex !important;
+      top:calc(var(--physical-path-y, 430px) + 34px) !important;
+      bottom:auto !important;
+      left:50% !important;
+      transform:translateX(-50%) !important;
+      z-index:8 !important;
+      background:rgba(255,255,255,.92) !important;
+      border:1px solid #e5e7eb !important;
+      border-radius:999px !important;
+      padding:6px 8px !important;
+      box-shadow:0 10px 18px rgba(16,24,40,.06) !important;
+      max-width:96% !important;
+      flex-wrap:nowrap !important;
+    }
+    .path-area::before,
+    .path-area::after{
+      position:absolute;
+      top:var(--physical-path-y, 430px) !important;
+      transform:translateY(-50%) !important;
+      padding:6px 8px;
+      border-radius:999px;
+      font-size:10.5px;
+      font-weight:950;
+      border:1px solid #fed7aa;
+      background:#fff7ed;
+      color:#c2410c;
+      z-index:8;
+      white-space:nowrap;
+      box-shadow:0 8px 14px rgba(16,24,40,.06);
+      opacity:1 !important;
+      pointer-events:auto !important;
+    }
+    .path-area::before{
+      content:"Client Physical";
+      left:0 !important;
+    }
+    .path-area::after{
+      content:"Server Physical";
+      right:0 !important;
+    }
+    .path-area.return-path .network-label{
+      background:#ecfdf5 !important;
+      border-color:#99f6e4 !important;
+      color:#0f766e !important;
+    }
+
+    /* Keep path-step packet near the physical path without covering the label/routers */
+    .packet,
+    .packet-label{
+      z-index:14 !important;
+    }
+
+  
+    /* Move Physical link path lower and keep its label close to the Physical layer line */
+    .path-area .network-label{
+      top:calc(var(--physical-path-y, 470px) - 50px) !important;
+    }
+    .path-area .media-links{
+      top:calc(var(--physical-path-y, 470px) + 30px) !important;
+    }
+    .path-area::before,
+    .path-area::after{
+      top:var(--physical-path-y, 470px) !important;
+    }
+
+  
+    /* Real fix: stage-wide Physical link path, exactly aligned to Client/Server Physical layer centers */
+    .path-area > .network-label,
+    .path-area > .path-line,
+    .path-area > .router-line,
+    .path-area > .media-links{
+      display:none !important;
+      opacity:0 !important;
+      pointer-events:none !important;
+    }
+    .path-area::before,
+    .path-area::after{
+      display:none !important;
+      content:none !important;
+    }
+    .path-area{
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+    }
+    .physical-path-overlay{
+      position:absolute;
+      height:0;
+      left:50%;
+      top:80%;
+      width:240px;
+      z-index:6;
+      pointer-events:none;
+      color:#2563eb;
+    }
+    .physical-path-line{
+      position:absolute;
+      left:0;
+      right:0;
+      top:0;
+      height:5px;
+      transform:translateY(-50%);
+      border-radius:999px;
+      background:repeating-linear-gradient(90deg,#94a3b8 0 20px,transparent 20px 34px);
+      opacity:.9;
+    }
+    .physical-path-line.hot{
+      background:repeating-linear-gradient(90deg,#2563eb 0 20px,transparent 20px 34px);
+      animation:dash 1s linear infinite;
+    }
+    .physical-path-overlay.return-path .physical-path-line.hot{
+      background:repeating-linear-gradient(90deg,#0f766e 0 20px,transparent 20px 34px);
+      animation-direction:reverse;
+    }
+    .physical-router-row{
+      position:absolute;
+      left:9%;
+      right:9%;
+      top:0;
+      transform:translateY(-50%);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      z-index:2;
+    }
+    .physical-router{
+      width:56px;
+      height:42px;
+      border-radius:15px;
+      border:1px solid #cbd5e1;
+      background:linear-gradient(180deg,#ffffff,#eef2f7);
+      box-shadow:0 10px 18px rgba(16,24,40,.08);
+      display:grid;
+      place-items:center;
+      position:relative;
+    }
+    .physical-router span{
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#eff6ff;
+      color:#2563eb;
+      border:1px solid #bfdbfe;
+      font-size:13px;
+      font-weight:950;
+    }
+    .physical-router::before,
+    .physical-router::after{
+      content:"";
+      position:absolute;
+      top:9px;
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 0 3px rgba(34,197,94,.12);
+    }
+    .physical-router::before{left:9px}
+    .physical-router::after{right:9px}
+    .physical-path-label{
+      position:absolute;
+      left:50%;
+      top:-62px;
+      transform:translateX(-50%);
+      border:1px solid #fed7aa;
+      background:#fff7ed;
+      color:#c2410c;
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:12px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      white-space:nowrap;
+      box-shadow:0 8px 14px rgba(16,24,40,.06);
+    }
+    .physical-media-links{
+      position:absolute;
+      left:50%;
+      top:32px;
+      transform:translateX(-50%);
+      display:flex;
+      gap:8px;
+      background:rgba(255,255,255,.92);
+      border:1px solid #e5e7eb;
+      border-radius:999px;
+      padding:6px 8px;
+      box-shadow:0 10px 18px rgba(16,24,40,.06);
+    }
+    .physical-media-links span{
+      border-radius:999px;
+      padding:5px 9px;
+      font-size:11px;
+      font-weight:900;
+      border:1px solid #d0d5dd;
+      background:#fff;
+      color:#475467;
+      white-space:nowrap;
+    }
+    .physical-path-end{
+      position:absolute;
+      top:0;
+      transform:translateY(-50%);
+      padding:6px 8px;
+      border-radius:999px;
+      font-size:10.5px;
+      font-weight:950;
+      border:1px solid #fed7aa;
+      background:#fff7ed;
+      color:#c2410c;
+      white-space:nowrap;
+      box-shadow:0 8px 14px rgba(16,24,40,.06);
+    }
+    .physical-client{left:-6px;transform:translate(-100%,-50%)}
+    .physical-server{right:-6px;transform:translate(100%,-50%)}
+    .physical-path-overlay.return-path .physical-path-label{
+      background:#ecfdf5;
+      border-color:#99f6e4;
+      color:#0f766e;
+    }
+
+  
+    /* Step 23 browser result: Google icon + textbox instead of plain text */
+    .google-mini-page{
+      width:100%;
+      height:100%;
+      min-height:52px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+    }
+    .google-icon{
+      font-size:21px;
+      line-height:1;
+      font-weight:950;
+      letter-spacing:-1.5px;
+      font-family:Arial, Helvetica, sans-serif;
+      white-space:nowrap;
+    }
+    .g-blue{color:#4285f4}
+    .g-red{color:#ea4335}
+    .g-yellow{color:#fbbc05}
+    .g-green{color:#34a853}
+    .google-searchbox{
+      width:min(86%, 180px);
+      height:22px;
+      border:1px solid #d0d5dd;
+      border-radius:999px;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 10px;
+      color:#475467;
+      font-size:11px;
+      font-weight:850;
+      box-shadow:0 4px 10px rgba(16,24,40,.06);
+    }
+
+  
+    /* 25-step update: keep grouped navigation readable after adding receive-side Data Link steps */
+    .nav-group-steps{
+      gap:5px !important;
+    }
+    .step-btn{
+      padding:5px 7px 5px 6px !important;
+      font-size:10.4px !important;
+    }
+
+  
+    /* Router path steps emphasize the L3 IP packet, not the full L2 frame */
+    .part .label{
+      white-space:normal !important;
+      overflow:visible !important;
+      text-overflow:clip !important;
+      line-height:1.12 !important;
+    }
+    .part .role{
+      white-space:normal !important;
+      line-height:1.05 !important;
+    }
+
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="shell" aria-label="Interactive TCP/IP layer animation">
+      <header class="header">
+        <div>
+          <div class="kicker">
+            <span class="tag">DCCN</span>
+            <span class="tag">TCP/IP 5-layer model</span>
+            <span class="tag">Client → Server</span>
+          </div>
+          <h1>Sending <span style="color:#2563eb">www.google.com</span> through network layers</h1>
+          <p class="subtitle">A minimal interactive slide showing request flow and return response flow through TCP/IP layers.</p>
+        </div>
+        <div class="toolbar">
+          <div class="progress-wrap">
+            <div class="step-count" id="stepCount">Step 1 / 13</div>
+            <div class="progress" aria-label="Progress"><span id="progressBar"></span></div>
+          </div>
+          <div class="controls" aria-label="Animation controls">
+            <button class="control" id="prevBtn">← Previous</button>
+            <button class="control primary" id="playBtn">▶ Play</button>
+            <button class="control" id="nextBtn">Next →</button>
+            <button class="control" id="resetBtn">Reset</button>
+          </div>
+        </div>
+      </header>
+
+      <nav class="step-nav" aria-label="Step navigation"><div class="steps" id="stepDots"></div></nav>
+
+      <section class="content">
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <div class="stage-grid">
+              <div class="side-col client-col">
+                <div class="role-title"><span class="pill">Client</span></div>
+                <div class="device-card">
+                  <div class="browser">
+                    <div class="browser-top"><span class="dot3"><i></i><i></i><i></i></span><div class="urlbar">🔒 www.google.com</div></div>
+                    <div class="screen-text" id="browserText">Type URL</div>
+                  </div>
+                </div>
+                <div class="stack" id="clientStack">
+                  <div class="layer" id="c-application" data-side="client" data-layer="application"><div class="ico">A</div><div><b>Application</b><small>HTTP, HTTPS, DNS</small></div></div>
+                  <div class="layer" id="c-transport" data-side="client" data-layer="transport"><div class="ico">T</div><div><b>Transport</b><small>TCP / UDP, ports</small></div></div>
+                  <div class="layer" id="c-network" data-side="client" data-layer="network"><div class="ico">N</div><div><b>Network</b><small>IP address, routing</small></div></div>
+                  <div class="layer" id="c-link" data-side="client" data-layer="link"><div class="ico">L</div><div><b>Data Link</b><small>MAC, frame</small></div></div>
+                  <div class="layer" id="c-physical" data-side="client" data-layer="physical"><div class="ico">P</div><div><b>Physical</b><small>Bits and signals</small></div></div>
+                </div>
+              </div>
+
+              <div class="center-col">
+                <div class="direction" id="direction">Application starts the communication</div>
+                <div class="path-area" id="pathArea">
+                  <div class="network-label">Physical link path</div>
+                  <div class="path-line" id="path"></div>
+                  <div class="router-line">
+                    <div class="router"><span>R</span></div>
+                    <div class="router"><span>R</span></div>
+                    <div class="router"><span>R</span></div>
+                  </div>
+                  <div class="media-links" aria-label="Link media">
+                    <span class="media-chip">Copper</span>
+                    <span class="media-chip">Fiber</span>
+                    <span class="media-chip">Wi‑Fi</span>
+                  </div>
+                </div>
+                <div class="flow-hint">
+                  <div class="hint" id="downLabel">↓</div>
+                  <div class="hint" id="upLabel">↑</div>
+                </div>
+              </div>
+
+              <div class="side-col server-col">
+                <div class="role-title"><span class="pill">Server</span></div>
+                <div class="device-card">
+                  <div class="server-icon" aria-label="Tower server icon"><div class="tower-server"><div class="bay b1"></div><div class="bay b2"></div><div class="bay b3"></div><div class="port"></div><div class="leds"><span class="led green"></span><span class="led blue"></span></div></div></div>
+                </div>
+                <div class="stack" id="serverStack">
+                  <div class="layer" id="s-application" data-side="server" data-layer="application"><div class="ico">A</div><div><b>Application</b><small>Web server app</small></div></div>
+                  <div class="layer" id="s-transport" data-side="server" data-layer="transport"><div class="ico">T</div><div><b>Transport</b><small>TCP port 443</small></div></div>
+                  <div class="layer" id="s-network" data-side="server" data-layer="network"><div class="ico">N</div><div><b>Network</b><small>Destination IP</small></div></div>
+                  <div class="layer" id="s-link" data-side="server" data-layer="link"><div class="ico">L</div><div><b>Data Link</b><small>Frame check</small></div></div>
+                  <div class="layer" id="s-physical" data-side="server" data-layer="physical"><div class="ico">P</div><div><b>Physical</b><small>Signal received</small></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="physical-path-overlay" id="physicalPathOverlay" aria-label="Physical link path">
+              <div class="physical-path-label">Physical link path</div>
+              <div class="physical-path-end physical-client">Client Physical</div>
+              <div class="physical-path-end physical-server">Server Physical</div>
+              <div class="physical-path-line" id="physicalPathLine"></div>
+              <div class="physical-router-row">
+                <div class="physical-router"><span>R</span></div>
+                <div class="physical-router"><span>R</span></div>
+                <div class="physical-router"><span>R</span></div>
+              </div>
+              <div class="physical-media-links">
+                <span>Copper</span>
+                <span>Fiber</span>
+                <span>Wi‑Fi</span>
+              </div>
+            </div>
+
+            <div class="packet-label" id="packetLabel">
+              <span class="badge" id="packetIcon">🌐</span>
+              <span class="unit" id="packetUnit">APP DATA</span>
+              <span class="message" id="packetMsg">HTTP request</span>
+            </div>
+            <div class="packet" id="packet">
+              <div class="parts" id="packetParts"></div>
+              <div class="bits-string">01001000 01010100 01010100 01010000 00101101 01000100 01000001 01010100 01000001</div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <article class="card">
+            <h2 id="stepTitle">Step title</h2>
+            <p id="stepExplain">Explanation appears here.</p>
+            <div class="kv">
+              <div class="kv-row"><b>Layer</b><span id="layerText">Application</span></div>
+              <div class="kv-row"><b>Unit</b><span id="unitText">Data</span></div>
+              <div class="kv-row"><b>Operation</b><span id="operationText">Create request</span></div>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Header + data view</h3>
+            <p id="packetExplain">The packet is separated into headers and payload so students can see encapsulation clearly.</p>
+            <div class="assembly" id="assembly"></div>
+          </article>
+          <article class="card teacher">
+            <h3>Teaching notes</h3>
+            <div class="point"><span class="num">1</span><span id="sayText">Say the data starts from what the user wants to do.</span></div>
+            <div class="point"><span class="num">2</span><span id="keyText">Key concept appears here.</span></div>
+            <div class="point"><span class="num">?</span><span id="questionText">Question appears here.</span></div>
+          </article>
+        </aside>
+      </section>
+
+      <div class="footer">Use the small step navigation at the top to jump directly to each operation. The request shows client-to-server encapsulation/decapsulation; the return steps show server-to-client response flow. DNS has no extra overlay; its text appears inside the same APP DATA floating box. A simple router path with link media appears in <strong>Step 9</strong>, aligned from the client Physical layer to the server Physical layer.</div>
+    </section>
+  </main>
+
+<script>
+const partTemplates = {
+  data:{role:'Data',label:'HTTP request',cls:'data'},
+  tls:{role:'Security',label:'TLS/HTTPS',cls:'tls'},
+  tcp:{role:'Header',label:'TCP H',cls:'tcp'},
+  ip:{role:'Header',label:'IP H',cls:'ip'},
+  mac:{role:'Header',label:'MAC H',cls:'mac'},
+  fcs:{role:'Trailer',label:'FCS',cls:'fcs'},
+  bits:{role:'Bits',label:'0s and 1s',cls:'bits'}
+};
+const steps = [
+  {title:'1. User enters URL',nav:'URL',direction:'Application starts from user action',side:'client',layer:'application',unit:'APP DATA',icon:'🌐',msg:'User enters www.google.com',parts:['data'],partRoles:{data:'Data'},partLabels:{data:'User enters www.google.com'},browser:'URL entered',path:false,explain:'The user types www.google.com in the browser. This begins at the Application layer because it is closest to the user and software.',layerText:'Client Application Layer',unitText:'Application data',operation:'Receive the user request from the browser.',packetExplain:'This is not a network packet yet. It is user-level application information.',say:'Start from what students can see: the user enters a website name.',key:'Application layer is where user-level communication begins.',question:'Which layer is closest to the user?',assembly:['data']},
+  {title:'2. DNS lookup for name',nav:'DNS query',direction:'Application uses DNS to resolve the name',side:'client',layer:'application',unit:'APP DATA',icon:'🔎',msg:'DNS lookup',parts:['data'],partRoles:{data:'Data'},partLabels:{data:'DNS lookup for www.google.com'},browser:'DNS lookup',path:false,explain:'Before the request can be sent to the web server, the name www.google.com must be translated into an IP address. DNS is an Application-layer protocol.',layerText:'Client Application Layer',unitText:'Application data',operation:'Ask DNS for the IP address of www.google.com.',packetExplain:'The Application layer asks: what IP address belongs to this website name?',say:'Students remember names, but networks forward traffic using addresses.',key:'DNS translates a domain name into an IP address.',question:'Why can the Network layer not route using www.google.com directly?',assembly:['data']},
+  {title:'3. DNS result gives IP',nav:'IP found',direction:'Application now knows the destination IP',side:'client',layer:'application',unit:'APP DATA',icon:'📍',msg:'DNS result: 142.250.190.14',parts:['data'],partRoles:{data:'Data'},partLabels:{data:'DNS result: server IP = 142.250.190.14'},browser:'Server IP known',path:false,explain:'DNS returns the server IP address. This does not mean the Application layer adds an IP header. It only means the destination IP is now known for the lower layers.',layerText:'Client Application Layer',unitText:'Application data',operation:'Receive DNS answer: destination IP is known.',packetExplain:'Correct concept: DNS finds the IP; the Network layer later adds the IP header.',say:'Be careful: DNS finds the IP address, but the Network layer adds IP addressing to the packet.',key:'Application layer does not add the IP header.',question:'Which layer will actually add source IP and destination IP?',assembly:['data']},
+  {title:'4. HTTP request prepared',nav:'HTTP req',direction:'Application prepares the web request',side:'client',layer:'application',unit:'APP DATA',icon:'📄',msg:'HTTP request',parts:['data'],partRoles:{data:'Data'},partLabels:{data:'HTTP request'},browser:'HTTP request',path:false,explain:'After the destination is known, the browser prepares the web request. In real HTTPS communication, this content is protected by TLS/HTTPS.',layerText:'Client Application Layer',unitText:'Application data',operation:'Prepare the HTTP/HTTPS request for the web server.',packetExplain:'The data is still application data. It will be wrapped by lower-layer headers next.',say:'Now the user action becomes the web request that will be carried by the network.',key:'Application data is the payload that lower layers carry.',question:'What request is the browser preparing?',assembly:['data']},
+  {title:'5. Transport adds TCP',nav:'TCP',direction:'Encapsulation: Application → Transport',side:'client',layer:'transport',unit:'TCP SEGMENT',icon:'T',msg:'TCP port 443 for HTTPS',parts:['tcp','tls','data'],browser:'TCP prepared',path:false,explain:'The Transport layer adds a TCP header. TCP gives reliable delivery and uses ports to identify the application service.',layerText:'Client Transport Layer',unitText:'TCP segment',operation:'Add TCP header: source port and destination port 443.',packetExplain:'TCP header is added in front of the application data. The data becomes a TCP segment.',say:'Transport does not care about the website content; it cares about process-to-process delivery.',key:'Port 443 identifies HTTPS on the server.',question:'What port is commonly used by HTTPS?',assembly:['tcp','tls','data']},
+  {title:'6. Network adds IP',nav:'IP header',direction:'Encapsulation: Transport → Network',side:'client',layer:'network',unit:'IP PACKET',icon:'N',msg:'Client IP → Server IP',parts:['ip','tcp','tls','data'],browser:'IP packet',path:false,explain:'The Network layer adds the IP header. This is where source IP and destination IP are placed so routers know where to forward the packet.',layerText:'Client Network Layer',unitText:'IP packet',operation:'Add IP header: source IP and destination IP.',packetExplain:'IP header wraps the TCP segment. The data unit is now an IP packet.',say:'This is the correct place to explain adding IP address information.',key:'Network layer handles logical addressing and routing.',question:'Which layer adds source IP and destination IP?',assembly:['ip','tcp','tls','data']},
+  {title:'7. Data Link adds MAC frame',nav:'Frame',direction:'Encapsulation: Network → Data Link',side:'client',layer:'link',unit:'FRAME',icon:'L',msg:'Next-hop MAC address',parts:['mac','ip','tcp','tls','data','fcs'],browser:'Frame ready',path:false,explain:'The Data Link layer places the IP packet inside a frame. MAC addresses are used for delivery to the next device on the local network.',layerText:'Client Data Link Layer',unitText:'Frame',operation:'Add MAC header and FCS trailer.',packetExplain:'The frame has both a header and a trailer. The trailer usually helps detect errors.',say:'MAC is for local delivery to the next hop, such as the default gateway.',key:'Data Link delivery is hop-by-hop inside a local link.',question:'Is the destination MAC always the final web server?',assembly:['mac','ip','tcp','tls','data','fcs']},
+  {title:'8. Physical sends bits',nav:'Bits',direction:'Encapsulation: Data Link → Physical',side:'client',layer:'physical',unit:'BITS',icon:'P',msg:'Frame becomes 0s and 1s',parts:['bits'],bits:true,browser:'Sending...',path:false,explain:'The Physical layer converts the frame into bits and sends them as electrical, light, or radio signals through cable, fiber, or Wi‑Fi.',layerText:'Client Physical Layer',unitText:'Bits / signals',operation:'Transmit bits through the medium.',packetExplain:'Headers and payload are no longer drawn as boxes here because they are transmitted as a stream of bits.',say:'Even Wi‑Fi is physical: it uses radio signals.',key:'Physical layer is about signals, not message meaning.',question:'Give one example of a physical medium.',assembly:['bits']},
+  {title:'9. Network path forwards traffic',nav:'Path',direction:'Routers forward using the destination IP address',side:'path',layer:'path',unit:'IP PACKET',icon:'N',msg:'Router reads destination IP',parts:['ip','tcp','tls','data'],partRoles:{ip:'L3 header',tcp:'L4 header',tls:'Security',data:'Payload'},partLabels:{ip:'Client IP → Server IP',tcp:'TCP 443',tls:'TLS / HTTPS',data:'HTTP request'},browser:'In transit',path:true,explain:'Routers mainly work at Layer 3. They read the destination IP address to choose the next hop. A Layer 2 frame still exists on each local link, but it is removed and rebuilt at every hop.',layerText:'Network path / routers',unitText:'IP packet being routed',operation:'Read destination IP, choose next hop, then send the IP packet inside a new local frame.',packetExplain:'Correct view for routers: the important carried structure is the IP packet. MAC header and FCS belong to the local link only and are recreated per hop.',say:'Do not draw the router step exactly like the Data Link step. Routers forward by IP, while L2 frames are only local-hop wrappers.',key:'Router forwarding is Layer 3; MAC/FCS are hop-by-hop Layer 2 wrappers.',question:'Which part does a router mainly use to choose the next hop?',assembly:['ip','tcp','tls','data']},
+  {title:'10. Server receives bits',nav:'Rx bits',direction:'Decapsulation begins from the bottom',side:'server',layer:'physical',unit:'BITS',icon:'P',msg:'Signals arrive at server',parts:['bits'],bits:true,browser:'Arrived',path:false,explain:'On the receiving side, the order is reversed. The server Physical layer receives signals and reconstructs bits.',layerText:'Server Physical Layer',unitText:'Bits',operation:'Receive signals and interpret them as bits.',packetExplain:'The server starts at the bottom because the data physically arrives as signals first.',say:'Sending goes down the stack; receiving goes up the stack.',key:'This reverse process is called decapsulation.',question:'Why does the receiving side start at the Physical layer?',assembly:['bits']},
+  {title:'11. Server Data Link checks frame',nav:'Srv frame',direction:'Decapsulation: Physical → Data Link',side:'server',layer:'link',unit:'FRAME',icon:'L',msg:'Frame checked at server',parts:['mac','ip','tcp','tls','data','fcs'],browser:'Frame checked',path:false,explain:'The server Data Link layer receives the frame from the Physical layer. It checks the local frame, including the MAC information and FCS.',layerText:'Server Data Link Layer',unitText:'Frame',operation:'Check MAC header and FCS trailer, then remove the frame wrapper.',packetExplain:'At this step, the server is still handling the frame. After the frame wrapper is removed, the IP packet remains.',say:'This missing step is important: the receiver checks the Data Link frame before the Network layer reads IP.',key:'Data Link processing happens before Network processing on the receiving side.',question:'Which layer checks the frame before the IP packet is processed?',assembly:['mac','ip','tcp','tls','data','fcs']},
+  {title:'12. Server Network checks IP',nav:'Srv IP',direction:'Decapsulation: Data Link → Network',side:'server',layer:'network',unit:'IP PACKET',icon:'N',msg:'Destination IP checked',parts:['ip','tcp','tls','data'],browser:'Checking IP',path:false,explain:'After the frame wrapper is removed, the server Network layer checks the destination IP address and accepts the packet if it belongs to this server.',layerText:'Server Network Layer',unitText:'IP packet',operation:'Read IP header and confirm the destination IP belongs to the server.',packetExplain:'The MAC header and FCS are gone. The IP packet is now processed by the Network layer.',say:'Now the server can check whether this IP packet is really for this machine.',key:'Network layer processing happens after Data Link decapsulation.',question:'Which layer checks the destination IP address?',assembly:['ip','tcp','tls','data']}, 
+  {title:'12. Server TCP delivers to HTTPS',nav:'Port 443',direction:'Decapsulation: Network → Transport',side:'server',layer:'transport',unit:'TCP SEGMENT',icon:'T',msg:'Destination port 443',parts:['tcp','tls','data'],browser:'TCP OK',path:false,explain:'The Transport layer processes the TCP segment. Because the destination port is 443, the request is delivered to the HTTPS service.',layerText:'Server Transport Layer',unitText:'Application data after TCP',operation:'Use port number to deliver data to the correct server process.',packetExplain:'After TCP processing, the TCP header is removed and the payload moves upward.',say:'Ports connect network communication to the correct application process.',key:'TCP provides reliable transport and uses port numbers.',question:'What does destination port 443 tell the server?',assembly:['tcp','tls','data']},
+  {title:'13. Server application receives request',nav:'Server app',direction:'Application receives the HTTPS request',side:'server',layer:'application',unit:'APP DATA',icon:'✓',msg:'HTTPS request',parts:['data'],partRoles:{data:'Data'},partLabels:{data:'HTTPS request'},browser:'Request received',path:false,explain:'The Application layer receives the request. The web server can now process it and prepare the response page.',layerText:'Server Application Layer',unitText:'Application data',operation:'Process the HTTPS request for www.google.com.',packetExplain:'Only the application-level content remains for the web server to process.',say:'This is the point where the server application understands the request.',key:'A response will travel back using the same layered idea in the opposite direction.',question:'When the server replies, which side starts at the Application layer?',assembly:['data']},
+  {title:'14. Server prepares response',nav:'Resp app',direction:'Return flow: server application prepares the response',side:'server',layer:'application',flow:'return',unit:'APP DATA',icon:'📄',msg:'HTTP/HTTPS response',parts:['data'],partRoles:{data:'Data'},partLabels:{data:'Web page response'},browser:'Response ready',path:false,explain:'After receiving the request, the server application prepares the web response. This begins at the server Application layer.',layerText:'Server Application Layer',unitText:'Application data',operation:'Create the response content for the browser.',packetExplain:'The response is application data first. It will be wrapped by lower layers before going back to the client.',say:'Now the direction changes: the server becomes the sender.',key:'A reply starts at the sender application, even when the sender is the server.',question:'When the server sends a response, which layer starts first?',assembly:['data']},
+  {title:'15. Server Transport adds TCP',nav:'Resp TCP',direction:'Return flow: Server Application → Transport',side:'server',layer:'transport',flow:'return',unit:'TCP SEGMENT',icon:'T',msg:'TCP carries response',parts:['tcp','tls','data'],browser:'TCP response',path:false,explain:'The server Transport layer adds TCP information. For HTTPS, the response data is carried reliably and associated with the correct connection.',layerText:'Server Transport Layer',unitText:'TCP segment',operation:'Add TCP header for the existing HTTPS connection.',packetExplain:'The application response is wrapped inside a TCP segment.',say:'The server uses the same TCP connection idea to send the response back.',key:'TCP supports reliable process-to-process delivery in both directions.',question:'Which layer adds port and reliability information?',assembly:['tcp','tls','data']},
+  {title:'16. Server Network adds IP',nav:'Resp IP',direction:'Return flow: Transport → Network',side:'server',layer:'network',flow:'return',unit:'IP PACKET',icon:'N',msg:'Server IP → Client IP',parts:['ip','tcp','tls','data'],browser:'IP response',path:false,explain:'The server Network layer adds the IP header for the response. Now the source is the server IP and the destination is the client IP.',layerText:'Server Network Layer',unitText:'IP packet',operation:'Add IP header: source server IP and destination client IP.',packetExplain:'The TCP segment is wrapped inside an IP packet for routing back to the client.',say:'On the way back, the source and destination IP addresses are reversed.',key:'The Network layer handles logical addressing and routing for the response.',question:'What is the destination IP on the return path?',assembly:['ip','tcp','tls','data']},
+  {title:'17. Server Data Link adds frame',nav:'Resp frame',direction:'Return flow: Network → Data Link',side:'server',layer:'link',flow:'return',unit:'FRAME',icon:'L',msg:'Next-hop MAC address',parts:['mac','ip','tcp','tls','data','fcs'],browser:'Frame response',path:false,explain:'The server Data Link layer places the response IP packet inside a frame for delivery to the next hop on the local link.',layerText:'Server Data Link Layer',unitText:'Frame',operation:'Add MAC header and FCS trailer for the next hop.',packetExplain:'The response frame carries the IP packet toward the next device.',say:'MAC addressing is still hop-by-hop on the return path.',key:'Frames are rebuilt for local delivery on each link.',question:'Does the MAC address stay the same across every router hop?',assembly:['mac','ip','tcp','tls','data','fcs']},
+  {title:'18. Server Physical sends bits',nav:'Resp bits',direction:'Return flow: Data Link → Physical',side:'server',layer:'physical',flow:'return',unit:'BITS',icon:'P',msg:'Response becomes 0s and 1s',parts:['bits'],bits:true,browser:'Sending back...',path:false,explain:'The server Physical layer converts the response frame into signals and sends them through the medium.',layerText:'Server Physical Layer',unitText:'Bits / signals',operation:'Transmit response bits through cable, fiber, or wireless medium.',packetExplain:'At the Physical layer, the frame is sent as signals.',say:'The response leaves the server from the bottom layer.',key:'Physical layer transmission happens in both request and response directions.',question:'What physical media can carry the response?',assembly:['bits']},
+  {title:'19. Network path forwards response',nav:'Back path',direction:'Routers forward the response using the client IP address',side:'path',layer:'path',flow:'return',unit:'IP PACKET',icon:'N',msg:'Router reads client IP',parts:['ip','tcp','tls','data'],partRoles:{ip:'L3 header',tcp:'L4 header',tls:'Security',data:'Payload'},partLabels:{ip:'Server IP → Client IP',tcp:'TCP response',tls:'TLS / HTTPS',data:'Web page response'},browser:'Returning',path:true,explain:'On the way back, routers again work mainly at Layer 3. They forward the response by reading the destination client IP. Local Layer 2 frames are rebuilt on every hop.',layerText:'Network path / routers',unitText:'Response IP packet being routed',operation:'Read destination client IP, choose next hop, then place the IP packet into a new local frame.',packetExplain:'Correct return-path view: routers route the IP packet. MAC header and FCS are not end-to-end; they are recreated for each local link.',say:'The return path uses the same concept: IP is routed end-to-end, while frames are hop-by-hop.',key:'Routers forward the response by destination IP, not by a single unchanged MAC frame.',question:'Which address guides routers on the return path?',assembly:['ip','tcp','tls','data']},
+  {title:'20. Client receives response bits',nav:'Client Rx',direction:'Return flow: client receives from Physical layer',side:'client',layer:'physical',flow:'return',unit:'BITS',icon:'P',msg:'Signals arrive at client',parts:['bits'],bits:true,browser:'Response arrived',path:false,explain:'The response reaches the client as physical signals. The client Physical layer reconstructs the bit stream.',layerText:'Client Physical Layer',unitText:'Bits',operation:'Receive response signals and interpret them as bits.',packetExplain:'Receiving begins at the bottom because the data arrives as signals first.',say:'On the return path, the client is now the receiver.',key:'Decapsulation on the receiver starts at the Physical layer.',question:'Why does the client begin from the Physical layer now?',assembly:['bits']},
+  {title:'22. Client Data Link checks frame',nav:'Cli frame',direction:'Return flow: Physical → Data Link',side:'client',layer:'link',flow:'return',unit:'FRAME',icon:'L',msg:'Frame checked at client',parts:['mac','ip','tcp','tls','data','fcs'],browser:'Frame checked',path:false,explain:'The client Data Link layer receives the response frame from the Physical layer. It checks the local frame before passing the IP packet upward.',layerText:'Client Data Link Layer',unitText:'Frame',operation:'Check MAC header and FCS trailer, then remove the frame wrapper.',packetExplain:'The response is still a frame at this step. Removing the frame wrapper leaves the IP packet.',say:'The client must also process the Data Link frame before checking IP.',key:'Receiving side always goes Physical → Data Link → Network.',question:'Which layer removes the frame wrapper on the client?',assembly:['mac','ip','tcp','tls','data','fcs']},
+  {title:'23. Client Network checks IP',nav:'Cli IP',direction:'Return flow: Data Link → Network',side:'client',layer:'network',flow:'return',unit:'IP PACKET',icon:'N',msg:'Client IP checked',parts:['ip','tcp','tls','data'],browser:'Checking response',path:false,explain:'After the frame wrapper is removed, the client Network layer verifies that the response packet is addressed to the client IP.',layerText:'Client Network Layer',unitText:'IP packet',operation:'Read IP header and confirm the destination IP belongs to the client.',packetExplain:'After removing the frame, the client processes the IP packet.',say:'Now the return packet has reached the client Network layer.',key:'Network processing checks the destination IP after Data Link decapsulation.',question:'Which layer checks the destination IP on the return path?',assembly:['ip','tcp','tls','data']}, 
+  {title:'22. Client TCP delivers to browser',nav:'Client TCP',direction:'Return flow: Network → Transport',side:'client',layer:'transport',flow:'return',unit:'TCP SEGMENT',icon:'T',msg:'TCP delivers to browser',parts:['tcp','tls','data'],browser:'TCP delivered',path:false,explain:'The client Transport layer processes the TCP segment and delivers the response to the correct browser connection.',layerText:'Client Transport Layer',unitText:'Application data after TCP',operation:'Use TCP connection and port information to deliver data to the browser.',packetExplain:'After TCP processing, the TCP header is removed and the payload moves upward.',say:'Ports and connection information help the operating system deliver data to the right application.',key:'Transport layer connects network data to the correct application process.',question:'Which layer delivers the response to the browser process?',assembly:['tcp','tls','data']},
+  {title:'23. Client application receives page',nav:'Page shown',direction:'Return flow: browser receives and displays the response',side:'client',layer:'application',flow:'return',unit:'APP DATA',icon:'✓',msg:'Web page response',parts:['data'],partRoles:{data:'Data'},partLabels:{data:'Web page displayed'},browser:'Page displayed',browserHtml:`<div class="google-mini-page"><div class="google-icon" aria-label="Google icon"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></div><div class="google-searchbox">www.google.com</div></div>`,path:false,explain:'Finally, the client Application layer receives the response. The browser can render or display the web page for the user.',layerText:'Client Application Layer',unitText:'Application data',operation:'Browser processes and displays the returned web content.',packetExplain:'Only the application-level response remains for the browser to use.',say:'The full communication is request going out and response coming back.',key:'Network communication is often a two-way exchange.',question:'After the response is displayed, what could happen next?',assembly:['data']}
+];
+steps.forEach((s,i)=>{
+  s.title = s.title.replace(/^\d+\.\s*/, `${i+1}. `);
+});
+const el = {
+  stage:document.getElementById('stage'),stepCount:document.getElementById('stepCount'),progressBar:document.getElementById('progressBar'),direction:document.getElementById('direction'),browserText:document.getElementById('browserText'),packetLabel:document.getElementById('packetLabel'),packet:document.getElementById('packet'),packetUnit:document.getElementById('packetUnit'),packetIcon:document.getElementById('packetIcon'),packetMsg:document.getElementById('packetMsg'),packetParts:document.getElementById('packetParts'),path:document.getElementById('physicalPathLine'),pathArea:document.getElementById('pathArea'),physicalPath:document.getElementById('physicalPathOverlay'),flowHint:document.querySelector('.flow-hint'),downLabel:document.getElementById('downLabel'),upLabel:document.getElementById('upLabel'),stepTitle:document.getElementById('stepTitle'),stepExplain:document.getElementById('stepExplain'),layerText:document.getElementById('layerText'),unitText:document.getElementById('unitText'),operationText:document.getElementById('operationText'),packetExplain:document.getElementById('packetExplain'),assembly:document.getElementById('assembly'),sayText:document.getElementById('sayText'),keyText:document.getElementById('keyText'),questionText:document.getElementById('questionText'),stepDots:document.getElementById('stepDots'),prevBtn:document.getElementById('prevBtn'),nextBtn:document.getElementById('nextBtn'),playBtn:document.getElementById('playBtn'),resetBtn:document.getElementById('resetBtn')
+};
+let current=0, playing=false, timer=null;
+function renderParts(parts,step={}){
+  const singleBox=!!step.singleBox && parts.length===1;
+  el.packet.classList.toggle('single-box',singleBox);
+  el.packetParts.innerHTML=parts.map(key=>{
+    const p=partTemplates[key];
+    const role=(step.partRoles&&step.partRoles[key]) || p.role;
+    const label=(step.partLabels&&step.partLabels[key]) || p.label;
+    return `<div class="part ${p.cls}">${role?`<span class="role">${role}</span>`:''}<span class="label">${label}</span></div>`;
+  }).join('');
+}
+function renderAssembly(active){
+  const order=['mac','ip','tcp','tls','data','fcs','bits'];
+  const labels={mac:'MAC Header',ip:'IP Header',tcp:'TCP Header',tls:'TLS / HTTPS',data:'HTTP Data',fcs:'FCS Trailer',bits:'Bits'};
+  el.assembly.innerHTML=order.map(k=>`<span class="chip ${k} ${active.includes(k)?'on':''}">${labels[k]}</span>`).join('');
+}
+function setLayers(step){
+  document.querySelectorAll('.layer').forEach(layer=>layer.classList.remove('active','done'));
+  const downOrder=['application','transport','network','link','physical'];
+  const upOrder=['physical','link','network','transport','application'];
+  const isReturn=step.flow==='return';
+  const isSender=(step.side==='client' && !isReturn) || (step.side==='server' && isReturn);
+  const isReceiver=(step.side==='server' && !isReturn) || (step.side==='client' && isReturn);
+  if(step.side==='client' || step.side==='server'){
+    const prefix=step.side==='client'?'c':'s';
+    const order=isSender?downOrder:upOrder;
+    const activeIndex=order.indexOf(step.layer);
+    order.forEach((name,i)=>{
+      const node=document.getElementById(`${prefix}-${name}`);
+      if(!node)return;
+      if(name===step.layer)node.classList.add('active');
+      if(activeIndex>i)node.classList.add('done');
+    });
+  } else if(step.side==='path'){
+    document.querySelectorAll('.layer').forEach(layer=>layer.classList.add('done'));
+  }
+}
+function alignPhysicalPath(){
+  const cPhys=document.getElementById('c-physical');
+  const sPhys=document.getElementById('s-physical');
+  if(!cPhys || !sPhys || !el.stage || !el.physicalPath)return;
+  const stageRect=el.stage.getBoundingClientRect();
+  const cr=cPhys.getBoundingClientRect();
+  const sr=sPhys.getBoundingClientRect();
+
+  const y=((cr.top+cr.height/2)+(sr.top+sr.height/2))/2-stageRect.top;
+  const left=cr.right-stageRect.left+10;
+  const right=stageRect.right-sr.left+10;
+  const width=Math.max(120, stageRect.width-left-right);
+
+  el.stage.style.setProperty('--physical-y', `${Math.round(y)}px`);
+  el.physicalPath.style.left=`${Math.round(left)}px`;
+  el.physicalPath.style.width=`${Math.round(width)}px`;
+  el.physicalPath.style.top=`${Math.round(y)}px`;
+}
+function targetPosition(step){
+  const stageRect=el.stage.getBoundingClientRect();
+  let target;
+  if(step.side==='client') target=document.getElementById(`c-${step.layer}`);
+  else if(step.side==='server') target=document.getElementById(`s-${step.layer}`);
+  else target=el.physicalPath || el.pathArea;
+  const r=target.getBoundingClientRect();
+  let x,y;
+  if(step.side==='client'){
+    x=r.right-stageRect.left+18;
+    y=r.top-stageRect.top+r.height/2-22;
+  }else if(step.side==='server'){
+    x=r.left-stageRect.left-250;
+    y=r.top-stageRect.top+r.height/2-22;
+  }else{
+    x=r.left-stageRect.left+r.width/2-170;
+    y=r.top-stageRect.top-172;
+  }
+  return {x:Math.max(12,Math.min(stageRect.width-382,x)),y:Math.max(12,Math.min(stageRect.height-120,y))};
+}
+function setStep(index){
+  current=(index+steps.length)%steps.length;
+  const s=steps[current];
+  el.stepCount.textContent=`Step ${current+1} / ${steps.length}`;
+  el.progressBar.style.width=`${((current+1)/steps.length)*100}%`;
+  el.direction.textContent=s.direction;
+  el.browserText.innerHTML=s.browserHtml || s.browser;
+  el.packetUnit.textContent=s.unit;
+  el.packetIcon.textContent=s.icon;
+  el.packetMsg.textContent=s.msg;
+  alignPhysicalPath();
+  el.packetLabel.classList.toggle('hidden',!!s.hideLabel);
+  el.packet.classList.toggle('hidden',!!s.hidePacket);
+  el.packet.classList.toggle('bits-mode',!!s.bits);
+  renderParts(s.parts,s);
+  const pos=targetPosition(s);
+  el.packet.style.transform=`translate(${pos.x}px,${pos.y}px)`;
+  el.packetLabel.style.transform=`translate(${pos.x}px,${Math.max(10,pos.y-58)}px)`;
+  el.path.classList.toggle('hot',!!s.path);
+  el.pathArea.classList.add('show-path');
+  el.physicalPath.classList.toggle('active-hop', !!s.path);
+  el.physicalPath.classList.toggle('return-path', s.flow==='return' && (s.side==='path' || !!s.showPath));
+  el.flowHint.classList.toggle('return-flow', s.flow==='return');
+  el.downLabel.classList.toggle('active',s.side==='client');
+  el.upLabel.classList.toggle('active',s.side==='server');
+  el.stepTitle.textContent=s.title;
+  el.stepExplain.textContent=s.explain;
+  el.layerText.textContent=s.layerText;
+  el.unitText.textContent=s.unitText;
+  el.operationText.textContent=s.operation;
+  el.packetExplain.textContent=s.packetExplain;
+  el.sayText.textContent=s.say;
+  el.keyText.textContent=s.key;
+  el.questionText.textContent=s.question;
+  renderAssembly(s.assembly);
+  setLayers(s);
+  document.querySelectorAll('.step-btn').forEach((btn,i)=>btn.classList.toggle('active',i===current));
+  document.querySelector('.nav-go')?.classList.toggle('active-group', current < 14);
+  document.querySelector('.nav-back')?.classList.toggle('active-group', current >= 14);
+}
+function buildDots(){
+  el.stepDots.innerHTML=`
+    <div class="nav-group nav-go">
+      <div class="nav-group-title">Way to server <span>Steps 1–14</span></div>
+      <div class="nav-group-steps" id="goSteps"></div>
+    </div>
+    <div class="nav-group nav-back">
+      <div class="nav-group-title">Way back to client <span>Steps 15–25</span></div>
+      <div class="nav-group-steps" id="backSteps"></div>
+    </div>`;
+  const goWrap=document.getElementById('goSteps');
+  const backWrap=document.getElementById('backSteps');
+  steps.forEach((s,i)=>{
+    const b=document.createElement('button');
+    b.className='step-btn';
+    b.dataset.phase = i < 14 ? 'go' : 'back';
+    b.innerHTML=`<span class="step-no">${i+1}</span><span class="step-short">${s.nav}</span>`;
+    b.addEventListener('click',()=>{stop();setStep(i); b.blur();});
+    (i < 14 ? goWrap : backWrap).appendChild(b);
+  });
+}
+function next(){setStep(current+1)}
+function prev(){setStep(current-1)}
+function play(){ if(playing)return; playing=true; el.playBtn.textContent='⏸ Pause'; timer=setInterval(next,2200); }
+function stop(){ playing=false; el.playBtn.textContent='▶ Play'; if(timer){clearInterval(timer); timer=null;} }
+el.nextBtn.addEventListener('click',()=>{stop();next();});
+el.prevBtn.addEventListener('click',()=>{stop();prev();});
+el.resetBtn.addEventListener('click',()=>{stop();setStep(0);});
+el.playBtn.addEventListener('click',()=> playing?stop():play());
+window.addEventListener('resize',()=>{alignPhysicalPath();setStep(current);});
+buildDots();
+setStep(0);
+</script>
+</body>
+</html>

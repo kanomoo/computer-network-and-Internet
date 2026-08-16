@@ -1,0 +1,801 @@
+{
+  "res1": {
+    "filePath": "New/ch1.html",
+    "jsDataCount": 28,
+    "jsDataSnippet": [
+      "const slides=[...document.querySelectorAll('.slide')];",
+      "const parts=[];",
+      "const cards=[...active.querySelectorAll('.card')];",
+      "const extra=[\n    'Teaching use: review each card with stude",
+      "const tocSections=[\n  {start:0,label:'Week Overview'},\n  {st",
+      "const compData={sender:['Sender','The source of data, such a",
+      "const messengerScenarios={\n  youToFriend:{\n    title:'Scenar",
+      "const objectIds=['msgLeftObj','msgRightObj','msgServiceObj',",
+      "const highlightIds=['hlLeftObj','hlServiceObj','hlRightObj',",
+      "const objectIds=['msgLeftObj','msgRightObj','msgServiceObj',",
+      "let targets=[], boxes=[];",
+      "const flowInfos={\n  simplex:[\n    'Simplex',\n    'Data flows",
+      "const topoData={\nstar:{title:'Star Topology',text:'All devic",
+      "const topoExtra={\n star:{example:'Classroom lab, office LAN,",
+      "const lines=[];",
+      "const flow={\n    star:{\n      s:[140,95,31], r:[420,235,31],",
+      "const netData=[\n  {id:'pan',title:'PAN',name:'Personal Area ",
+      "const visuals={\n    pan:`<svg viewBox=\"0 0 520 250\" role=\"im",
+      "const deviceInfoMap={\n  'Printer':{\n    type:'Access layer e",
+      "const layerData={\naccess:{title:\"Access Layer\",desc:\"Provide",
+      "const mediaData={fiber:'Recommended: Optical Fiber. It is su",
+      "const histImages={\n  concept:'data:image/png;base64,iVBORw0K",
+      "const timeData={\n  concept:['Packet switching foundations','",
+      "const scenData={lab:['Computer lab','Use Star topology: each",
+      "const quiz=[{q:'Which component acts as the communication ru",
+      "const wiredMediaDetails={\n  utp:{title:'UTP Ethernet',desc:'",
+      "const wirelessMediaDetails={\n  wifi:{title:'Radio Wave / Wi‑",
+      "const deviceBackImageMap={\n  'Printer': 'data:image/webp;bas"
+    ],
+    "sectionsCount": 25,
+    "sections": [
+      {
+        "id": "",
+        "h1": "Fundamentals of Computer Networks",
+        "h2": "",
+        "h3": "Topics in this week",
+        "textLength": 737,
+        "textSnippet": "060243123 Computer Network and Internet Week 2 • Chapter 1 Fundamentals of Computer Networks This week introduces how data is communicated, how devices connect, what media carry signals, and how the Internet evolved. Topics in this week Data Communication Components Data Flow Physical Structure Netw"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "What are computer networks, and why do they matter?",
+        "h3": "What is a computer network?",
+        "textLength": 1332,
+        "textSnippet": "Week 2 foundation What are computer networks, and why do they matter? What is a computer network? A computer network is a group of computers, servers, smartphones, printers, and other devices connected so they can communicate and share resources. These devices may connect through cables, Wi‑Fi, opti"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Five components of data communication",
+        "h3": "Click a component in the diagram",
+        "textLength": 1219,
+        "textSnippet": "Data Communication Components Five components of data communication 💻 Sender Message Medium 📱 Receiver Protocol = communication rules Click a component in the diagram A complete data communication system requires a sender, receiver, message, transmission medium, and protocol working together. Clas"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Five components example: sending a Messenger message",
+        "h3": "Messenger communication example",
+        "textLength": 891,
+        "textSnippet": "Applied example Five components example: sending a Messenger message Scenario A: You send a message Scenario B: Friend replies Reset / Clear highlight 📱 Your phone Device ☁️ Service Messaging server 📲 Friend’s phone Device Message: select a scenario Protocol: app rules + TCP/IP Medium: Wi‑Fi / cel"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Protocol = agreed message sequence",
+        "h3": "Ordering food",
+        "textLength": 1031,
+        "textSnippet": "Data Communication Components Protocol = agreed message sequence Protocol idea: both sides follow the same order of messages, so each side knows when to listen, when to reply, and when real information can be sent. 🍽️ Ordering food Example: customer and restaurant agree before the actual order is p"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Data flow direction",
+        "h3": "Simplex",
+        "textLength": 973,
+        "textSnippet": "Data Flow Data flow direction Data flow is the direction of data transmission between two devices. It explains whether data moves only one way, takes turns, or moves both ways at the same time. ➡️ Simplex One-way transmission only. The receiver does not send data back. Examples: keyboard → computer,"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Physical connection structure",
+        "h3": "Point-to-Point",
+        "textLength": 1111,
+        "textSnippet": "Physical Structure Physical connection structure Physical structure describes how devices are connected through a transmission medium. The medium can be wired, such as copper cable or fiber optic cable, or wireless, such as Wi‑Fi radio waves. It also shows whether the path is a dedicated link betwee"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Network topology",
+        "h3": "Select a topology",
+        "textLength": 615,
+        "textSnippet": "Network topology Network topology is the arrangement of devices and links in a network. It shows how devices are connected and how data can move from one device to another. Normal Failure case Sender = start node Receiver = destination node Orange packet = normal traffic Red packet / X = failed or s"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Choosing a suitable topology from real situations",
+        "h3": "Computer lab / office",
+        "textLength": 1532,
+        "textSnippet": "Network Topology Choosing a suitable topology from real situations How to decide: identify the devices, number of users, reliability need, future growth, and what happens if one node or link fails. Device icons 🖥️ PCs 🖨️ Printer 🗄️ Server 🔀 Switch 🔀 🖥️ 🖥️ 🖨️ 🖥️ 🗄️ Computer lab / office Rec"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Network types by coverage area",
+        "h3": "",
+        "textLength": 111,
+        "textSnippet": "Network Types Network types by coverage area LAN PAN LAN MAN WAN Internet Instructor: Pitpimon Choorod Slide 10"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Understanding network scale with a global map",
+        "h3": "LAN Local Area Network",
+        "textLength": 1432,
+        "textSnippet": "From small to global Understanding network scale with a global map Simple view: network coverage grows from one place to the whole world LAN is very local, while the Internet is global LAN local MAN city WAN region Internet worldwide small medium large largest Reading tip: the colored dots now grow "
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Specialized networks to know",
+        "h3": "PAN",
+        "textLength": 1484,
+        "textSnippet": "Network Types Specialized networks to know These network types serve more specific purposes. PAN focuses on one person and personal devices, WLAN gives wireless access inside a local area, and SAN is designed for high-speed storage connections in server environments. PAN: personal devices around one"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Hierarchical network architecture",
+        "h3": "Why use layers?",
+        "textLength": 924,
+        "textSnippet": "Hierarchical Network Architecture Hierarchical network architecture 🏫 🏢 🏛️ Building A Building B Building C Access Access Access Distribution Layer Core Core Access connects users → Distribution controls policy → Core carries high-speed backbone traffic Why use layers? Large networks are easier t"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Three-tier hierarchical network topology",
+        "h3": "Access Layer",
+        "textLength": 873,
+        "textSnippet": "Hierarchical Network Architecture Three-tier hierarchical network topology CORE fast backbone DISTRIBUTION aggregation + routing ACCESS switches / APs Core Router / Switch High-speed backbone Layer 3 / Dist Switch Distribution Router Aggregate Routing Policy Access SW Access SW Access SW / AP Core L"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Transmission media",
+        "h3": "🔌 Guided media",
+        "textLength": 899,
+        "textSnippet": "Transmission Media Transmission media Transmission medium = the path that carries a signal. In real networks, devices may use UTP , optical fiber , Wi‑Fi , Bluetooth , infrared , or mobile / wide-area wireless depending on the situation. Media types Physical path 🔌 Guided media Signals travel throu"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Wired transmission media",
+        "h3": "UTP Ethernet",
+        "textLength": 742,
+        "textSnippet": "Guided media Wired transmission media UTP Ethernet Common copper cable for classroom, office, and LAN connections. Show UTP details Coaxial Cable Layered cable with shielding, often used in cable TV and broadband access. Show coaxial details Optical Fiber Uses light to carry data for high speed and "
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Wireless transmission media",
+        "h3": "Radio Wave / Wi‑Fi",
+        "textLength": 777,
+        "textSnippet": "Unguided media Wireless transmission media Radio Wave / Wi‑Fi Used for WLAN access and mobile users in classrooms, homes, and offices. Show Wi‑Fi details Microwave Used for point-to-point wireless links between buildings or towers. Show microwave details Infrared Short-range directional communicatio"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Which transmission medium should we choose?",
+        "h3": "Connect distant buildings",
+        "textLength": 511,
+        "textSnippet": "Decision helper Which transmission medium should we choose? Click a scenario. The recommendation should match the distance , speed , mobility , environment , and cost requirements. 🏢 Connect distant buildings Needs long distance, high speed, and stability. 🖥️ Computer lab Many fixed computers in o"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Internet history and development",
+        "h3": "Packet switching foundations",
+        "textLength": 980,
+        "textSnippet": "Internet History Internet history and development Packet switching foundations Early ideas showed that data could be broken into packets and shared across communication links more efficiently. Packet switching foundations Researchers proposed that messages should be divided into small packets so man"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Today’s Internet: from connection to services",
+        "h3": "☁️ Cloud platforms",
+        "textLength": 948,
+        "textSnippet": "Internet today and future Today’s Internet: from connection to services The modern Internet is more than web browsing. It connects people, devices, data centers, applications, cloud platforms, and intelligent services. ☁️ Cloud platforms Applications and storage run in data centers and are accessed "
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Activity 1: Match the network terms",
+        "h3": "How to do it",
+        "textLength": 826,
+        "textSnippet": "Activities &amp; Review Activity 1: Match the network terms Drag each term into the correct category. After matching, ask students to explain why the term belongs there. Components Flow Topology Types Media How to do it Step 1: Drag a term from the left. Step 2: Drop it into the best category. Step "
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Activity 2: Design a network scenario",
+        "h3": "Choose a scenario",
+        "textLength": 708,
+        "textSnippet": "Activities &amp; Review Activity 2: Design a network scenario Choose one scenario. Explain your answer using this structure: topology + transmission medium + important devices + reason . 🖥️ 🔀 📶 Select the best network design for the requirement Choose a scenario Computer lab with 40 fixed PCs Sha"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Quick review quiz",
+        "h3": "Question",
+        "textLength": 523,
+        "textSnippet": "Activities &amp; Review Quick review quiz Choose the best answer. Use the explanation on the right to review the concept immediately. Question Next question Score 0 / 0 Choose an answer to see the explanation. This quiz reviews: components, data flow, topology, network types, hierarchical architectu"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Chapter summary",
+        "h3": "1. Communication basics",
+        "textLength": 926,
+        "textSnippet": "Activities &amp; Review Chapter summary 1. Communication basics Data communication needs sender, receiver, message, medium, and protocol. Data may flow in simplex, half duplex, or full duplex mode. 2. Physical connection Point-to-point and multipoint describe the physical structure, while topology d"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Practice, discussion, and export",
+        "h3": "In-class or homework tasks",
+        "textLength": 1042,
+        "textSnippet": "Activities &amp; Review Practice, discussion, and export In-class or homework tasks 1) Compare topologies Compare Star and Mesh in terms of reliability, cost, scalability, and troubleshooting. 2) Choose a medium If an academic building must connect to a data center, which medium should be selected a"
+      }
+    ]
+  },
+  "res2": {
+    "filePath": "New/ch2.html",
+    "jsDataCount": 39,
+    "jsDataSnippet": [
+      "const slides=[...document.querySelectorAll('.slide')];",
+      "const topicRanges=[];",
+      "const items=[];",
+      "const carLayerData={\n  goal:{\n    flightTitle:'Passenger goa",
+      "const principle={\n  service:['Service','A layer provides a s",
+      "const osi=[\n{n:7,name:'Application',cls:'layer7',fn:'Provide",
+      "const osiIntroData={\n  what:['What is it?','<b>OSI</b> stand",
+      "const tcp=[\n{n:5,name:'Application',cls:'layer7',fn:'Provide",
+      "const tcpIntroData={\n  what:['What is TCP/IP?','<b>TCP/IP</b",
+      "const netInfo={\n  physical:[\n    'Physical path',\n    'The o",
+      "const conceptModeData={\n  logical:['Logical path / Layer flo",
+      "const tcpCompareData={\n  app:['OSI L7–L5 → TCP/IP L5 Applica",
+      "const mapGroups={app:['l7','l6','l5','app'],transport:['l4',",
+      "const encap=[\n{t:'Application: Data',parts:[['data','User Da",
+      "const decap=[\n{t:'Physical: Bits → Frame',vis:visual(null,tr",
+      "const encDecSteps=[\n  {phase:'Encapsulation', phaseClass:'en",
+      "const rowOrder=['app','transport','network','link','physical",
+      "const labels=['1 Data','2 Segment','3 Packet','4 Frame','5 B",
+      "const duData={\n  data:{title:'Application → Data',badge:'PDU",
+      "const protoIconSvg={\n  app:'<svg viewBox=\"0 0 32 32\" aria-hi",
+      "const protoLayers=[\n  {key:'app', flow:'flowApp', layer:'App",
+      "const card=[...document.querySelectorAll('#protoInfo .protoP",
+      "const interfaceData={\n  app:['Application layer','The applic",
+      "const troubleData={\n  cable:{layers:['1'],title:'Physical La",
+      "const deliveryData={\n  app:['Application','The browser prepa",
+      "const headerOrder=['app','tcp','ip','dl','fcs','bits'];",
+      "let headerState=[];",
+      "const headerText={app:['Application Data','The application c",
+      "const scenarioData={\n  web:{title:'Open a secure website',te",
+      "const scenarioLayerClasses=['appLayer','transLayer','netLaye",
+      "const a=[...arr];",
+      "const osiDragItems=[['L7','User network service'],['L4','Por",
+      "const pduDragItems=[['Data','Data'],['Segment','Segment'],['",
+      "const data={\n    app:['Application Layer','Defines message f",
+      "const protoFiveExplainData={\n  app:'<b>Application:</b> crea",
+      "const original = ['HTTPS','DNS','SMTP','IMAP','SFTP','SSH','",
+      "const chip = [...bank.querySelectorAll('.ch3Chip')].find(c=>",
+      "const els = [...container.querySelectorAll('.ch3OrderCard:no",
+      "const text={\n    app:'<b>Application task:</b> creates the m"
+    ],
+    "sectionsCount": 23,
+    "sections": [
+      {
+        "id": "",
+        "h1": "Network Models",
+        "h2": "",
+        "h3": "Topics in this week",
+        "textLength": 802,
+        "textSnippet": "060243123 Computer Network and Internet เครือข่ายคอมพิวเตอร์และอินเทอร์เน็ต Week 3 • Chapter 2 Network Models This chapter explains how network communication is divided into layers, how OSI and TCP/IP models organize those layers, and how data becomes segments, packets, frames, and bits. Topics in t"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "What is a model? What is a network model?",
+        "h3": "What is a model?",
+        "textLength": 963,
+        "textSnippet": "Network Model Foundations What is a model? What is a network model? ▣ What is a model? A model is a simplified way to represent a real system or process. It shows the important parts, the order of work, and how the parts relate to each other. simplifies reality shows important parts helps explain a "
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "A Real-Life Layered Model: Booking a Flight",
+        "h3": "",
+        "textLength": 945,
+        "textSnippet": "Real-life model A Real-Life Layered Model: Booking a Flight In real life, one task often has several ordered responsibilities. Booking a flight is not one action: we decide the goal, book details, follow a route, board locally, and finally travel physically. This is a simple layered model before com"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Layering Readiness: Why Models and Layers Matter",
+        "h3": "Why use a network model?",
+        "textLength": 1010,
+        "textSnippet": "Network Model Foundations Layering Readiness: Why Models and Layers Matter 🧩 Why use a network model? A model turns a complex network task into smaller responsibilities, so we can learn, design, and troubleshoot step by step. ① Divide the task Break communication into smaller jobs. ② Assign one mai"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "What is the OSI model?",
+        "h3": "What is it?",
+        "textLength": 409,
+        "textSnippet": "2.2 OSI Model What is the OSI model? What is it? Who developed it? Why useful? What is it? OSI stands for Open Systems Interconnection . It is a conceptual reference model that divides network communication into seven layers. Conceptual model 7 layers Common language Click an OSI layer Select a laye"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "All 7 layers grouped by responsibilities",
+        "h3": "",
+        "textLength": 641,
+        "textSnippet": "OSI quick reference All 7 layers grouped by responsibilities L7 Application User network services: web, email, DNS Data L6 Presentation Format / encryption / compression Data L5 Session Session setup / maintain / terminate Data L4 Transport Ports / segmentation / reliability / flow control Segment L"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Match the function to the OSI layer",
+        "h3": "",
+        "textLength": 229,
+        "textSnippet": "Activity Match the function to the OSI layer User network service Port and segment IP routing MAC frame Bits and signals Layer 7 Application Layer 4 Transport Layer 3 Network Layer 2 Data Link Layer 1 Physical Reset 0 / 5 matched"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Use OSI layers to narrow down network problems",
+        "h3": "Choose a symptom",
+        "textLength": 623,
+        "textSnippet": "Interactive media Use OSI layers to narrow down network problems Choose a symptom No link light / cable unplugged Connected to Wi‑Fi but no local access Can reach LAN but not other networks Server IP replies, but web app cannot open Website name fails, but IP works File opens with wrong format / enc"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "From OSI Reference Model to TCP/IP Internet Model",
+        "h3": "OSI model",
+        "textLength": 590,
+        "textSnippet": "Transition From OSI Reference Model to TCP/IP Internet Model OSI model Use OSI to understand responsibilities and troubleshoot by layer. 7-layer reference model Good for explanation → Same communication idea, more practical protocol suite TCP/IP model Use TCP/IP to describe how the Internet actually"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "OSI ↔ TCP/IP Layer Mapping",
+        "h3": "OSI 7-layer model",
+        "textLength": 651,
+        "textSnippet": "Comparison OSI ↔ TCP/IP Layer Mapping OSI 7-layer model L7 Application User services L6 Presentation Format / encryption L5 Session Conversation control L4 Transport Ports / reliability L3 Network IP / routing L2 Data Link Frames / MAC L1 Physical Bits / signals → → → → → TCP/IP 5-layer model L5 App"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "TCP/IP: The Practical Internet Model",
+        "h3": "What is TCP/IP?",
+        "textLength": 454,
+        "textSnippet": "2.3 TCP/IP Model TCP/IP: The Practical Internet Model What is TCP/IP? Why practical? 5-layer vs 4-layer view What is TCP/IP? TCP/IP , or the Internet Protocol Suite , is the practical set of protocols used by real networks and the Internet. Real Internet model Protocol suite Used in practice Click a"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "TCP/IP 5-Layer Stack: Responsibilities",
+        "h3": "Application",
+        "textLength": 1686,
+        "textSnippet": "TCP/IP model in detail TCP/IP 5-Layer Stack: Responsibilities Each layer block shows what that layer is responsible for before handing data to the next layer. TCP/IP 5-layer stack + tasks 🌐 Application PDU: Data Responsibility: provide network services for user applications and define message rules"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "TCP/IP Communication: Physical Path vs Logical View",
+        "h3": "Physical path",
+        "textLength": 519,
+        "textSnippet": "Communication view TCP/IP Communication: Physical Path vs Logical View Host A TCP/IP stack Host B TCP/IP stack Application Transport Network Data Link Physical Application Transport Network Data Link Physical logical layer flow physical hop-by-hop path 💻 Host A ▦ Switch ⇄ Router ▦ Switch 🖥️ Host B"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Encapsulation &amp; Decapsulation in TCP/IP",
+        "h3": "Sending Computer",
+        "textLength": 1246,
+        "textSnippet": "2.4 Data Encapsulation &amp; Decapsulation Encapsulation &amp; Decapsulation in TCP/IP A message is wrapped step by step at the sender, transmitted as bits, then unwrapped step by step at the receiver. Click a layer, a row, or a timeline step to explore the process. ◀ Prev ▶ Play Next ▶ Step 1 / 9 S"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "PDU Names by TCP/IP Layer",
+        "h3": "Layer stack + data unit",
+        "textLength": 935,
+        "textSnippet": "Data unit by layer PDU Names by TCP/IP Layer The same message is viewed differently by each layer. Click a layer to see its data unit name and the structure that layer handles. What is a PDU? A Protocol Data Unit is the name of the data package at a specific layer. As data moves down the stack, each"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Match the PDU name to the TCP/IP layer",
+        "h3": "",
+        "textLength": 147,
+        "textSnippet": "Activity Match the PDU name to the TCP/IP layer Data Segment Packet Frame Bits Application Transport Network Data Link Physical Reset 0 / 5 matched"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Build the encapsulated message",
+        "h3": "Click in sending order",
+        "textLength": 350,
+        "textSnippet": "Hands-on activity Build the encapsulated message Click in sending order Application Data TCP/UDP Header IP Header Data Link Header FCS Trailer Physical Bits Goal: see how Data becomes Segment, Packet, Frame, and Bits. Reset builder User Data Start at Application The message begins as user data. Each"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "What Is a Protocol?",
+        "h3": "A shared set of communication rules",
+        "textLength": 767,
+        "textSnippet": "2.5 Protocols What Is a Protocol? Protocol is ... A shared set of communication rules A protocol tells devices how to format messages , what each part means , and when to send or respond . Client Server 📘 Protocol shared rules Request Response Syntax Semantics Timing { } 1. Syntax Message format an"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Five-layer TCP/IP Protocol Stack",
+        "h3": "Application",
+        "textLength": 1043,
+        "textSnippet": "Protocols in layers Five-layer TCP/IP Protocol Stack Each row shows one layer of the stack. Hover each protocol on the right to see what it stands for and what it is used for. TCP/IP 5-layer stack 🌐 Application Layer 5 • user network services 🚚 Transport Layer 4 • process-to-process delivery 🧭 Ne"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "How One Network Task Uses All 5 TCP/IP Layers",
+        "h3": "Choose a network task",
+        "textLength": 663,
+        "textSnippet": "Layered network tasks How One Network Task Uses All 5 TCP/IP Layers Choose a network task Click a user action. The stack and steps update together. 🌐 Open a secure website DNS + HTTPS + TCP/IP ✉️ Send an email SMTP/IMAP + MIME + TCP/IP ▶️ Watch live video Streaming + UDP/TCP + IP 💻 Remote login SS"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Application Protocol Matching Lab",
+        "h3": "",
+        "textLength": 774,
+        "textSnippet": "Chapter 3 Practice Application Protocol Matching Lab Drag each protocol to the task it supports. Extra chips are included so students must identify which ones really belong to the Application Layer. Goal Match user-facing network tasks with common application-layer protocols. Hint TCP and IP are imp"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Web Browsing Sequence Rearrangement",
+        "h3": "",
+        "textLength": 781,
+        "textSnippet": "Chapter 3 Practice Web Browsing Sequence Rearrangement Rearrange the cards into the correct order for opening a website. Drag cards up or down, then check the sequence. Think Which step must happen before the browser can contact the server? Connect to Chapter 2 The application story still depends on"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Application Layer Quick Check",
+        "h3": "1) Which protocol is mainly used to request web pages?",
+        "textLength": 328,
+        "textSnippet": "Chapter 3 Practice Application Layer Quick Check 1) Which protocol is mainly used to request web pages? DNS HTTP / HTTPS ARP 2) Which protocol translates a domain name to an IP address? DNS SMTP TCP 3) Which protocol sends email between mail servers? FTP IMAP SMTP 4) Which item is not an application"
+      }
+    ]
+  },
+  "res3": {
+    "filePath": "New/ch3.html",
+    "jsDataCount": 33,
+    "jsDataSnippet": [
+      "const slides=[...document.querySelectorAll('.slide')];",
+      "const thaiSlideGuides=[{\"title\": \"Application Layer\", \"read\"",
+      "const topicRanges=[];",
+      "const conciseSectionLabels={\n 'Overview':'Overview',\n 'Proce",
+      "const conciseSlideLabels={\n 'Cover':'Chapter Overview',\n 'Wh",
+      "const originalThaiGuideTitles = [\"Cover\", \"Where it sits\", \"",
+      "const extraThaiGuideByTitle = {\"DNS hierarchy and records\": ",
+      "const thaiGuideByTitle = {};",
+      "const tocItems=[...document.querySelectorAll('.tocItem')];",
+      "const captureExamples={\n http:{title:'HTTP request and respo",
+      "const archOverviewData={\n cs:{\n  title:'Client–Server',pill:",
+      "const archData={\n cs:{title:'Client–Server',text:'A central ",
+      "const socketData=[\n {title:'1. Server creates socket',side:'",
+      "const methodData={\n GET:{title:'GET retrieves a representati",
+      "const statusData={\n '2xx':{title:'2xx Success',text:'The ser",
+      "const mailData={\n smtp:{title:'SMTP: send mail',text:'SMTP t",
+      "const dnsTexts=[\n {title:'1. Client asks the recursive resol",
+      "const scenarioData={\n web:{title:'Open a website',text:'The ",
+      "const originalProtocols=[['web','HTTP/HTTPS'],['name','DNS']",
+      "const persistData={\n  non:{title:'Non-persistent HTTP',text:",
+      "const order = ['header','nav','title','lead','card','button'",
+      "const explanations = {\n    header:['Selected line 1','The <h",
+      "const stateData={\n    stateless:{title:'Stateless HTTP reque",
+      "const ftpData={\n    control:{title:'Persistent control conne",
+      "const emailData={\n    compose:{title:'Message format: envelo",
+      "const stateDataV2={\n    stateless:{title:'Stateless HTTP: no",
+      "const ftpDataV2={\n    control:{title:'Control connection: co",
+      "const emailDataV2={\n    compose:{title:'1. Compose the email",
+      "const active=[k];",
+      "const socketModes={\n  tcp:{title:'TCP: establish a connectio",
+      "const httpsPaths={tcp:{title:'HTTPS with HTTP/1.1 or HTTP/2'",
+      "const reviewData={dhcp:{title:'1. Obtain network configurati",
+      "const states={\n    non:{card:document.getElementById('nonPer"
+    ],
+    "sectionsCount": 36,
+    "sections": [
+      {
+        "id": "",
+        "h1": "Application Layer",
+        "h2": "",
+        "h3": "Topics This Week",
+        "textLength": 840,
+        "textSnippet": "060243123 Computer Network and Internet เครือข่ายคอมพิวเตอร์และอินเทอร์เน็ต Week 4 • Chapter 3 Application Layer This chapter explains how application processes communicate through architectures, the socket interface, naming and configuration services, web protocols, supporting services, and packet-"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Where does the application layer sit?",
+        "h3": "Layer responsibilities",
+        "textLength": 698,
+        "textSnippet": "Where does the application layer sit? TCP/IP 5-layer model Layer 5: Application 🌐 Browser 💬 Chat ✉️ Email 🔎 DNS 📁 FTP Data Layer 4: Transport 🔢 Ports ✅ TCP ⚡ UDP 🧩 Segment ↕️ Flow Segment Layer 3: Network 🛰️ Router 🌍 IP 🧭 Route 📦 Packet ⏱️ TTL Packet Layer 2: Data Link 🔀 Switch 🏷️ MAC 🧱"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Applications use protocols",
+        "h3": "Application software",
+        "textLength": 894,
+        "textSnippet": "Important distinction Applications use protocols 🧩 Application software What users open and interact with directly. 🌐 Browser 💬 Chat ✉️ Email ▶️ Video uses → behind the screen 📜 Application-layer protocols Shared rules for message format, requests, responses, and data exchange. DNS HTTP / HTTPS "
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Architecture types and topology views",
+        "h3": "Choose an architecture",
+        "textLength": 446,
+        "textSnippet": "Network Application Architectures Architecture types and topology views Choose an architecture Client–Server Peer-to-Peer Hybrid Topology Client–Server Dark blue: through a server or coordinator Light blue: direct peer-to-peer link Client Client Client Server Client Client Client Peer Peer Peer Peer"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Network applications communicate as process pairs",
+        "h3": "",
+        "textLength": 1019,
+        "textSnippet": "Application processes Network applications communicate as process pairs Process means a running program. In networking, we describe communication as one process exchanging messages with another process on a different host. Application Layer Logical communication between application processes Client "
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "A socket connects an application process to the transport layer",
+        "h3": "",
+        "textLength": 1101,
+        "textSnippet": "Socket Interface A socket connects an application process to the transport layer A socket is not an application-layer protocol. It is the programming interface that a process (in the application layer) uses to request transport services for sending and receiving application data. Application protoco"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Application-layer protocols in this chapter",
+        "h3": "DNS",
+        "textLength": 562,
+        "textSnippet": "Chapter overview Application-layer protocols in this chapter 1 🔎 DNS Looks up addresses and other information associated with domain names. Name and service lookup 2 🌐 HTTP / HTTPS Exchanges web requests and responses between browsers and servers. Web communication 3 ⚙️ DHCP Automatically provides"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "DNS looks up information associated with a domain name",
+        "h3": "Browser and stub resolver",
+        "textLength": 1123,
+        "textSnippet": "DNS DNS looks up information associated with a domain name DNS is an application-layer protocol. The application asks a resolver process for a DNS record. The resolver creates a query and uses the socket interface to send the query and receive the DNS response through the transport service. 🌐 Appli"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "DNS hierarchy and resource records",
+        "h3": "DNS hierarchy",
+        "textLength": 1014,
+        "textSnippet": "DNS structure and data DNS hierarchy and resource records DNS hierarchy Organizes names from broad to specific: root → TLD → delegated domain or zone → host/subdomain labels . Resource records Typed entries such as A, AAAA, MX, and NS that store information associated with a DNS name. Why we need th"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "DNS hierarchy and resource-record examples",
+        "h3": "Example 1 — FQDN under .com",
+        "textLength": 1171,
+        "textSnippet": "Worked examples DNS hierarchy and resource-record examples The hierarchy tells the resolver where to look. The resource record supplies the requested information. Example 1 — FQDN under .com www.example.com. www Host or subdomain label example.com Registered domain com Public suffix and top-level do"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "How a recursive DNS lookup works",
+        "h3": "",
+        "textLength": 300,
+        "textSnippet": "DNS lookup How a recursive DNS lookup works ‹ Previous Next › 1 Client query 2 Check cache 3 Root query/referral 4 TLD query/referral 5 Ask authoritative 6 Authoritative answer 7 Cache by TTL 8 Return result 9 Contact service Cache hit: the resolver can skip the Root, TLD, and authoritative queries."
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "What is HTTP?",
+        "h3": "How the Web uses HTTP/HTTPS",
+        "textLength": 902,
+        "textSnippet": "Web services protocol What is HTTP? HTTP is the application-layer protocol that defines how browsers and web servers exchange web resources. WEB Web the service/content users open: pages, images, files, web apps, and APIs. HTTP HTTP the rule for request → response between a browser and a web server."
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "HTTP request and response",
+        "h3": "Components of request and response",
+        "textLength": 845,
+        "textSnippet": "HTTP / HTTPS HTTP request and response HTTP is a request–response protocol. A browser sends a request for a web resource, and the web server returns a response. Components of request and response Click a component to highlight it below 1 Start line request line or status line 2 Headers metadata as n"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "How HTTP uses connections",
+        "h3": "",
+        "textLength": 1330,
+        "textSnippet": "HTTP connection behavior How HTTP uses connections HTTP connection is the communication path that carries HTTP requests and responses between a browser and a web server. HTTP/1.0 — typical behavior Non-persistent HTTP ◀ ▶ Play Reset Also described as a close-after-response connection . Open TCP conn"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "HTTP methods define what the client wants the server to do",
+        "h3": "1) Select the operation",
+        "textLength": 504,
+        "textSnippet": "HTTP methods HTTP methods define what the client wants the server to do 1) Select the operation A method is the verb in an HTTP request. It tells the server what action the client wants. GET POST PUT DELETE 2) Request message structure METHOD + Target URI + HTTP version Request line declares method,"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "HTTP messages combine a start line, headers, and an optional body",
+        "h3": "",
+        "textLength": 691,
+        "textSnippet": "HTTP message format HTTP messages combine a start line, headers, and an optional body Example request POST /api/orders HTTP/1.1 Host: shop.example Accept: application/json Content-Type: application/json Authorization: Bearer … Content-Length: 41 {\"item\":\"book\",\"quantity\":1} Example response HTTP/1.1"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "HTTP response with status code",
+        "h3": "",
+        "textLength": 554,
+        "textSnippet": "HTTP response result HTTP response with status code What are status codes? Numbers in the first line of an HTTP response that summarize the server result. Who uses them? Servers send them; browsers, apps, APIs, and developers read them to decide what to do next. Simple idea Did it work, move somewhe"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "A URL identifies the service, host, and resource",
+        "h3": "Annotated URL anatomy",
+        "textLength": 951,
+        "textSnippet": "Web addressing A URL identifies the service, host, and resource Annotated URL anatomy https:// www.example.com :443 /courses/ch3 ?week=4&amp;topic=http #activity scheme host name port path query fragment Scheme Chooses the application protocol. https means HTTP over TLS. Host Domain name that DNS mu"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "HTTP requests are independent; applications add continuity",
+        "h3": "Without an identifier",
+        "textLength": 938,
+        "textSnippet": "HTTP state behavior HTTP requests are independent; applications add continuity Stateless protocol Each HTTP request contains the information needed to process that request. The protocol does not automatically remember the previous one. Application state Login, cart, preferences, and workflow progres"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Cookies carry an identifier; a session stores or locates application state",
+        "h3": "Stateless protocol",
+        "textLength": 899,
+        "textSnippet": "Application state over HTTP Cookies carry an identifier; a session stores or locates application state 1. Login request Browser sends credentials using HTTPS. → 2. Server creates state Server creates a session record or validates a signed token. → 3. Set-Cookie Response tells the browser which cooki"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Caches reuse responses; proxies forward requests on behalf of a client or server",
+        "h3": "Conditional cache validation",
+        "textLength": 775,
+        "textSnippet": "Performance and intermediaries Caches reuse responses; proxies forward requests on behalf of a client or server Conditional cache validation Browser cache Stored response with ETag: \"v7\" Local copy Browser GET /logo.png + If-None-Match: \"v7\" → Server Browser ← 304 Not Modified (no new body) Server B"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "HTTP evolved mainly to deliver many web objects more efficiently",
+        "h3": "",
+        "textLength": 1006,
+        "textSnippet": "HTTP evolution HTTP evolved mainly to deliver many web objects more efficiently HTTP/0.9 minimal GET only; no headers or status line; one simple HTML response. → HTTP/1.0 metadata Headers, status codes, content types, and additional methods. Connections commonly closed after a response. → HTTP/1.1 r"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "HTTPS means HTTP protected by TLS",
+        "h3": "What TLS provides",
+        "textLength": 457,
+        "textSnippet": "Secure web communication HTTPS means HTTP protected by TLS HTTP/1.1 or HTTP/2 HTTP/3 What TLS provides Confidentiality Encrypts application data. Integrity Detects unauthorized modification. Authentication Certificates help the client authenticate the server. HTTP still defines methods, headers, sta"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Explain the HTTP conversation from the evidence",
+        "h3": "Use image A as the timeline",
+        "textLength": 938,
+        "textSnippet": "HTTP packet-capture activity Explain the HTTP conversation from the evidence Study images A–E, reconstruct the browser–server conversation, and prepare a clear explanation supported by packet fields. 6 minutes 1–2 minute report Click any image to enlarge Use image A as the timeline A Click to enlarg"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "DHCP address configuration and lease lifecycle",
+        "h3": "",
+        "textLength": 1073,
+        "textSnippet": "Dynamic host configuration DHCP address configuration and lease lifecycle A new client asks a DHCP server for temporary network configuration. The initial exchange is commonly summarized as DORA . Client side DHCP Client New or reconnecting device starts the address request DORA message exchange 1 D"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Why a DHCP relay agent is needed",
+        "h3": "Why students should know this",
+        "textLength": 852,
+        "textSnippet": "DHCP across subnets Why a DHCP relay agent is needed A new client sends a local broadcast, but routers normally do not forward broadcasts. A DHCP relay agent forwards the request to a DHCP server on another subnet. 💻 DHCP Client Sends DHCPDISCOVER on its local subnet. Local broadcast ↪ DHCP Relay A"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "FTP uses one control connection and separate data connections",
+        "h3": "Control connection",
+        "textLength": 752,
+        "textSnippet": "File transfer FTP uses one control connection and separate data connections Control connection TCP server port 21 Long-lived command/reply conversation. USER / PASS PASV / PORT LIST / RETR / STOR Client commands → Server replies Data connection separate TCP connection Created for a directory listing"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Email flow: simple and correct",
+        "h3": "",
+        "textLength": 1163,
+        "textSnippet": "Email services Email flow: simple and correct 1 Sender MUA The sender writes the email in a mail app. Message includes headers, body, and attachments. 2 SMTP submission The mail app sends the message to the sender mail server. Commonly SMTP submission on port 587. 3 DNS MX lookup The sender server a"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Choose protocols by the service function and security requirement",
+        "h3": "",
+        "textLength": 1151,
+        "textSnippet": "Service families and protocols Choose protocols by the service function and security requirement Service Common protocols Typical role Common ports / notes Email SMTP, IMAP, POP3 Submit/relay mail; synchronize or download a mailbox 587 submission, 25 relay, 993 IMAPS, 995 POP3S File transfer FTP, FT"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Read a packet capture as a conversation, not as isolated packets",
+        "h3": "Start with dependencies",
+        "textLength": 1070,
+        "textSnippet": "Protocol evidence Read a packet capture as a conversation, not as isolated packets 1 Identify endpoints Find client/server IP addresses, ports, and the initiating host. 2 Apply a focused filter Use protocol, host, port, transaction ID, stream, or conversation. 3 Find the first request Discover which"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Recognize each service by its message sequence and key fields",
+        "h3": "",
+        "textLength": 179,
+        "textSnippet": "Basic capture interpretation Recognize each service by its message sequence and key fields HTTP DNS DHCP Email Remote access # Direction / message Fields to inspect What it proves"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Which application-layer protocols are involved?",
+        "h3": "Scenario",
+        "textLength": 155,
+        "textSnippet": "Scenario practice Which application-layer protocols are involved? Open a website Send and read email Remote login to a server IoT sensor dashboard Scenario"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Match the protocol to its service",
+        "h3": "Drag protocols",
+        "textLength": 306,
+        "textSnippet": "Interactive check Match the protocol to its service Drag protocols HTTP/HTTPS DNS SMTP IMAP/POP3 FTP 0 / 5 matched Reset matching Drop on service Request web pages / API resources Resolve name to IP address Send email to a mail server Read or download mailbox messages Transfer files with commands an"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Build the complete application-layer story",
+        "h3": "",
+        "textLength": 535,
+        "textSnippet": "Chapter review Build the complete application-layer story Select each stage and explain what must happen before a user receives the final service. 1 DHCP 2 DNS 3 Socket 4 HTTP/HTTPS 5 Capture evidence Host configuration → Name resolution → Process endpoint → Application exchange → Packet evidence Ar"
+      },
+      {
+        "id": "",
+        "h1": "Chapter 3: Application Layer",
+        "h2": "",
+        "h3": "",
+        "textLength": 197,
+        "textSnippet": "${has('title') ? ` Chapter 3: Application Layer ` : ` page title not rendered yet `} ${has('lead') ? ` HTTP body becomes page content after the browser parses and renders the returned HTML. ` : ``}"
+      },
+      {
+        "id": "",
+        "h1": "",
+        "h2": "Lesson overview",
+        "h3": "",
+        "textLength": 369,
+        "textSnippet": "${has('card') ? ` Lesson overview This visible page is produced from the successful HTTP response body. ${has('button') ? ` Open lesson ` : ` button not rendered yet `} ` : ` main content card not rendered yet `} ${has('resources') ? ` Loaded resources CSS, JavaScript, images, and fonts may be reque"
+      }
+    ]
+  }
+}

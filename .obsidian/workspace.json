@@ -13,25 +13,44 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Wiki/Lecture 2 - Network Models and Layered Architecture.md",
+                "file": "Wiki/Interactive Lab Guide - Chapter 3 Application Layer Protocols.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Lecture 2 - Network Models and Layered Architecture"
+              "title": "Interactive Lab Guide - Chapter 3 Application Layer Protocols"
             }
           },
           {
-            "id": "f5f5e05e26955fb5",
+            "id": "46e6cf51010a4fbf",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "มุมมองกราฟ"
+              "type": "markdown",
+              "state": {
+                "file": "Wiki/Master Exam Review - Chapters 1 to 4.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Master Exam Review - Chapters 1 to 4"
+            }
+          },
+          {
+            "id": "81bb17e90059fe54",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Wiki/Chapter 1 - Introduction and Network Fundamentals.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Chapter 1 - Introduction and Network Fundamentals"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -195,38 +214,53 @@
       "bases:สร้างฐานใหม่": false
     }
   },
-  "active": "c72bfd3d0baf9d28",
+  "active": "46e6cf51010a4fbf",
   "lastOpenFiles": [
-    "Wiki/Lecture 1 - Fundamental of Computer Network.md",
-    "tools/audit_markdown_render.mjs",
-    "Wiki/Lecture 4 - Transport Layer Protocols and Mechanics.md",
-    "Wiki/Lecture 5 - Network Layer, Routing, and IP Addressing.md",
-    "Wiki/Lecture 3 - Application Layer Protocols and Architectures.md",
-    "Wiki/Lecture 2 - Network Models and Layered Architecture.md",
-    "tools/upgrade_generic_visuals.js",
-    "tools/validate_tables.js",
-    "tools/inject_remaining_visuals.js",
-    "tools/inject_visuals_all_lectures.js",
-    "tools/audit_visual_coverage.js",
-    "tools/check_code_blocks.js",
-    "Wiki/Lecture 6 - Link Layer, Local Area Networks, and Wireless.md",
-    "tools/wrap_all_ascii_boxes.js",
-    "tools/wrap_ascii_headers_in_code_blocks.js",
-    "tools/test_table_syntax.js",
     "Wiki/Exam Preparation Guide and Master 80-Question Bank.md",
+    "Wiki/Master Exam Review - Chapters 1 to 4.md",
+    "Wiki/Chapter 1 - Introduction and Network Fundamentals.md",
+    "Wiki/Lecture 1 - Fundamental of Computer Network.md",
+    "Wiki/Computer Network and Internet Master Index.md",
+    "Wiki/Chapter 2 - Application Layer Protocols and Architectures.md",
     "Wiki/Interactive Lab Guide - Chapter 3 Application Layer Protocols.md",
     "Wiki/Interactive Lab Guide - Chapter 2 Network Models & Layered Stack.md",
+    "tools/ch2_preview_31_60.txt",
+    "tools/preview_ch2_slides_31_60.py",
+    "tools/ch2_slides_preview.txt",
+    "tools/preview_ch2_slides.py",
+    "tools/audit_all_wikis.py",
+    "tools/build_all_chapters_pure_handcrafted_master.js",
+    "tools/build_all_78_slides_ch1_complete_handcrafted.py",
+    "tools/build_true_full_ch1_gold.py",
+    "tools/generate_all_slides_ch1_ch2_ch3_gold.py",
+    "tools/build_true_ch1_gold_standard_complete.py",
     "Wiki/Interactive Lab Guide - Chapter 1 Network Fundamentals.md",
-    "Wiki/Computer Network and Internet Master Index.md",
-    "Old_Wiki/Chapter 1 - Computer Networks and the Internet.md",
-    "Wiki/Calculations and Trace Workbook.md",
-    "New/exam.md",
-    "Old_Wiki/Chapter 6 - Link Layer and LANs.md",
-    "Wiki/Chapter 3 - Transport Layer.md",
-    "Wiki/Chapter 10 - Homework and Quiz Solution Guide.md",
-    "Wiki/Chapter 1 - Computer Networks and the Internet.md",
+    "Wiki/Chapter 3 - Transport Layer Protocols and Mechanics.md",
+    "Wiki/Lecture 2 - Network Models and Layered Architecture.md",
+    "Wiki/ch3_wiki.md",
+    "Wiki/ch2_wiki.md",
+    "Wiki/ch1_wiki.md",
     "Wiki/Progress Checklist.md",
-    "Web.md",
-    "Wiki/Chapter 2 - Application Layer.md"
+    "tmp/pdfs/chapter-3-contact-145-149.jpg",
+    "tmp/pdfs/chapter-3-contact-121-144.jpg",
+    "tmp/pdfs/chapter-3-contact-097-120.jpg",
+    "tmp/pdfs/chapter-3-contact-073-096.jpg",
+    "tmp/pdfs/chapter-3-contact-049-072.jpg",
+    "tmp/pdfs/chapter-3-contact-025-048.jpg",
+    "tmp/pdfs/chapter-3-contact-001-024.jpg",
+    "tmp/pdfs/chapter-2-contact-097-112.jpg",
+    "tmp/pdfs/chapter-2-contact-073-096.jpg",
+    "tmp/pdfs/chapter-2-contact-049-072.jpg",
+    "Wiki/PDF Coverage Checklist - Chapters 1-3.md",
+    "Wiki/Lecture 6 - Link Layer, Local Area Networks, and Wireless.md",
+    "Wiki/Lecture 5 - Network Layer, Routing, and IP Addressing.md",
+    "Wiki/Lecture 4 - Transport Layer Protocols and Mechanics.md",
+    "Wiki/Lecture 3 - Application Layer Protocols and Architectures.md",
+    "Wiki/Not_use/Lecture 6 - Link Layer, Local Area Networks, and Wireless.md",
+    "Wiki/Not_use/Lecture 5 - Network Layer, Routing, and IP Addressing.md",
+    "Wiki/Not_use/Lecture 4 - Transport Layer Protocols and Mechanics.md",
+    "Wiki/Not_use/Lecture 3 - Application Layer Protocols and Architectures.md",
+    "Wiki/Not_use/Lecture 2 - Network Models and Layered Architecture.md",
+    "Wiki/Not_use/Lecture 1 - Fundamental of Computer Network.md"
   ]
 }

@@ -1,9 +1,4 @@
 
-Quiz:  Chapter 3: Transport Layer - TCP และ Congestion Control
-s6806021612037@email.kmutnb.ac.th สลับบัญชี
- 
-ระบบจะบันทึกอีเมลของคุณเมื่อส่งแบบฟอร์มนี้
-* ระบุว่าเป็นคําถามที่จําเป็น
 ส่วนที่ 1: TCP
 ข้อ 1–10
 1. ลำดับการสร้าง TCP Connection แบบ Three-Way Handshake ที่ถูกต้องคือข้อใด
@@ -66,18 +61,8 @@ s6806021612037@email.kmutnb.ac.th สลับบัญชี
 ข. เปลี่ยน IP Address ของ Server
 ค. เพิ่มความเร็วของ Physical Link
 ง. ลบ TCP Header
-หน้า 2 จาก 3
-ห้ามส่งรหัสผ่านใน Google ฟอร์ม
-แบบฟอร์มนี้ถูกสร้างขึ้นภายใน kmutnb.ac.th - ติดต่อเจ้าของแบบฟอร์ม
-แบบฟอร์มนี้ดูน่าสงสัยใช่ไหม รายงาน
 
 
-Quiz:  Chapter 3: Transport Layer - TCP และ Congestion Control
-s6806021612037@email.kmutnb.ac.th สลับบัญชี
- 
-กำลังบันทึก…
-ระบบจะบันทึกอีเมลของคุณเมื่อส่งแบบฟอร์มนี้
-* ระบุว่าเป็นคําถามที่จําเป็น
 ส่วนที่ 2: Congestion Control
 ข้อ 11–20
 11. Congestion เกิดขึ้นเมื่อใด
@@ -140,9 +125,3 @@ s6806021612037@email.kmutnb.ac.th สลับบัญชี
 ข. Connection แรกใช้ Bandwidth ทั้งหมด
 ค. ทุก Connection หยุดส่งพร้อมกัน
 ง. ใช้ Destination Port เดียวกัน
-หน้า 3 จาก 3
-ห้ามส่งรหัสผ่านใน Google ฟอร์ม
-แบบฟอร์มนี้ถูกสร้างขึ้นภายใน kmutnb.ac.th - ติดต่อเจ้าของแบบฟอร์ม
-แบบฟอร์มนี้ดูน่าสงสัยใช่ไหม รายงาน
-
-Google ฟอร์ม

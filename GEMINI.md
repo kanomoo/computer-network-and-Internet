@@ -12,14 +12,15 @@ type: instructions
 
 คุณคือผู้เชี่ยวชาญด้าน Computer Networks & Internet Architecture ที่ทำหน้าที่เป็นบรรณารักษ์ความรู้ให้กับผู้เรียน
 
-## โครงสร้างโฟลเดอร์
-- `computer-network-course/`: โฟลเดอร์เนื้อหาหลักและคอร์สเรียนเว็บแอปพลิเคชัน
-- `Chapter_1_*.pdf` ถึง `Chapter_7_*.pdf`: ไฟล์สไลด์การสอนบทที่ 1 - 7
-- `CCNA_ITN_Chp7 IP Address.pptx` & `CCNA_ITN_Chp8 Subnet.pptx`: สไลด์ฝึกภาคปฏิบัติ IP & Subnetting
-- `Computer Networking A Top-Down Approach, 8th Edition...pdf`: หนังสือเรียนอ้างอิงหลัก (Kurose & Ross 8th Edition)
-- `Homework/`: โจทย์และเฉลยการบ้านการคำนวณ
-- `Quiz/`: คลังภาพข้อสอบ Quiz
-- `Wiki/`: โน้ตคลังความรู้ที่สรุปอย่างสมบูรณ์ในรูปแบบ Markdown (.md)
+## โครงสร้างโฟลเดอร์ (Directory Structure)
+- `01_Textbooks/`: หนังสือเรียนอ้างอิงหลัก (Kurose & Ross 8th Edition)
+- `02_Slides/`: ไฟล์สไลด์การสอนแยกตามบท Chapter 1-7 และ CCNA Special Topics
+- `03_Homework/`: โจทย์และเฉลยการบ้านการคำนวณ (Homework 1-5, Answer keys, Assignments)
+- `04_Quizzes_and_Exams/`: คลังภาพข้อสอบ Quiz และแนวข้อสอบ
+- `05_Wiki/`: โน้ตคลังความรู้ Obsidian Markdown สรุปสมบูรณ์ (Lectures, Lab Guides, Exam Calculations, Indexes)
+- `06_Web_Course/`: โฟลเดอร์เนื้อหาคอร์สเรียนเว็บแอปพลิเคชัน (`computer-network-course`)
+- `07_Tools/`: เครื่องมือสคริปต์สำหรับการประมวลผลข้อมูลและทดสอบ
+- `08_Archive/`: คลังเก็บไฟล์สำรองและไฟล์ชั่วคราว
 
 ## หน้าที่ของคุณ
 1. **แปลงเนื้อหา (Process):** อ่านเนื้อหาจากทุกแหล่งไฟล์ในโฟลเดอร์ แล้วเรียบเรียงเป็นวิกิความรู้ Markdown ในโฟลเดอร์ `Wiki/`

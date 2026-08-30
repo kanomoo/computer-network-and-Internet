@@ -1,0 +1,1532 @@
+[
+  {
+    "num": 1,
+    "title": "Chapter 4 — Network Layer: Data Plane",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านข้อความบนสไลด์จากส่วนชื่อบทก่อน แล้วสังเกตข้อความด้านล่างที่อธิบายแหล่งที่มาและสิทธิ์การใช้งานของสไลด์ ข้อความดังกล่าวไม่ใช่กลไกของ Network Layer แต่ช่วยยืนยันแหล่งอ้างอิงของเนื้อหาในบทนี้"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Network Layer ทำหน้าที่ส่ง datagram ข้ามเครือข่าย บทนี้เน้น Data Plane และการทำงานภายใน Router"
+      }
+    ],
+    "cleanFull": "01\nNetwork Layer Overview\nSlide 1\nChapter 4 — Network Layer: Data Plane\nสไลด์เปิดบทระบุว่าเนื้อหาบทนี้มาจาก\nComputer Networking: A Top-Down Approach, 9th edition\nของ Jim Kurose และ Keith Ross และเน้นส่วน\nNetwork Layer: Data Plane\nหรือการทำงานของชั้นเครือข่ายที่เกี่ยวข้องกับการจัดการแพ็กเก็ตภายในอุปกรณ์เครือข่ายแต่ละตัว\nในภาพรวม Network Layer อยู่ระหว่าง Transport Layer และ Link Layer หน้าที่สำคัญคือรับข้อมูลจากชั้นขนส่ง ห่อเป็น IP datagram และทำให้ datagram เคลื่อนผ่านเครือข่ายไปยังเครื่องปลายทาง บทนี้จึงเป็นพื้นฐานสำคัญสำหรับการเข้าใจ IP, Router, Forwarding, NAT และ IPv6 ในช่วงต่อไป\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านข้อความบนสไลด์จากส่วนชื่อบทก่อน แล้วสังเกตข้อความด้านล่างที่อธิบายแหล่งที่มาและสิทธิ์การใช้งานของสไลด์ ข้อความดังกล่าวไม่ใช่กลไกของ Network Layer แต่ช่วยยืนยันแหล่งอ้างอิงของเนื้อหาในบทนี้\nประเด็นสำคัญที่ควรจำ\nNetwork Layer ทำหน้าที่ส่ง datagram ข้ามเครือข่าย\nบทนี้เน้น Data Plane และการทำงานภายใน Router"
+  },
+  {
+    "num": 2,
+    "title": "Network layer: our goals",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ รายการด้านบนเป็น “หลักการ” ของ Network Layer ส่วนรายการด้านล่างเป็น “ตัวอย่างการนำหลักการไปใช้จริงใน Internet” ให้มองความสัมพันธ์แบบจากแนวคิดทั่วไปไปสู่เทคโนโลยีจริง"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ เข้าใจหลักการก่อนรายละเอียดของ IP Forwarding, routing และ router architecture เป็นแกนกลางของบท"
+      }
+    ],
+    "cleanFull": "Slide 2\nNetwork layer: our goals\nเป้าหมายของบทคือทำความเข้าใจหลักการของบริการใน Network Layer โดยเน้น\nData Plane\nตั้งแต่แนวคิด service model, ความแตกต่างระหว่าง forwarding กับ routing, โครงสร้างภายใน router, การกำหนด addressing และ generalized forwarding\nหลังจากเข้าใจหลักการแล้วจึงเชื่อมโยงไปยังการใช้งานจริงใน Internet เช่น\nIP protocol, NAT และ middleboxes\nดังนั้นสไลด์นี้ควรใช้เป็นแผนที่รวมของสิ่งที่จะเรียน ไม่จำเป็นต้องจำรายละเอียดทุกคำตั้งแต่ต้น\nอ่านภาพและองค์ประกอบในสไลด์\nรายการด้านบนเป็น “หลักการ” ของ Network Layer ส่วนรายการด้านล่างเป็น “ตัวอย่างการนำหลักการไปใช้จริงใน Internet” ให้มองความสัมพันธ์แบบจากแนวคิดทั่วไปไปสู่เทคโนโลยีจริง\nประเด็นสำคัญที่ควรจำ\nเข้าใจหลักการก่อนรายละเอียดของ IP\nForwarding, routing และ router architecture เป็นแกนกลางของบท"
+  },
+  {
+    "num": 3,
+    "title": "Network layer: “data plane” roadmap",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ให้มอง roadmap เป็นเส้นทางของบท: เริ่มที่ overview → router → IP/NAT/IPv6 → generalized forwarding/OpenFlow → middleboxes และ Internet architecture เมื่อกลับมาทบทวนบท สามารถใช้สไลด์นี้ตรวจว่าหัวข้อแต่ละส่วนเชื่อมกันอย่างไร"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Roadmap แสดงลำดับเนื้อหาทั้งบท Match + action จะเป็นแนวคิดสำคัญใน generalized forwarding"
+      }
+    ],
+    "cleanFull": "Slide 3\nNetwork layer: “data plane” roadmap\nRoadmap แบ่งเนื้อหาออกเป็นหลายส่วน ได้แก่ Network Layer overview, ภายใน router, IP, generalized forwarding และ Internet architecture การเรียงหัวข้อนี้สะท้อนลำดับการเรียนจากภาพรวม ไปยังการทำงานภายในอุปกรณ์ แล้วจึงขยายไปยัง protocol และสถาปัตยกรรมเครือข่าย\nหัวข้อ\nGeneralized Forwarding\nจะขยายแนวคิด forwarding แบบเดิมให้สามารถพิจารณาหลาย field ใน packet header และดำเนินการแบบ\nmatch + action\nซึ่งเป็นพื้นฐานสำคัญของ OpenFlow และ Software-Defined Networking (SDN)\nอ่านภาพและองค์ประกอบในสไลด์\nให้มอง roadmap เป็นเส้นทางของบท: เริ่มที่ overview → router → IP/NAT/IPv6 → generalized forwarding/OpenFlow → middleboxes และ Internet architecture เมื่อกลับมาทบทวนบท สามารถใช้สไลด์นี้ตรวจว่าหัวข้อแต่ละส่วนเชื่อมกันอย่างไร\nประเด็นสำคัญที่ควรจำ\nRoadmap แสดงลำดับเนื้อหาทั้งบท\nMatch + action จะเป็นแนวคิดสำคัญใน generalized forwarding"
+  },
+  {
+    "num": 4,
+    "title": "Network-layer services and protocols",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพเครือข่ายแสดง host ที่ปลายทั้งสองด้านและ router หลายตัวระหว่างทาง ให้ตามเส้นทางของ datagram จาก host ต้นทาง ผ่านเครือข่ายหลายประเภท เช่น mobile, enterprise, ISP และ datacenter ไปยัง host ปลายทาง สังเกตว่า application และ transport ทำงานที่ end host เป็นหลัก แต่ network layer ปรากฏที่อุปกรณ์ทุกจุดที่ต้องจัดการ IP datagram"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Sender encapsulates segment เป็น datagram Router ตรวจ IP header และส่ง datagram ไปยัง output port ที่เหมาะสม"
+      }
+    ],
+    "cleanFull": "Slide 4\nNetwork-layer services and protocols\nNetwork Layer มีหน้าที่นำ\ntransport-layer segment\nจาก sending host ไปยัง receiving host ที่ฝั่งส่ง Network Layer จะ encapsulate segment ให้เป็น\ndatagram\nแล้วส่งต่อให้ Link Layer ส่วนฝั่งรับจะนำ payload ภายใน datagram ส่งขึ้นไปยัง Transport Layer ที่เหมาะสม\nความแตกต่างสำคัญจาก Transport Layer คือ protocol ของ Network Layer ต้องมีอยู่ทั้งใน\nhost และ router\nเพราะ router ทุกตัวบนเส้นทางต้องตรวจ header ของ IP datagram และตัดสินใจว่าจะส่ง datagram ออกจาก output port ใดเพื่อให้เคลื่อนต่อไปตามเส้นทางแบบ end-to-end\nอ่านภาพและองค์ประกอบในสไลด์\nภาพเครือข่ายแสดง host ที่ปลายทั้งสองด้านและ router หลายตัวระหว่างทาง ให้ตามเส้นทางของ datagram จาก host ต้นทาง ผ่านเครือข่ายหลายประเภท เช่น mobile, enterprise, ISP และ datacenter ไปยัง host ปลายทาง สังเกตว่า application และ transport ทำงานที่ end host เป็นหลัก แต่ network layer ปรากฏที่อุปกรณ์ทุกจุดที่ต้องจัดการ IP datagram\nประเด็นสำคัญที่ควรจำ\nSender encapsulates segment เป็น datagram\nRouter ตรวจ IP header และส่ง datagram ไปยัง output port ที่เหมาะสม"
+  },
+  {
+    "num": 5,
+    "title": "Two key network-layer functions",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ดูคำว่า forwarding และ routing แยกคนละด้านของภาพ จากนั้นเชื่อมกับอุปมา “single interchange” เทียบกับ “planning trip from source to destination” เพื่อจำระดับของการตัดสินใจ: local ต่อหนึ่ง router กับ global ตลอดเส้นทาง"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Forwarding = การตัดสินใจภายใน router หนึ่งตัว Routing = การกำหนดเส้นทางจาก source ถึง destination"
+      }
+    ],
+    "cleanFull": "Slide 5\nTwo key network-layer functions\nNetwork Layer มีสองหน้าที่หลักที่ต้องแยกให้ชัดเจน คือ\nforwarding\nและ\nrouting\nโดย forwarding เป็นการตัดสินใจภายใน router หนึ่งตัวว่าแพ็กเก็ตที่เข้ามาทาง input link ควรออกทาง output link ใด ส่วน routing เป็นการกำหนดเส้นทางโดยรวมจากต้นทางไปยังปลายทาง\nอุปมาเรื่องการเดินทางช่วยแยกสองแนวคิดนี้ได้ดี:\nrouting\nเหมือนการวางแผนว่าจะเดินทางผ่านเมืองหรือถนนใดบ้าง ส่วน\nforwarding\nเหมือนการเลือกทางออกที่ถูกต้องเมื่อมาถึงทางแยกหนึ่งจุด ดังนั้น routing สร้างข้อมูลที่ forwarding นำไปใช้ตัดสินใจจริงกับแต่ละ packet\nอ่านภาพและองค์ประกอบในสไลด์\nดูคำว่า forwarding และ routing แยกคนละด้านของภาพ จากนั้นเชื่อมกับอุปมา “single interchange” เทียบกับ “planning trip from source to destination” เพื่อจำระดับของการตัดสินใจ: local ต่อหนึ่ง router กับ global ตลอดเส้นทาง\nประเด็นสำคัญที่ควรจำ\nForwarding = การตัดสินใจภายใน router หนึ่งตัว\nRouting = การกำหนดเส้นทางจาก source ถึง destination"
+  },
+  {
+    "num": 6,
+    "title": "Network layer: data plane, control plane",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ในรูป ตัวเลขหรือบิตจาก packet header ทางด้านซ้ายแทนข้อมูลที่ Data Plane นำมาใช้เลือก output port ส่วนเส้นทางระหว่าง routers ทั้งเครือข่ายเป็นสิ่งที่ Control Plane ต้องพิจารณา จึงควรอ่านภาพในสองระดับ: “packet นี้ออก port ไหน” กับ “packet ควรเดินผ่าน router ใดบ้าง”"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Data Plane = local per-router forwarding Control Plane = network-wide routing/control logic"
+      }
+    ],
+    "cleanFull": "Slide 6\nNetwork layer: data plane, control plane\nData Plane\nคือการทำงานแบบ local ภายใน router แต่ละตัว เมื่อ datagram เข้ามาที่ input port จะอ่านข้อมูลที่จำเป็นใน header และใช้ forwarding table เพื่อตัดสินใจว่าจะส่งออกทาง output port ใด การทำงานนี้เกิดกับ packet จำนวนมากและต้องทำได้รวดเร็วมาก\nControl Plane\nคือ logic ระดับเครือข่ายที่กำหนดว่าควรสร้างเส้นทางและ forwarding information อย่างไร เพื่อให้ datagram เดินทางจาก source ไป destination ได้ สไลด์ระบุสองแนวทาง ได้แก่ routing algorithm แบบดั้งเดิมที่กระจายอยู่ใน routers และ SDN ที่ย้ายการควบคุมหลักไปยัง remote controller/server\nอ่านภาพและองค์ประกอบในสไลด์\nในรูป ตัวเลขหรือบิตจาก packet header ทางด้านซ้ายแทนข้อมูลที่ Data Plane นำมาใช้เลือก output port ส่วนเส้นทางระหว่าง routers ทั้งเครือข่ายเป็นสิ่งที่ Control Plane ต้องพิจารณา จึงควรอ่านภาพในสองระดับ: “packet นี้ออก port ไหน” กับ “packet ควรเดินผ่าน router ใดบ้าง”\nประเด็นสำคัญที่ควรจำ\nData Plane = local per-router forwarding\nControl Plane = network-wide routing/control logic"
+  },
+  {
+    "num": 7,
+    "title": "Per-router control plane",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สังเกตกล่อง Routing Algorithm อยู่ใน router แต่ละตัวและมีการเชื่อมต่อกันเหนือส่วน Data Plane เส้นเชื่อมสื่อถึงการแลกเปลี่ยนข้อมูล control ระหว่าง routers ขณะที่ packet จริงยังถูกส่งต่อผ่าน Data Plane ด้านล่าง"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Per-router control plane กระจาย routing/control logic อยู่ใน router หลายตัว การมี routing logic ในแต่ละ router ไม่ได้หมายความว่าแต่ละ router ต้องใช้อัลกอริทึมคนละแบบ"
+      }
+    ],
+    "cleanFull": "Slide 7\nPer-router control plane\nแนวทางแบบดั้งเดิมใช้ Per-router Control Plane กล่าวคือ router แต่ละตัวมีองค์ประกอบของ routing algorithm/control logic อยู่ภายใน และองค์ประกอบเหล่านี้แลกเปลี่ยนข้อมูล control กันเพื่อคำนวณเส้นทาง จากนั้นผลการคำนวณจะถูกนำไปสร้างหรือปรับ forwarding table ภายในแต่ละ router คำว่า “อยู่ในแต่ละ router” ไม่ได้หมายความว่า router ทุกตัวต้องใช้อัลกอริทึมคนละแบบ; router ที่ทำงานภายใต้ routing protocol เดียวกันจะใช้กติกาของ protocol นั้นร่วมกัน\nจุดสำคัญคือแม้ Data Plane จะตัดสินใจ forwarding แบบ local แต่ข้อมูลที่ใช้ตัดสินใจไม่ได้เกิดขึ้นโดยลำพัง แต่มี Control Plane ของ router หลายตัวร่วมกันคำนวณอยู่เบื้องหลัง แนวคิดนี้เป็นพื้นฐานของ routing protocols แบบกระจายที่เรียนในส่วน Control Plane\nอ่านภาพและองค์ประกอบในสไลด์\nสังเกตกล่อง Routing Algorithm อยู่ใน router แต่ละตัวและมีการเชื่อมต่อกันเหนือส่วน Data Plane เส้นเชื่อมสื่อถึงการแลกเปลี่ยนข้อมูล control ระหว่าง routers ขณะที่ packet จริงยังถูกส่งต่อผ่าน Data Plane ด้านล่าง\nประเด็นสำคัญที่ควรจำ\nPer-router control plane กระจาย routing/control logic อยู่ใน router หลายตัว\nการมี routing logic ในแต่ละ router ไม่ได้หมายความว่าแต่ละ router ต้องใช้อัลกอริทึมคนละแบบ"
+  },
+  {
+    "num": 8,
+    "title": "Software-Defined Networking (SDN) control plane",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ในภาพ Remote Controller อยู่เหนือ routers และเชื่อมกับ control agent (CA) ของอุปกรณ์หลายตัว ให้มองลูกศรจาก controller ลงสู่อุปกรณ์เป็นการติดตั้ง/ปรับกฎ ส่วนเส้นทาง packet ระหว่าง routers ยังคงเกิดใน Data Plane เช่นเดิม"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ SDN แยก control logic ออกจาก forwarding devices Controller คำนวณและติดตั้ง forwarding rules ให้หลายอุปกรณ์"
+      }
+    ],
+    "cleanFull": "Slide 8\nSoftware-Defined Networking (SDN) control plane\nSoftware-Defined Networking (SDN)\nแยก Control Plane ออกจากอุปกรณ์ forwarding มากขึ้น โดยใช้\nRemote Controller\nที่มีมุมมองของเครือข่ายในระดับกว้างเพื่อคำนวณกฎหรือ forwarding tables แล้วติดตั้งกฎเหล่านั้นลงใน routers/switches\nอุปกรณ์ใน Data Plane จึงมุ่งทำงานตามกฎที่ controller กำหนด เช่น match header field แล้วเลือก action ที่เหมาะสม แนวทางนี้ทำให้การควบคุมและเปลี่ยนนโยบายเครือข่ายทำได้จาก software ส่วนกลางเชิงตรรกะ แทนที่จะต้องให้ทุก router คำนวณทุกอย่างอย่างอิสระ\nอ่านภาพและองค์ประกอบในสไลด์\nในภาพ Remote Controller อยู่เหนือ routers และเชื่อมกับ control agent (CA) ของอุปกรณ์หลายตัว ให้มองลูกศรจาก controller ลงสู่อุปกรณ์เป็นการติดตั้ง/ปรับกฎ ส่วนเส้นทาง packet ระหว่าง routers ยังคงเกิดใน Data Plane เช่นเดิม\nประเด็นสำคัญที่ควรจำ\nSDN แยก control logic ออกจาก forwarding devices\nController คำนวณและติดตั้ง forwarding rules ให้หลายอุปกรณ์"
+  },
+  {
+    "num": 9,
+    "title": "Network service model",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ แบ่งรายการออกเป็นสองกลุ่ม: บริการสำหรับ datagram รายตัว กับบริการสำหรับ flow ของ datagrams หลายตัว การแยกนี้ช่วยให้เห็นว่า guarantee บางอย่างประเมินได้ต่อ packet แต่บางอย่างต้องพิจารณาพฤติกรรมของ traffic ต่อเนื่องทั้ง flow"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Service model ระบุสิ่งที่ network รับประกัน Guarantee อาจพิจารณาระดับ datagram หรือระดับ flow"
+      }
+    ],
+    "cleanFull": "Slide 9\nNetwork service model\nNetwork service model\nคือคำอธิบายว่า Network Layer “รับประกันบริการอะไร” ให้กับ datagram หรือ flow ที่ส่งผ่านเครือข่าย ตัวอย่างบริการระดับ datagram ได้แก่ guaranteed delivery หรือรับประกันการส่งภายในเวลาที่กำหนด ส่วนบริการระดับ flow อาจรวมถึงการส่งตามลำดับ การรับประกัน bandwidth ขั้นต่ำ หรือควบคุมความแปรผันของช่วงเวลาระหว่าง packet\nคำถามท้ายสไลด์จึงไม่ได้ถามเพียงว่า network ส่ง packet ได้หรือไม่ แต่ถามว่า “channel” จาก sender ไป receiver มีคุณสมบัติและการรับประกันระดับใด ซึ่งจะนำไปสู่การเปรียบเทียบ\nbest-effort\nของ Internet กับ service model ที่ให้ QoS guarantees มากกว่า\nอ่านภาพและองค์ประกอบในสไลด์\nแบ่งรายการออกเป็นสองกลุ่ม: บริการสำหรับ datagram รายตัว กับบริการสำหรับ flow ของ datagrams หลายตัว การแยกนี้ช่วยให้เห็นว่า guarantee บางอย่างประเมินได้ต่อ packet แต่บางอย่างต้องพิจารณาพฤติกรรมของ traffic ต่อเนื่องทั้ง flow\nประเด็นสำคัญที่ควรจำ\nService model ระบุสิ่งที่ network รับประกัน\nGuarantee อาจพิจารณาระดับ datagram หรือระดับ flow"
+  },
+  {
+    "num": 10,
+    "title": "Network-layer service model",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านตารางจากซ้ายไปขวา: เริ่มจาก Network Architecture/Service Model แล้วไล่ดูแต่ละมิติของ guarantee แถว Internet best effort มีคำว่า none/no หลายจุด แปลว่าไม่มีการรับประกันในมิติเหล่านั้น ไม่ได้หมายความว่า Internet “ทำไม่ได้” แต่หมายความว่า network layer ไม่สัญญาว่าจะให้ผลนั้นทุกครั้ง"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Internet โดยพื้นฐานเป็น best-effort ไม่มี guarantee ไม่ได้แปลว่าจะล้มเหลวเสมอ แต่หมายถึงไม่รับประกันผล"
+      }
+    ],
+    "cleanFull": "Slide 10\nNetwork-layer service model\nตารางเปรียบเทียบ service model หลายแบบตามคุณสมบัติ เช่น\nbandwidth, loss, order และ timing\nสำหรับ Internet แบบทั่วไปใช้\nbest-effort service\nซึ่งไม่ได้รับประกัน bandwidth ขั้นต่ำ ไม่รับประกันว่า packet จะไม่สูญหาย ไม่รับประกันลำดับ และไม่รับประกันเวลาส่งถึงปลายทาง\nตารางยังยกตัวอย่าง ATM Constant Bit Rate (CBR), ATM Available Bit Rate (ABR), Integrated Services (Intserv) และ Differentiated Services (Diffserv) เพื่อแสดงว่าระบบเครือข่ายสามารถออกแบบให้มีระดับ QoS ที่แตกต่างกันได้ ประเด็นสำคัญไม่ใช่การจำทุกช่อง แต่คือการเข้าใจว่า\nservice model กำหนดชนิดของ guarantee ที่ network เสนอให้ traffic\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านตารางจากซ้ายไปขวา: เริ่มจาก Network Architecture/Service Model แล้วไล่ดูแต่ละมิติของ guarantee แถว Internet best effort มีคำว่า none/no หลายจุด แปลว่าไม่มีการรับประกันในมิติเหล่านั้น ไม่ได้หมายความว่า Internet “ทำไม่ได้” แต่หมายความว่า network layer ไม่สัญญาว่าจะให้ผลนั้นทุกครั้ง\nประเด็นสำคัญที่ควรจำ\nInternet โดยพื้นฐานเป็น best-effort\nไม่มี guarantee ไม่ได้แปลว่าจะล้มเหลวเสมอ แต่หมายถึงไม่รับประกันผล"
+  },
+  {
+    "num": 11,
+    "title": "Network-layer service model",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านตารางทีละแถวและเทียบกับหัวคอลัมน์ QoS ด้านบน เช่น ATM Constant Bit Rate มี constant rate และมี guarantee ในมิติ loss, order และ timing ส่วน Intserv Guaranteed ให้ guarantee หลายมิติ ขณะที่ Diffserv ระบุบางคุณสมบัติว่า possible/possibly และไม่รับประกัน timing จุดสำคัญคือคำว่า “yes” ใต้คอลัมน์ Loss หมายถึงมีการรับประกันด้านการสูญหาย ไม่ได้แปลว่า “มี packet loss”"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ QoS guarantee คือข้อตกลงด้านคุณภาพที่ network service model ให้แก่ traffic Internet best effort ไม่มี hard guarantee ด้าน bandwidth, loss, order หรือ timing"
+      }
+    ],
+    "cleanFull": "Slide 11\nNetwork-layer service model\nสไลด์นี้ขยายตารางเปรียบเทียบ\nnetwork-layer service model\nโดยมองในมุมของ\nQuality of Service (QoS) guarantees\nว่าแต่ละสถาปัตยกรรมรับประกันเรื่อง bandwidth, loss, order และ timing มากน้อยเพียงใด จุดเปรียบเทียบสำคัญคือ Internet แบบ\nbest effort\nซึ่งไม่ให้การรับประกันแบบตายตัวในทั้งสี่มิติ ขณะที่ service model อื่นอาจให้ guarantee บางประเภทได้.\nคำว่า\nguarantee\nหมายถึงสิ่งที่เครือข่ายสัญญาว่าจะรักษาให้ได้ตาม service model ไม่ใช่เพียงสิ่งที่ “มักเกิดขึ้น” ในการใช้งานจริง ตัวอย่างเช่น Internet อาจส่งข้อมูลได้เร็วและสูญหายน้อยในหลายสถานการณ์ แต่ best-effort ไม่ได้สัญญาว่าจะเป็นเช่นนั้นทุกครั้ง.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านตารางทีละแถวและเทียบกับหัวคอลัมน์ QoS ด้านบน เช่น ATM Constant Bit Rate มี constant rate และมี guarantee ในมิติ loss, order และ timing ส่วน Intserv Guaranteed ให้ guarantee หลายมิติ ขณะที่ Diffserv ระบุบางคุณสมบัติว่า possible/possibly และไม่รับประกัน timing จุดสำคัญคือคำว่า “yes” ใต้คอลัมน์ Loss หมายถึงมีการรับประกันด้านการสูญหาย ไม่ได้แปลว่า “มี packet loss”\nประเด็นสำคัญที่ควรจำ\nQoS guarantee คือข้อตกลงด้านคุณภาพที่ network service model ให้แก่ traffic\nInternet best effort ไม่มี hard guarantee ด้าน bandwidth, loss, order หรือ timing"
+  },
+  {
+    "num": 12,
+    "title": "Reflections on best-effort service",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สไลด์นี้เป็นข้อความสรุปเหตุผลหลายข้อ ไม่มีไดอะแกรมหลัก ให้อ่านจากบนลงล่างแล้วเชื่อมโยงว่าแต่ละข้อเป็นกลไกคนละระดับ: ความเรียบง่ายอยู่ที่ network layer, การเพิ่ม capacity อยู่ที่โครงสร้างพื้นฐาน, CDN อยู่ที่ application infrastructure และ congestion control ช่วยปรับพฤติกรรมของ traffic."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ ไม่มี guarantee ไม่ได้หมายความว่าใช้งานจริงไม่มีประสิทธิภาพ ความสำเร็จของ Internet มาจากทั้งความเรียบง่ายและกลไกเสริมรอบ ๆ best effort"
+      }
+    ],
+    "cleanFull": "Slide 12\nReflections on best-effort service\nแม้ best-effort จะไม่มี QoS guarantee แบบเข้มงวด แต่สไลด์ชี้ให้เห็นว่าโมเดลนี้ประสบความสำเร็จอย่างมาก เพราะกลไกของ network layer มีความเรียบง่าย จึงช่วยให้ Internet ขยายตัวและถูกนำไปใช้อย่างกว้างขวาง.\nประสิทธิภาพที่ผู้ใช้ได้รับยังดีขึ้นได้จากหลายปัจจัย เช่น การเตรียม bandwidth ให้เพียงพอจนงาน real-time อย่างเสียงหรือวิดีโอ “ดีพอ” ในเวลาส่วนใหญ่ การกระจายบริการผ่าน datacenter และ content distribution network (CDN) ให้ใกล้ผู้ใช้มากขึ้น และการใช้ congestion control กับ traffic ที่ปรับอัตราการส่งได้.\nอ่านภาพและองค์ประกอบในสไลด์\nสไลด์นี้เป็นข้อความสรุปเหตุผลหลายข้อ ไม่มีไดอะแกรมหลัก ให้อ่านจากบนลงล่างแล้วเชื่อมโยงว่าแต่ละข้อเป็นกลไกคนละระดับ: ความเรียบง่ายอยู่ที่ network layer, การเพิ่ม capacity อยู่ที่โครงสร้างพื้นฐาน, CDN อยู่ที่ application infrastructure และ congestion control ช่วยปรับพฤติกรรมของ traffic.\nประเด็นสำคัญที่ควรจำ\nไม่มี guarantee ไม่ได้หมายความว่าใช้งานจริงไม่มีประสิทธิภาพ\nความสำเร็จของ Internet มาจากทั้งความเรียบง่ายและกลไกเสริมรอบ ๆ best effort"
+  },
+  {
+    "num": 13,
+    "title": "Network layer: “data plane” roadmap",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ มอง roadmap เป็นแผนที่ของบท โดยหัวข้อ What’s inside a router เป็นหัวข้อที่กำลังจะเริ่ม ส่วน Generalized Forwarding, OpenFlow, Middleboxes และ Internet architecture เป็นหัวข้อที่จะตามมาในช่วงหลังของบท."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ ช่วงถัดไปเน้นโครงสร้างและการทำงานภายใน router router data plane ต้องรับ ตรวจ และส่งต่อ datagram ด้วยความเร็วสูง"
+      }
+    ],
+    "cleanFull": "02\nWhat's Inside a Router\nSlide 13\nNetwork layer: “data plane” roadmap\nสไลด์ roadmap นี้เป็นจุดเปลี่ยนจากภาพรวมของ network layer ไปสู่หัวข้อ\nWhat’s inside a router\nโดยส่วนถัดไปจะศึกษาองค์ประกอบภายใน router ได้แก่ input/output ports, switching, buffer management และ scheduling ก่อนเข้าสู่รายละเอียดของ IP, NAT และ IPv6.\nการกลับมาดู roadmap ช่วยให้เห็นลำดับการเรียน: ก่อนหน้านี้เราแยก data plane กับ control plane แล้ว จากนี้จะเจาะรายละเอียดว่า data plane ภายใน router รับ packet เข้ามา ตรวจข้อมูลที่จำเป็น และส่งออกทางพอร์ตที่เหมาะสมอย่างไร.\nอ่านภาพและองค์ประกอบในสไลด์\nมอง roadmap เป็นแผนที่ของบท โดยหัวข้อ\nWhat’s inside a router\nเป็นหัวข้อที่กำลังจะเริ่ม ส่วน Generalized Forwarding, OpenFlow, Middleboxes และ Internet architecture เป็นหัวข้อที่จะตามมาในช่วงหลังของบท.\nประเด็นสำคัญที่ควรจำ\nช่วงถัดไปเน้นโครงสร้างและการทำงานภายใน router\nrouter data plane ต้องรับ ตรวจ และส่งต่อ datagram ด้วยความเร็วสูง"
+  },
+  {
+    "num": 14,
+    "title": "Router architecture overview",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพจากซ้ายไปขวาตามทางเดินของ packet: input ports → switching fabric → output ports ส่วน routing processor อยู่ด้านบนและเชื่อมกับการควบคุม router ไม่ใช่เส้นทางที่ payload ทุก packet ต้องวิ่งผ่านเพื่อถูกส่งต่อ."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ switching fabric เชื่อม input port ไปยัง output port ภายใน router ตามสไลด์ data plane ทำงานในช่วงเวลาที่เร็วกว่ามากเมื่อเทียบกับ control plane"
+      }
+    ],
+    "cleanFull": "Slide 14\nRouter architecture overview\nภาพรวมสถาปัตยกรรมของ router แบ่งองค์ประกอบสำคัญเป็น\ninput ports\n,\nswitching fabric\n,\noutput ports\nและ\nrouting processor\nเส้นทางข้อมูลจริงของ packet จะเข้าสู่ input port ผ่าน switching fabric แล้วออกทาง output port ที่ถูกเลือก.\nสไลด์แยกช่วงเวลาการทำงานของสองส่วนอย่างชัดเจน: forwarding data plane มักทำด้วย hardware และในภาพระบุช่วงเวลาระดับ nanosecond ส่วน routing/management control plane ทำด้วย software และระบุช่วงเวลาระดับ millisecond ให้ตีความตัวเลขนี้เป็นการเปรียบเทียบลำดับความเร็วตามสไลด์ ไม่ใช่ค่าคงที่ที่ router ทุกเครื่องต้องมีเท่ากัน\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพจากซ้ายไปขวาตามทางเดินของ packet: input ports → switching fabric → output ports ส่วน routing processor อยู่ด้านบนและเชื่อมกับการควบคุม router ไม่ใช่เส้นทางที่ payload ทุก packet ต้องวิ่งผ่านเพื่อถูกส่งต่อ.\nประเด็นสำคัญที่ควรจำ\nswitching fabric เชื่อม input port ไปยัง output port ภายใน router\nตามสไลด์ data plane ทำงานในช่วงเวลาที่เร็วกว่ามากเมื่อเทียบกับ control plane"
+  },
+  {
+    "num": 15,
+    "title": "Input port functions",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ในภาพ กล่องฝั่งซ้ายแทน line termination/physical layer ถัดมาเป็น link-layer processing แล้วจึงเป็น lookup/forwarding ก่อนเชื่อมเข้าสู่ switch fabric ให้ติดตามลำดับนี้เพื่อแยกหน้าที่ของแต่ละ layer ภายในพอร์ตเดียวกัน."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ input port ทำงานหลายชั้นตั้งแต่รับบิตจนถึง lookup forwarding line-speed processing ช่วยลดการสะสมใน queue และความเสี่ยง packet loss"
+      }
+    ],
+    "cleanFull": "Slide 15\nInput port functions\nเมื่อสัญญาณมาถึง input port จะผ่านหลายขั้นตอน เริ่มจาก\nphysical layer\nที่รับบิตจากสื่อ เช่น copper, fiber หรือ wireless จากนั้น\nlink layer\nจัดการ frame เช่น Ethernet แล้วจึงเข้าสู่ขั้นตอนสำคัญของ network layer คือ\nlookup และ forwarding\n.\nเป้าหมายคือทำ input-port processing ให้ทัน\nline speed\nหรือความเร็วที่ข้อมูลเข้ามาจริง หากประมวลผลหรือส่งเข้าสู่ switching fabric ไม่ทัน packet จะต้องรอใน queue และเมื่อ buffer เต็มก็อาจเกิด packet loss ได้.\nอ่านภาพและองค์ประกอบในสไลด์\nในภาพ กล่องฝั่งซ้ายแทน line termination/physical layer ถัดมาเป็น link-layer processing แล้วจึงเป็น lookup/forwarding ก่อนเชื่อมเข้าสู่ switch fabric ให้ติดตามลำดับนี้เพื่อแยกหน้าที่ของแต่ละ layer ภายในพอร์ตเดียวกัน.\nประเด็นสำคัญที่ควรจำ\ninput port ทำงานหลายชั้นตั้งแต่รับบิตจนถึง lookup forwarding\nline-speed processing ช่วยลดการสะสมใน queue และความเสี่ยง packet loss"
+  },
+  {
+    "num": 16,
+    "title": "Input port functions: decentralized switching",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สังเกตว่ากล่อง lookup/forwarding อยู่ที่ input port และเชื่อมตรงไปยัง switching fabric ส่วนคำว่า queueing แสดงบริเวณที่ packet อาจต้องรอเมื่ออัตราเข้ามากกว่าความสามารถในการส่งผ่าน fabric."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ decentralized switching ทำ lookup ที่ input port destination-based forwarding ใช้ปลายทางเป็นหลัก ส่วน generalized forwarding match ได้หลาย header fields"
+      }
+    ],
+    "cleanFull": "Slide 16\nInput port functions: decentralized switching\nการตัดสินใจ forwarding สามารถทำแบบ\ndecentralized switching\nคือ input port ใช้ค่าใน packet header ไปค้นหา forwarding table ที่อยู่ในหน่วยความจำของพอร์ต แล้วเลือก output port ตามแนวคิด\nmatch plus action\nโดยไม่ต้องส่ง packet ทุกตัวไปให้ routing processor ตัดสินใจ.\nสไลด์แยกสองแนวคิดสำคัญ:\ndestination-based forwarding\nแบบดั้งเดิมตัดสินจาก destination IP address ส่วน\ngeneralized forwarding\nสามารถ match จากชุดของ header fields ได้หลายค่า ซึ่งจะเป็นพื้นฐานของหัวข้อ generalized forwarding ในภายหลัง.\nอ่านภาพและองค์ประกอบในสไลด์\nสังเกตว่ากล่อง lookup/forwarding อยู่ที่ input port และเชื่อมตรงไปยัง switching fabric ส่วนคำว่า queueing แสดงบริเวณที่ packet อาจต้องรอเมื่ออัตราเข้ามากกว่าความสามารถในการส่งผ่าน fabric.\nประเด็นสำคัญที่ควรจำ\ndecentralized switching ทำ lookup ที่ input port\ndestination-based forwarding ใช้ปลายทางเป็นหลัก ส่วน generalized forwarding match ได้หลาย header fields"
+  },
+  {
+    "num": 17,
+    "title": "Destination-based forwarding: address ranges",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ดูคอลัมน์ Destination Address Range แล้วสังเกตส่วนที่ไฮไลต์สีต่างกัน: address ส่วนใหญ่ของช่วงหนึ่งไป interface 0 แต่มี subset เล็ก ๆ ถูกแยกไป interface 3 จึงไม่สามารถอาศัยเพียงช่วงกว้างเพียงรายการเดียวได้."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ forwarding table ต้องรองรับกรณีที่ address ranges ซ้อนหรือมีช่วงย่อย ปัญหานี้นำไปสู่ longest prefix matching"
+      }
+    ],
+    "cleanFull": "Slide 17\nDestination-based forwarding: address ranges\nใน destination-based forwarding แบบง่าย เราอาจเขียน forwarding table เป็นช่วงของ destination address แล้วผูกแต่ละช่วงกับ link interface แต่เมื่อมี\nช่วงย่อย\nที่ต้องออกคนละ interface ตารางแบบแบ่ง range ตรง ๆ จะเริ่มซับซ้อน เพราะช่วง address ไม่ได้แบ่งเป็นก้อนสวยงามเสมอ.\nตัวอย่างในสไลด์แทรกช่วงย่อยของ address ซึ่งต้องส่งไป interface 3 อยู่ภายในช่วงที่เดิมส่งไป interface 0 คำถามด้านล่างจึงนำเข้าสู่แนวคิดที่แก้ปัญหาได้อย่างมีประสิทธิภาพกว่า นั่นคือ\nlongest prefix matching\n.\nอ่านภาพและองค์ประกอบในสไลด์\nดูคอลัมน์ Destination Address Range แล้วสังเกตส่วนที่ไฮไลต์สีต่างกัน: address ส่วนใหญ่ของช่วงหนึ่งไป interface 0 แต่มี subset เล็ก ๆ ถูกแยกไป interface 3 จึงไม่สามารถอาศัยเพียงช่วงกว้างเพียงรายการเดียวได้.\nประเด็นสำคัญที่ควรจำ\nforwarding table ต้องรองรับกรณีที่ address ranges ซ้อนหรือมีช่วงย่อย\nปัญหานี้นำไปสู่ longest prefix matching"
+  },
+  {
+    "num": 18,
+    "title": "Longest prefix matching",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เริ่มอ่านจากซ้ายสุดของ destination address แล้วเทียบกับบิตคงที่ในแต่ละ entry หากบิตคงที่ตรงทั้งหมดถือว่า entry นั้น match จากนั้นเปรียบเทียบจำนวนบิต prefix ของ entry ที่ match ทั้งหมด แล้วเลือกอันที่ยาวที่สุด; หากไม่มีรายการใด match จึงใช้ otherwise."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ เลือก longest matching prefix ไม่ใช่เลือก entry แรกที่ match prefix ยาวกว่า = ระบุ destination ได้เฉพาะเจาะจงกว่า"
+      }
+    ],
+    "cleanFull": "Slide 18\nLongest prefix matching\nหลักของ\nlongest prefix matching\nคือ เมื่อ destination address ตรงกับ forwarding-table entry มากกว่าหนึ่งรายการ ให้เลือก entry ที่มี\nprefix ตรงยาวที่สุด\nเพราะ prefix ที่ยาวกว่าจะระบุชุด address ที่เฉพาะเจาะจงกว่า.\nเครื่องหมาย\n*\nในตารางหมายถึงบิตส่วนที่ไม่จำเป็นต้องตรง ดังนั้นแต่ละแถวจริง ๆ คือ prefix ที่ครอบคลุม address หลายค่า ตัวอย่างด้านล่างให้ destination address สองค่าเพื่อฝึกเทียบทีละบิตกับ prefix ในตาราง.\nอ่านภาพและองค์ประกอบในสไลด์\nเริ่มอ่านจากซ้ายสุดของ destination address แล้วเทียบกับบิตคงที่ในแต่ละ entry หากบิตคงที่ตรงทั้งหมดถือว่า entry นั้น match จากนั้นเปรียบเทียบจำนวนบิต prefix ของ entry ที่ match ทั้งหมด แล้วเลือกอันที่ยาวที่สุด; หากไม่มีรายการใด match จึงใช้ otherwise.\nประเด็นสำคัญที่ควรจำ\nเลือก longest matching prefix ไม่ใช่เลือก entry แรกที่ match\nprefix ยาวกว่า = ระบุ destination ได้เฉพาะเจาะจงกว่า"
+  },
+  {
+    "num": 19,
+    "title": "Longest prefix matching: first example",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ กรอบสีแดงด้านบนคือ prefix ใน forwarding table ส่วนกรอบด้านล่างคือบิตต้นของ destination address ลูกศรคำว่า “match!” แสดงว่าบิต prefix ตรงกัน สไลด์จงใจลดความเด่นของรายการอื่นเพื่อให้เห็นขั้นตอนการ match ครั้งแรกอย่างชัดเจน."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ ตัวอย่างแรก match prefix 00010*** และไป interface 0 การตัดสินต้องดูว่ามี prefix ที่ยาวกว่าและ match อีกหรือไม่"
+      }
+    ],
+    "cleanFull": "Slide 19\nLongest prefix matching: first example\nตัวอย่างแรกใช้ destination address\n11001000 00010111 00010110 10100001\nภาพ animation เน้นให้เห็นว่า address นี้ตรงกับ prefix แถวแรก\n11001000 00010111 00010*** ********\n.\nเมื่อเทียบกับ entry อื่น จะไม่พบ prefix ที่ยาวกว่าและยัง match destination นี้ ดังนั้นการส่งต่อของตัวอย่างแรกจึงใช้\nlink interface 0\n. วิธีคิดที่สำคัญคือเปรียบเทียบ prefix จากซ้ายไปขวาและสนใจเฉพาะบิตก่อนเครื่องหมาย *.\nอ่านภาพและองค์ประกอบในสไลด์\nกรอบสีแดงด้านบนคือ prefix ใน forwarding table ส่วนกรอบด้านล่างคือบิตต้นของ destination address ลูกศรคำว่า “match!” แสดงว่าบิต prefix ตรงกัน สไลด์จงใจลดความเด่นของรายการอื่นเพื่อให้เห็นขั้นตอนการ match ครั้งแรกอย่างชัดเจน.\nประเด็นสำคัญที่ควรจำ\nตัวอย่างแรก match prefix 00010*** และไป interface 0\nการตัดสินต้องดูว่ามี prefix ที่ยาวกว่าและ match อีกหรือไม่"
+  },
+  {
+    "num": 20,
+    "title": "Longest prefix matching: second example — first match",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ กรอบสีแดงไฮไลต์แถว prefix 00011*** และส่วนต้นของ destination ที่ตรงกัน นี่คือ “หนึ่ง match” ที่พบระหว่างการค้นหา ไม่ใช่หลักฐานเพียงพอว่าจะเป็น final forwarding decision จนกว่าจะเปรียบเทียบกับ entry ที่เฉพาะเจาะจงกว่าครบ."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ พบ match แล้วต้องตรวจต่อเพื่อหา prefix ที่ยาวที่สุด longest-prefix decision อาจต่างจาก interface ของ match แรกที่พบ"
+      }
+    ],
+    "cleanFull": "Slide 20\nLongest prefix matching: second example — first match\nตัวอย่างที่สองใช้ destination address\n11001000 00010111 00011000 10101010\nในขั้นของ animation นี้ ภาพแสดงว่า address ตรงกับ prefix\n11001000 00010111 00011*** ********\nซึ่งเป็น entry ที่ชี้ไป\ninterface 2\n.\nอย่างไรก็ตาม\nยังไม่ควรสรุปผลทันที\nเพียงเพราะพบ entry ที่ match แล้ว เพราะกฎของโจทย์คือเลือก\nlongest\nprefix จึงต้องตรวจต่อว่ามี entry อื่นที่ match destination เดียวกันด้วย prefix ที่ยาวกว่าหรือไม่ การแยก animation หลายสไลด์ช่วยเน้นกระบวนการตรวจนี้.\nอ่านภาพและองค์ประกอบในสไลด์\nกรอบสีแดงไฮไลต์แถว prefix 00011*** และส่วนต้นของ destination ที่ตรงกัน นี่คือ “หนึ่ง match” ที่พบระหว่างการค้นหา ไม่ใช่หลักฐานเพียงพอว่าจะเป็น final forwarding decision จนกว่าจะเปรียบเทียบกับ entry ที่เฉพาะเจาะจงกว่าครบ.\nประเด็นสำคัญที่ควรจำ\nพบ match แล้วต้องตรวจต่อเพื่อหา prefix ที่ยาวที่สุด\nlongest-prefix decision อาจต่างจาก interface ของ match แรกที่พบ"
+  },
+  {
+    "num": 21,
+    "title": "Longest prefix matching: second example — longest match",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ กรอบสีแดงด้านบนเน้น prefix ที่ยาวกว่า ส่วนกรอบล่างเน้นบิตต้นของ destination ที่ตรงกัน ให้เปรียบเทียบจำนวนบิตที่ match กับแถวอื่น ๆ ในตาราง แล้วเลือกแถวที่เฉพาะเจาะจงที่สุด."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ ถ้ามีหลาย entry ที่ match ให้เลือก prefix ที่ยาวที่สุด ตัวอย่างนี้ส่งต่อไป interface 1 เพราะ match มีความเฉพาะเจาะจงกว่า"
+      }
+    ],
+    "cleanFull": "Slide 21\nLongest prefix matching: second example — longest match\nสไลด์นี้ทำให้ตัวอย่างที่สองสมบูรณ์ โดย destination address\n11001000 00010111 00011000 10101010\nไม่ได้ match เพียง entry เดียว แต่ยัง match prefix ที่ยาวกว่า\n11001000 00010111 00011000\nซึ่งชี้ไป\ninterface 1\n.\nดังนั้นตามกฎ\nlongest prefix matching\nเราต้องเลือก entry ที่มีจำนวนบิตต้นทางตรงกับ destination มากที่สุด ไม่ใช่เลือก match แรกที่พบ จากตัวอย่างนี้ entry ของ interface 1 มี prefix ยาวกว่า entry ที่ชี้ไป interface 2 จึงเป็นผลการส่งต่อสุดท้าย.\nอ่านภาพและองค์ประกอบในสไลด์\nกรอบสีแดงด้านบนเน้น prefix ที่ยาวกว่า ส่วนกรอบล่างเน้นบิตต้นของ destination ที่ตรงกัน ให้เปรียบเทียบจำนวนบิตที่ match กับแถวอื่น ๆ ในตาราง แล้วเลือกแถวที่เฉพาะเจาะจงที่สุด.\nประเด็นสำคัญที่ควรจำ\nถ้ามีหลาย entry ที่ match ให้เลือก prefix ที่ยาวที่สุด\nตัวอย่างนี้ส่งต่อไป interface 1 เพราะ match มีความเฉพาะเจาะจงกว่า"
+  },
+  {
+    "num": 22,
+    "title": "Longest prefix matching and TCAMs",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สไลด์นี้ไม่มี flow diagram ซับซ้อน จุดที่ต้องจับคือความเชื่อมโยงระหว่าง “longest prefix matching” กับ “TCAM”: อัลกอริทึมกำหนดว่าจะเลือก entry ใด ส่วน TCAM ช่วยให้การค้นหา entry เหล่านั้นเกิดขึ้นได้รวดเร็วใน hardware."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ TCAM ใช้ช่วยค้นหา forwarding entries อย่างรวดเร็ว longest prefix matching เป็นกฎการเลือก ส่วน TCAM เป็นกลไกที่ช่วยให้ค้นหาได้เร็ว"
+      }
+    ],
+    "cleanFull": "Slide 22\nLongest prefix matching and TCAMs\nการทำ longest prefix matching ใน router ต้องเร็วมาก เพราะต้องค้นหา forwarding table สำหรับ packet ทุกตัว สไลด์จึงแนะนำ\nTCAM (Ternary Content Addressable Memory)\nซึ่งเป็นฮาร์ดแวร์หน่วยความจำที่เหมาะกับการค้นหาแบบ content-addressable.\nแนวคิดของ content-addressable คือส่ง address ที่ต้องการค้นหาเข้าไป แล้วให้หน่วยความจำคืน entry ที่ตรงกันโดยตรง แทนการไล่อ่านทีละแถว สไลด์ระบุว่าสามารถค้นหาได้ในหนึ่ง clock cycle โดยไม่ขึ้นกับขนาดตาราง และยกตัวอย่าง Cisco Catalyst ที่รองรับ routing table ประมาณหนึ่งล้าน entries ใน TCAM.\nอ่านภาพและองค์ประกอบในสไลด์\nสไลด์นี้ไม่มี flow diagram ซับซ้อน จุดที่ต้องจับคือความเชื่อมโยงระหว่าง “longest prefix matching” กับ “TCAM”: อัลกอริทึมกำหนดว่าจะเลือก entry ใด ส่วน TCAM ช่วยให้การค้นหา entry เหล่านั้นเกิดขึ้นได้รวดเร็วใน hardware.\nประเด็นสำคัญที่ควรจำ\nTCAM ใช้ช่วยค้นหา forwarding entries อย่างรวดเร็ว\nlongest prefix matching เป็นกฎการเลือก ส่วน TCAM เป็นกลไกที่ช่วยให้ค้นหาได้เร็ว"
+  },
+  {
+    "num": 23,
+    "title": "Switching fabrics",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพแสดง input ports หลายช่องทางด้านซ้าย เชื่อมเข้าสู่กล่อง high-speed switching fabric แล้วออกไปยัง output ports ทางขวา ตัวอักษร R ที่แต่ละพอร์ตคือ line rate ส่วน NR ใน fabric แสดงอัตรารวมที่ต้องการในกรณีอุดมคติ."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ switching fabric ย้าย packet ภายใน router จาก input ไป output เมื่อมี N inputs ที่ rate R อัตรา fabric ระดับ NR เป็นเป้าหมายที่เหมาะสม"
+      }
+    ],
+    "cleanFull": "Slide 23\nSwitching fabrics\nSwitching fabric\nคือส่วนภายใน router ที่ทำหน้าที่ย้าย packet จาก input link ไปยัง output link ที่เหมาะสม หลังจาก input port ทราบแล้วว่าควรออกทางใด packet จะต้องถูกส่งผ่าน fabric ไปยัง output port นั้น.\nอีกคำสำคัญคือ\nswitching rate\nซึ่งหมายถึงอัตราที่ fabric สามารถถ่ายโอน packet จาก inputs ไป outputs ได้ โดยมักเปรียบเทียบกับ line rate. ถ้ามี input จำนวน\nN\nช่อง แต่ละช่องมีอัตรา\nR\nอุดมคติคือ fabric รองรับอัตรารวมประมาณ\nNR\nเพื่อรับข้อมูลจากทุก input พร้อมกันได้.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพแสดง input ports หลายช่องทางด้านซ้าย เชื่อมเข้าสู่กล่อง high-speed switching fabric แล้วออกไปยัง output ports ทางขวา ตัวอักษร R ที่แต่ละพอร์ตคือ line rate ส่วน NR ใน fabric แสดงอัตรารวมที่ต้องการในกรณีอุดมคติ.\nประเด็นสำคัญที่ควรจำ\nswitching fabric ย้าย packet ภายใน router จาก input ไป output\nเมื่อมี N inputs ที่ rate R อัตรา fabric ระดับ NR เป็นเป้าหมายที่เหมาะสม"
+  },
+  {
+    "num": 24,
+    "title": "Switching fabrics: three major types",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพจากซ้ายไปขวา: แบบแรกให้ packet ผ่าน memory กลาง, แบบที่สองใช้ bus เส้นร่วม และแบบที่สามใช้โครงข่ายเชื่อมต่อหลายเส้นทาง ภาพนี้เป็นภาพรวมก่อนที่สไลด์ถัดไปจะแยกอธิบายแต่ละแบบ."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ switching fabric มีสามแนวทางหลัก: memory, bus, interconnection network โครงสร้างภายในเป็นตัวกำหนดข้อจำกัดด้าน switching rate และ scalability"
+      }
+    ],
+    "cleanFull": "Slide 24\nSwitching fabrics: three major types\nสไลด์จัดกลุ่ม switching fabric หลักเป็นสามแบบ ได้แก่\nswitching via memory\n,\nswitching via a bus\nและ\nswitching via an interconnection network\n. ทั้งสามแบบมีเป้าหมายเดียวกันคือพา packet จาก input port ไป output port แต่ใช้โครงสร้างภายในต่างกัน.\nความแตกต่างของโครงสร้างมีผลต่อความเร็วและการขยายขนาดของ router: memory และ shared bus มีทรัพยากรร่วมที่อาจกลายเป็นคอขวด ขณะที่ interconnection network เปิดโอกาสให้หลายเส้นทางทำงานแบบขนานได้มากขึ้น.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพจากซ้ายไปขวา: แบบแรกให้ packet ผ่าน memory กลาง, แบบที่สองใช้ bus เส้นร่วม และแบบที่สามใช้โครงข่ายเชื่อมต่อหลายเส้นทาง ภาพนี้เป็นภาพรวมก่อนที่สไลด์ถัดไปจะแยกอธิบายแต่ละแบบ.\nประเด็นสำคัญที่ควรจำ\nswitching fabric มีสามแนวทางหลัก: memory, bus, interconnection network\nโครงสร้างภายในเป็นตัวกำหนดข้อจำกัดด้าน switching rate และ scalability"
+  },
+  {
+    "num": 25,
+    "title": "Switching via memory",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เส้นในภาพพา packet จาก input port ทางซ้ายเข้าสู่ memory ตรงกลาง แล้วออกไป output port ทางขวา โดยทั้งสองฝั่งเชื่อมผ่าน system bus จึงเห็นได้ว่าการส่งหนึ่ง datagram ต้องมีการถ่ายโอนข้อมูลสองช่วง."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ switching via memory ใช้ system memory เป็นจุดกลาง สอง memory/bus crossings ต่อ datagram ทำให้ memory bandwidth เป็นข้อจำกัด"
+      }
+    ],
+    "cleanFull": "Slide 25\nSwitching via memory\nRouter รุ่นแรกทำงานคล้ายคอมพิวเตอร์ทั่วไป โดย\nCPU ควบคุมการ switching\nและ packet จาก input port ถูกคัดลอกเข้า system memory ก่อน จากนั้นจึงคัดลอกออกจาก memory ไปยัง output port ที่เลือก.\nข้อจำกัดสำคัญคือ\nmemory bandwidth\nเพราะ datagram หนึ่งต้องผ่านเส้นทางข้อมูลของ memory สองครั้ง: ครั้งแรกจาก input เข้าสู่ memory และครั้งที่สองจาก memory ไป output ดังนั้น throughput ของ router แบบนี้จึงถูกจำกัดโดยความเร็วของหน่วยความจำและ system bus.\nอ่านภาพและองค์ประกอบในสไลด์\nเส้นในภาพพา packet จาก input port ทางซ้ายเข้าสู่ memory ตรงกลาง แล้วออกไป output port ทางขวา โดยทั้งสองฝั่งเชื่อมผ่าน system bus จึงเห็นได้ว่าการส่งหนึ่ง datagram ต้องมีการถ่ายโอนข้อมูลสองช่วง.\nประเด็นสำคัญที่ควรจำ\nswitching via memory ใช้ system memory เป็นจุดกลาง\nสอง memory/bus crossings ต่อ datagram ทำให้ memory bandwidth เป็นข้อจำกัด"
+  },
+  {
+    "num": 26,
+    "title": "Switching via a bus",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เส้นตั้งสีแดงกลางภาพคือ shared bus พอร์ตหลายตัวทั้งซ้ายและขวาต้องใช้เส้นกลางเดียวกัน หากหลาย input ต้องการส่งพร้อมกัน การใช้ทรัพยากรร่วมนี้ทำให้ต้องแย่งกันเข้าถึง bus."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ shared bus ลดขั้นตอนผ่าน CPU แต่ยังมีทรัพยากรร่วมหนึ่งเส้น bus bandwidth เป็นเพดานของ switching speed"
+      }
+    ],
+    "cleanFull": "Slide 26\nSwitching via a bus\nใน\nswitching via a bus\ndatagram เดินทางจาก input port memory ไปยัง output port memory ผ่าน shared bus โดยไม่ต้องให้ CPU คัดลอกผ่าน system memory แบบ router รุ่นแรก.\nแต่เพราะทุกพอร์ตใช้ bus เส้นเดียวกัน จึงเกิด\nbus contention\nได้: ในช่วงเวลาหนึ่ง bus รองรับการถ่ายโอนได้จำกัด ทำให้ switching speed สูงสุดถูกจำกัดด้วย bandwidth ของ bus. สไลด์ยกตัวอย่าง bus 32 Gbps ของ Cisco 5600 ว่าเพียงพอสำหรับ access router.\nอ่านภาพและองค์ประกอบในสไลด์\nเส้นตั้งสีแดงกลางภาพคือ shared bus พอร์ตหลายตัวทั้งซ้ายและขวาต้องใช้เส้นกลางเดียวกัน หากหลาย input ต้องการส่งพร้อมกัน การใช้ทรัพยากรร่วมนี้ทำให้ต้องแย่งกันเข้าถึง bus.\nประเด็นสำคัญที่ควรจำ\nshared bus ลดขั้นตอนผ่าน CPU แต่ยังมีทรัพยากรร่วมหนึ่งเส้น\nbus bandwidth เป็นเพดานของ switching speed"
+  },
+  {
+    "num": 27,
+    "title": "Switching via interconnection network",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ด้านขวาบนคือ crossbar ที่มีจุดตัดระหว่างเส้น input/output หลายคู่ ส่วนด้านขวาล่างคือ 8×8 multistage switch ซึ่งใช้สวิตช์ขนาดเล็กหลายตัวต่อเป็นหลายชั้น แสดงแนวทางสร้างระบบใหญ่จากโมดูลย่อย."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ crossbar/Clos ช่วยให้มีหลายเส้นทางภายใน fabric multistage switching และ parallelism ช่วยเพิ่มความสามารถในการขยายระบบ"
+      }
+    ],
+    "cleanFull": "Slide 27\nSwitching via interconnection network\nInterconnection network\nเช่น crossbar และ Clos network ใช้โครงข่ายของ switching elements เพื่อเชื่อม input หลายพอร์ตกับ output หลายพอร์ต แนวคิดนี้เดิมพัฒนามาจากการเชื่อม processors ใน multiprocessor systems.\nสไลด์แสดงทั้ง\n3×3 crossbar\nและ\nmultistage switch\nที่สร้างสวิตช์ขนาดใหญ่จากสวิตช์ย่อยหลาย stage. การทำงานแบบขนานสามารถเพิ่ม throughput ได้ โดยอาจแบ่ง datagram เป็น fixed-length cells ตอนเข้า ส่ง cells ผ่าน fabric แล้ว reassemble datagram ที่ทางออก.\nอ่านภาพและองค์ประกอบในสไลด์\nด้านขวาบนคือ crossbar ที่มีจุดตัดระหว่างเส้น input/output หลายคู่ ส่วนด้านขวาล่างคือ 8×8 multistage switch ซึ่งใช้สวิตช์ขนาดเล็กหลายตัวต่อเป็นหลายชั้น แสดงแนวทางสร้างระบบใหญ่จากโมดูลย่อย.\nประเด็นสำคัญที่ควรจำ\ncrossbar/Clos ช่วยให้มีหลายเส้นทางภายใน fabric\nmultistage switching และ parallelism ช่วยเพิ่มความสามารถในการขยายระบบ"
+  },
+  {
+    "num": 28,
+    "title": "Switching via interconnection network: parallel planes",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพแสดง input หลายชุดทางซ้ายกระจายการเชื่อมต่อเข้าสู่ fabric plane 0 ถึง plane 7 แล้วรวมไปยัง outputs ทางขวา สิ่งที่ต้องสังเกตคือมีเส้นทางขนานหลาย plane แทนที่จะมี fabric เพียงก้อนเดียว."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ multiple switching planes เพิ่ม capacity ด้วย parallelism การ scale router ความเร็วสูงทำได้โดยประกอบหลาย fabric plane เข้าด้วยกัน"
+      }
+    ],
+    "cleanFull": "Slide 28\nSwitching via interconnection network: parallel planes\nการเพิ่มสมรรถนะของ interconnection network ทำได้อีกทางด้วยการใช้\nหลาย switching planes ทำงานขนานกัน\n. Packet หรือส่วนของข้อมูลสามารถกระจายผ่านหลาย plane ทำให้เพิ่มทั้ง speedup และ scaleup โดยไม่ต้องพึ่ง fabric เดี่ยวที่มีขนาดใหญ่มาก.\nสไลด์ยกตัวอย่าง Cisco CRS router ซึ่งมีหน่วยพื้นฐานเป็น switching planes 8 ชุด แต่ละ plane เป็น interconnection network แบบ 3-stage และรวมกันสามารถรองรับ switching capacity ระดับหลายร้อย Tbps.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพแสดง input หลายชุดทางซ้ายกระจายการเชื่อมต่อเข้าสู่ fabric plane 0 ถึง plane 7 แล้วรวมไปยัง outputs ทางขวา สิ่งที่ต้องสังเกตคือมีเส้นทางขนานหลาย plane แทนที่จะมี fabric เพียงก้อนเดียว.\nประเด็นสำคัญที่ควรจำ\nmultiple switching planes เพิ่ม capacity ด้วย parallelism\nการ scale router ความเร็วสูงทำได้โดยประกอบหลาย fabric plane เข้าด้วยกัน"
+  },
+  {
+    "num": 29,
+    "title": "Input port queuing and HOL blocking",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพซ้ายแสดง red packets สองตัวต้องการ output เดียวกัน จึงส่งผ่านได้เพียงหนึ่งตัว ส่วน red packet ด้านล่างถูก block. หนึ่ง packet time ต่อมา ในภาพขวา green packet ที่อยู่หลัง red packet ก็ยังผ่านไม่ได้ แม้เส้นทางของ green เองอาจว่าง นี่คือ HOL blocking."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ input queue เกิดเมื่อ fabric รับข้อมูลไม่ทันอัตราจาก inputs HOL blocking คือ packet หัวแถวขวาง packet ที่อยู่ด้านหลัง"
+      }
+    ],
+    "cleanFull": "Slide 29\nInput port queuing and HOL blocking\nถ้า switching fabric ช้ากว่าอัตรารวมของ input ports packet จะสะสมเป็น\ninput queue\n. เมื่อ buffer เต็ม อาจเกิดทั้ง queueing delay และ packet loss จาก input buffer overflow.\nภาพยังแนะนำปัญหา\nHead-of-the-Line (HOL) blocking\n: packet ที่อยู่หัวแถวไม่สามารถผ่าน fabric ได้เพราะ output ที่ต้องการกำลังถูกใช้งาน และ packet ที่อยู่ถัดหลัง—even ถ้าต้องการ output ที่ว่าง—ก็เดินหน้าไม่ได้เพราะถูกหัวแถวขวาง.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพซ้ายแสดง red packets สองตัวต้องการ output เดียวกัน จึงส่งผ่านได้เพียงหนึ่งตัว ส่วน red packet ด้านล่างถูก block. หนึ่ง packet time ต่อมา ในภาพขวา green packet ที่อยู่หลัง red packet ก็ยังผ่านไม่ได้ แม้เส้นทางของ green เองอาจว่าง นี่คือ HOL blocking.\nประเด็นสำคัญที่ควรจำ\ninput queue เกิดเมื่อ fabric รับข้อมูลไม่ทันอัตราจาก inputs\nHOL blocking คือ packet หัวแถวขวาง packet ที่อยู่ด้านหลัง"
+  },
+  {
+    "num": 30,
+    "title": "Output port queuing",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านจากซ้ายไปขวา: switching fabric ส่ง packet เข้าสู่ datagram buffer/queue จากนั้น link-layer processing และ line termination ส่งข้อมูลออกทาง link ที่อัตรา R. ลูกศรด้านขวาเน้นผลลัพธ์สองด้านคือ packet loss เมื่อ buffer ไม่พอ และผลของ priority scheduling ต่อว่าใครได้รับบริการที่ดีกว่า."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ output buffering จำเป็นเมื่อ arrival rate จาก fabric สูงกว่า output line rate drop policy จัดการเมื่อ buffer เต็ม ส่วน scheduling discipline เลือก packet ถัดไปที่จะส่ง"
+      }
+    ],
+    "cleanFull": "Slide 30\nOutput port queuing\nที่ output port ก็เกิด queue ได้เช่นกัน เมื่อ datagrams จาก switching fabric มาถึง output เร็วกว่าที่ link สามารถส่งออกด้วยอัตรา\nR\n. จึงต้องมี\nbuffering\nเพื่อพัก packet; ถ้าไม่มี buffer ว่าง ต้องมี\ndrop policy\nว่าจะทิ้ง packet ใด.\nเมื่อมีหลาย datagrams รออยู่\nscheduling discipline\nจะตัดสินว่า packet ใดได้ส่งถัดไป ดังนั้น output port จึงเป็นจุดที่เกี่ยวข้องทั้ง queueing delay, packet loss, buffer management และการจัดลำดับความสำคัญ ซึ่งสไลด์เชื่อมโยงต่อไปถึงประเด็น network neutrality.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านจากซ้ายไปขวา: switching fabric ส่ง packet เข้าสู่ datagram buffer/queue จากนั้น link-layer processing และ line termination ส่งข้อมูลออกทาง link ที่อัตรา R. ลูกศรด้านขวาเน้นผลลัพธ์สองด้านคือ packet loss เมื่อ buffer ไม่พอ และผลของ priority scheduling ต่อว่าใครได้รับบริการที่ดีกว่า.\nประเด็นสำคัญที่ควรจำ\noutput buffering จำเป็นเมื่อ arrival rate จาก fabric สูงกว่า output line rate\ndrop policy จัดการเมื่อ buffer เต็ม ส่วน scheduling discipline เลือก packet ถัดไปที่จะส่ง"
+  },
+  {
+    "num": 31,
+    "title": "Output port queuing",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพซ้ายคือสถานะเวลา t : packet หลายสีจาก input ต่าง ๆ มุ่งมายัง output เดียวกัน จึงเกิดคิวที่ output. ภาพขวาคือหนึ่ง packet time ถัดมา: บาง packet ถูกส่งออกแล้ว แต่ยังมี packet ค้างใน buffer. ให้สังเกตว่าคอขวดไม่ได้อยู่ที่เส้นทางภายใน fabric เพียงอย่างเดียว แต่อาจอยู่ที่ความเร็วของ output link ด้วย."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ output queue เกิดเมื่อ arrival rate จาก switching fabric สูงกว่า output line speed คิวที่ยาวขึ้นเพิ่ม delay และ buffer overflow ทำให้ packet สูญหาย"
+      }
+    ],
+    "cleanFull": "Slide 31\nOutput port queuing\nสไลด์นี้แสดงเหตุการณ์ของ\noutput port queuing\nแบบเป็นลำดับเวลา เมื่อหลาย packet ถูกส่งผ่าน switching fabric มายัง output port เดียวกันในช่วงเวลาเดียวกัน แต่อัตราการส่งออกของ link รองรับได้เพียงจำนวนจำกัด packet ส่วนที่ยังส่งไม่ได้จึงต้องรอใน buffer.\nเมื่อเวลาผ่านไปหนึ่ง packet time จะมี packet หนึ่งถูกส่งออก แต่ packet อื่นยังคงรออยู่ หากอัตราที่ packet มาถึงผ่าน fabric สูงกว่า\noutput line speed\nต่อเนื่อง queue จะยาวขึ้น เกิด\nqueueing delay\nและเมื่อ buffer เต็มจะเกิด\npacket loss\n.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพซ้ายคือสถานะเวลา\nt\n: packet หลายสีจาก input ต่าง ๆ มุ่งมายัง output เดียวกัน จึงเกิดคิวที่ output. ภาพขวาคือหนึ่ง packet time ถัดมา: บาง packet ถูกส่งออกแล้ว แต่ยังมี packet ค้างใน buffer. ให้สังเกตว่าคอขวดไม่ได้อยู่ที่เส้นทางภายใน fabric เพียงอย่างเดียว แต่อาจอยู่ที่ความเร็วของ output link ด้วย.\nประเด็นสำคัญที่ควรจำ\noutput queue เกิดเมื่อ arrival rate จาก switching fabric สูงกว่า output line speed\nคิวที่ยาวขึ้นเพิ่ม delay และ buffer overflow ทำให้ packet สูญหาย"
+  },
+  {
+    "num": 32,
+    "title": "How much buffering?",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านสมการบนสไลด์เป็นความสัมพันธ์ระหว่างเวลาที่ข้อมูลเดินทางกลับไปกลับมา (RTT), ความจุของ link (C) และจำนวน flows (N). ส่วนข้อความด้านล่างเชื่อมโยงไปยังแนวคิด delay-based congestion control ที่ต้องการให้ bottleneck link ยุ่งพอดี แต่ไม่ควรมีคิวสะสมมากเกินไป."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ buffer ต้องมี “ขนาดพอดี” ไม่ใช่ยิ่งมากยิ่งดี buffer มากเกินไปทำให้ queueing delay และ RTT เพิ่มขึ้น"
+      }
+    ],
+    "cleanFull": "Slide 32\nHow much buffering?\nคำถามสำคัญคือ router ควรมี buffer มากเท่าใด สไลด์อ้างถึงกฎคร่าว ๆ จาก RFC 3439 ว่า average buffering อาจประมาณจาก\nRTT × link capacity C\n. ตัวอย่างในสไลด์ใช้ RTT ประมาณ 250 ms และ link 10 Gbps จึงได้ buffer ประมาณ 2.5 Gbit.\nสำหรับกรณีมี\nN\nflows สไลด์แสดงข้อเสนอที่ใหม่กว่าว่า buffer อาจลดลงตามจำนวน flows โดยประมาณ\n(RTT × C)/√N\n. ประเด็นสำคัญคือ “มากกว่า” ไม่ได้แปลว่า “ดีกว่า” เสมอ เพราะ buffer มากเกินไปสามารถทำให้ RTT ยาวขึ้น ส่งผลเสียต่อ real-time applications และทำให้ TCP ตอบสนองช้าลง.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านสมการบนสไลด์เป็นความสัมพันธ์ระหว่างเวลาที่ข้อมูลเดินทางกลับไปกลับมา (RTT), ความจุของ link (C) และจำนวน flows (N). ส่วนข้อความด้านล่างเชื่อมโยงไปยังแนวคิด delay-based congestion control ที่ต้องการให้ bottleneck link ยุ่งพอดี แต่ไม่ควรมีคิวสะสมมากเกินไป.\nประเด็นสำคัญที่ควรจำ\nbuffer ต้องมี “ขนาดพอดี” ไม่ใช่ยิ่งมากยิ่งดี\nbuffer มากเกินไปทำให้ queueing delay และ RTT เพิ่มขึ้น"
+  },
+  {
+    "num": 33,
+    "title": "Buffer Management",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพด้านบนแสดง output port ที่มี datagram buffer, queueing/scheduling, link-layer protocol และ line termination. ภาพ “Abstraction: queue” ด้านล่างย่อระบบให้เหลือ packet arrivals → queue → link/server อัตรา R → packet departures เพื่อใช้เป็นแบบจำลองในการอธิบายการจัดคิวต่อไป."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ buffer management ครอบคลุมทั้งการ drop และการ mark packet tail drop ทิ้ง packet ที่มาถึงเมื่อ buffer เต็ม ส่วน priority policy ใช้ระดับความสำคัญประกอบการตัดสินใจ"
+      }
+    ],
+    "cleanFull": "Slide 33\nBuffer Management\nBuffer management\nตัดสินใจว่าจะจัดการ packet อย่างไรเมื่อพื้นที่ buffer มีจำกัด โดยสไลด์แยกสองแนวคิดหลักคือ\ndrop\nและ\nmarking\n. Drop ตอบคำถามว่าจะรับหรือทิ้ง packet ใดเมื่อ buffer เต็ม ส่วน marking ใช้ทำเครื่องหมายบาง packet เพื่อส่งสัญญาณ congestion.\nตัวอย่าง drop policy ในสไลด์คือ\ntail drop\nซึ่งทิ้ง packet ที่เพิ่งมาถึงเมื่อคิวเต็ม และ\npriority-based drop\nซึ่งเลือกทิ้ง/นำ packet ออกตามระดับความสำคัญ. ส่วน marking ยกตัวอย่าง ECN และ RED เพื่อสื่อว่าระบบอาจแจ้งสัญญาณ congestion โดยไม่จำเป็นต้องรอให้เกิดการสูญหายก่อน.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพด้านบนแสดง output port ที่มี datagram buffer, queueing/scheduling, link-layer protocol และ line termination. ภาพ “Abstraction: queue” ด้านล่างย่อระบบให้เหลือ packet arrivals → queue → link/server อัตรา R → packet departures เพื่อใช้เป็นแบบจำลองในการอธิบายการจัดคิวต่อไป.\nประเด็นสำคัญที่ควรจำ\nbuffer management ครอบคลุมทั้งการ drop และการ mark packet\ntail drop ทิ้ง packet ที่มาถึงเมื่อ buffer เต็ม ส่วน priority policy ใช้ระดับความสำคัญประกอบการตัดสินใจ"
+  },
+  {
+    "num": 34,
+    "title": "Packet Scheduling: FCFS",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ในภาพ abstraction ของ queue ให้ติดตามจาก packet arrivals ที่เข้า queue ไปยังวงกลม R ซึ่งแทน link/server แล้วออกเป็น departures. ภายใต้ FCFS การจัดลำดับในคิวจะคงตามเวลาที่ packet มาถึง."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ packet scheduling เลือกว่า packet ใดจะส่งถัดไป FCFS/FIFO ส่ง packet ตามลำดับการมาถึง"
+      }
+    ],
+    "cleanFull": "Slide 34\nPacket Scheduling: FCFS\nPacket scheduling\nคือการตัดสินว่า packet ใดในคิวจะถูกส่งออกทาง link เป็นลำดับถัดไป สไลด์ระบุวิธีหลักหลายแบบ ได้แก่ first come first served, priority, round robin และ weighted fair queueing.\nFCFS (First-Come, First-Served)\nหรือ FIFO เป็นแบบพื้นฐานที่สุด: packet ถูกส่งตามลำดับที่มาถึง output port ก่อนมาถึงได้ส่งก่อน โดยไม่แบ่งชั้นหรือให้น้ำหนักกับ traffic ประเภทใด.\nอ่านภาพและองค์ประกอบในสไลด์\nในภาพ abstraction ของ queue ให้ติดตามจาก packet arrivals ที่เข้า queue ไปยังวงกลม R ซึ่งแทน link/server แล้วออกเป็น departures. ภายใต้ FCFS การจัดลำดับในคิวจะคงตามเวลาที่ packet มาถึง.\nประเด็นสำคัญที่ควรจำ\npacket scheduling เลือกว่า packet ใดจะส่งถัดไป\nFCFS/FIFO ส่ง packet ตามลำดับการมาถึง"
+  },
+  {
+    "num": 35,
+    "title": "Scheduling policies: priority",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพด้านขวาแสดง classifier แยก arrivals ไปยัง high-priority และ low-priority queues ก่อนรวมเข้าสู่ link. แผนภาพลำดับ packet ด้านล่างช่วยให้เห็นว่า packet priority สูงสามารถถูกส่งก่อน packet priority ต่ำ แม้ packet priority ต่ำจะมาถึงก่อนบางตัว."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ priority scheduling แบ่ง traffic เป็น class แล้วเลือก queue ที่มี priority สูงสุดก่อน ภายใน class เดียวกันใช้ FCFS ตามสไลด์"
+      }
+    ],
+    "cleanFull": "Slide 35\nScheduling policies: priority\nPriority scheduling\nเริ่มจากจำแนก traffic แล้วแยกเข้า queue ตาม class. สไลด์ระบุว่าสามารถใช้ header fields เพื่อจำแนก class ได้ จากนั้น scheduler จะเลือกส่ง packet จาก\nhighest-priority queue\nที่ยังมี packet รออยู่ก่อน.\nภายใน priority class เดียวกัน สไลด์ใช้\nFCFS\n. ดังนั้นลำดับการส่งขึ้นกับสองชั้น: ก่อนอื่นดูระดับ priority ของ queue แล้วจึงดู order of arrival ภายใน queue นั้น.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพด้านขวาแสดง classifier แยก arrivals ไปยัง high-priority และ low-priority queues ก่อนรวมเข้าสู่ link. แผนภาพลำดับ packet ด้านล่างช่วยให้เห็นว่า packet priority สูงสามารถถูกส่งก่อน packet priority ต่ำ แม้ packet priority ต่ำจะมาถึงก่อนบางตัว.\nประเด็นสำคัญที่ควรจำ\npriority scheduling แบ่ง traffic เป็น class แล้วเลือก queue ที่มี priority สูงสุดก่อน\nภายใน class เดียวกันใช้ FCFS ตามสไลด์"
+  },
+  {
+    "num": 36,
+    "title": "Scheduling policies: round robin",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพแสดง arrivals หลายสีถูก classifier แยกเข้าคิวต่างสี แล้วลูกศรวนรอบคิวสื่อถึงการบริการแบบ cyclic. หลังจากเลือกหนึ่ง packet จาก class ที่มีข้อมูล จึงส่งออกผ่าน link R และวนไป class ถัดไป."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Round Robin ให้บริการ class queues แบบวนรอบ แต่ละ class ที่มีข้อมูลจะได้ส่งหนึ่ง complete packet ต่อรอบตามแนวคิดในสไลด์"
+      }
+    ],
+    "cleanFull": "Slide 36\nScheduling policies: round robin\nRound Robin (RR)\nก็เริ่มจากการ classify traffic และแยกเป็นหลาย class queues แต่แทนที่จะให้ class หนึ่งมีสิทธิ์เหนือ class อื่นเสมอ server จะวนตรวจ queue แต่ละ class ซ้ำ ๆ เป็นวงรอบ.\nในแต่ละรอบ หาก queue นั้นมี packet อยู่ scheduler จะส่ง\nหนึ่ง complete packet\nจาก class นั้นแล้วจึงไปยัง class ถัดไป วิธีนี้กระจายโอกาสการส่งระหว่าง classes มากกว่า strict priority.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพแสดง arrivals หลายสีถูก classifier แยกเข้าคิวต่างสี แล้วลูกศรวนรอบคิวสื่อถึงการบริการแบบ cyclic. หลังจากเลือกหนึ่ง packet จาก class ที่มีข้อมูล จึงส่งออกผ่าน link R และวนไป class ถัดไป.\nประเด็นสำคัญที่ควรจำ\nRound Robin ให้บริการ class queues แบบวนรอบ\nแต่ละ class ที่มีข้อมูลจะได้ส่งหนึ่ง complete packet ต่อรอบตามแนวคิดในสไลด์"
+  },
+  {
+    "num": 37,
+    "title": "Scheduling policies: weighted fair queueing",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ในภาพ queues แต่ละสีมีค่า w1, w2, w3 กำกับอยู่ ก่อนเข้าสู่ scheduler/link R. ให้อ่านน้ำหนักเป็นตัวกำหนด “ส่วนแบ่ง” ของ service ไม่ใช่หมายเลขลำดับคิว: class ที่มีน้ำหนักมากกว่าจะได้รับสัดส่วนบริการมากกว่า."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ WFQ คือ generalized Round Robin ที่เพิ่ม weight ให้แต่ละ class ส่วนแบ่งบริการของ class i สัมพันธ์กับ wi หารด้วยผลรวมของน้ำหนักทั้งหมด"
+      }
+    ],
+    "cleanFull": "Slide 37\nScheduling policies: weighted fair queueing\nWeighted Fair Queuing (WFQ)\nเป็นการขยายแนวคิด Round Robin โดยแต่ละ traffic class มีน้ำหนัก\nw\ni\n. ปริมาณ service ที่ class\ni\nได้รับในแต่ละ cycle จึงสัมพันธ์กับสัดส่วน\nw\ni\n/ Σ\nj\nw\nj\n.\nน้ำหนักช่วยกำหนดการแบ่งทรัพยากรระหว่าง classes และสไลด์ชี้ว่า WFQ สามารถให้\nminimum bandwidth guarantee\nต่อ traffic class ได้ เมื่อเทียบกับ RR ที่ให้การบริการแบบรอบโดยไม่มีน้ำหนักแตกต่างกัน.\nอ่านภาพและองค์ประกอบในสไลด์\nในภาพ queues แต่ละสีมีค่า w1, w2, w3 กำกับอยู่ ก่อนเข้าสู่ scheduler/link R. ให้อ่านน้ำหนักเป็นตัวกำหนด “ส่วนแบ่ง” ของ service ไม่ใช่หมายเลขลำดับคิว: class ที่มีน้ำหนักมากกว่าจะได้รับสัดส่วนบริการมากกว่า.\nประเด็นสำคัญที่ควรจำ\nWFQ คือ generalized Round Robin ที่เพิ่ม weight ให้แต่ละ class\nส่วนแบ่งบริการของ class i สัมพันธ์กับ wi หารด้วยผลรวมของน้ำหนักทั้งหมด"
+  },
+  {
+    "num": 38,
+    "title": "Sidebar: Network Neutrality",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สไลด์นี้ไม่มีสมการหรือ flow diagram แต่จัดแนวคิดเป็นสามชั้น: technical → social/economic principles → legal rules/policies. จุดเชื่อมกับเนื้อหาก่อนหน้าคือ scheduling และ buffer management เป็นกลไกจริงที่ ISP ใช้จัดสรรทรัพยากร."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ network neutrality เชื่อมการจัดการ packet กับหลักการด้านสังคม เศรษฐกิจ และกฎหมาย ประเทศต่าง ๆ อาจกำหนดแนวทาง network neutrality แตกต่างกัน"
+      }
+    ],
+    "cleanFull": "Slide 38\nSidebar: Network Neutrality\nสไลด์เชื่อมกลไกทางเทคนิคที่เพิ่งเรียน—โดยเฉพาะ\npacket scheduling\nและ\nbuffer management\n—เข้ากับแนวคิด\nnetwork neutrality\n. ในมุมเทคนิค คำถามคือ ISP ควรแบ่งหรือจัดสรรทรัพยากรเครือข่ายให้ traffic ต่าง ๆ อย่างไร.\nอย่างไรก็ตาม network neutrality ไม่ได้มีเฉพาะมิติทางเทคนิค สไลด์ยังกล่าวถึงหลักการทางสังคมและเศรษฐกิจ เช่น การคุ้มครอง free speech และการส่งเสริมนวัตกรรม/การแข่งขัน รวมถึงการบังคับใช้ผ่านกฎหมายและนโยบาย และย้ำว่าประเทศต่าง ๆ อาจมีแนวทางไม่เหมือนกัน.\nอ่านภาพและองค์ประกอบในสไลด์\nสไลด์นี้ไม่มีสมการหรือ flow diagram แต่จัดแนวคิดเป็นสามชั้น: technical → social/economic principles → legal rules/policies. จุดเชื่อมกับเนื้อหาก่อนหน้าคือ scheduling และ buffer management เป็นกลไกจริงที่ ISP ใช้จัดสรรทรัพยากร.\nประเด็นสำคัญที่ควรจำ\nnetwork neutrality เชื่อมการจัดการ packet กับหลักการด้านสังคม เศรษฐกิจ และกฎหมาย\nประเทศต่าง ๆ อาจกำหนดแนวทาง network neutrality แตกต่างกัน"
+  },
+  {
+    "num": 39,
+    "title": "Sidebar: Network Neutrality — U.S. FCC example",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่าน bullet สามข้อด้านบนเป็นข้อจำกัดหลักต่อการปฏิบัติต่อ Internet traffic: ห้าม block, ห้ามลดคุณภาพ traffic โดยอิงเนื้อหา/บริการ และห้าม paid prioritization ตามถ้อยคำที่สไลด์สรุป. บรรทัดปี 2017 และ 2024 ด้านล่างเป็น timeline ของการเปลี่ยนนโยบายตามต้นฉบับ."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ ตัวอย่าง FCC 2015 เน้น no blocking, no throttling และ no paid prioritization timeline 2017/2024 ในสไลด์เป็นข้อมูลเชิงประวัติศาสตร์และอาจไม่ใช่สถานะกฎหมายปัจจุบัน"
+      }
+    ],
+    "cleanFull": "Slide 39\nSidebar: Network Neutrality — U.S. FCC example\nสไลด์ยกตัวอย่าง\n2015 U.S. FCC Order on Protecting and Promoting an Open Internet\nซึ่งสรุปเป็นสาม “bright-line” rules ได้แก่\nno blocking\n,\nno throttling\nและ\nno paid prioritization\n. ทั้ง blocking และ throttling ในข้อความสไลด์มีเงื่อนไขเรื่อง reasonable network management.\nด้านล่างสไลด์แสดง timeline เชิงนโยบายตามเนื้อหาในต้นฉบับ: 2017 มี rollback ของคำสั่งปี 2015 และ 2024 มี rollback ของการ rollback ปี 2017 ควรอ่านส่วนนี้เป็น “ตัวอย่างเชิงประวัติศาสตร์ตามสไลด์” ไม่ใช่การยืนยันสถานะกฎหมายสหรัฐฯ ณ วันที่กำลังอ่าน เพราะกฎด้าน network neutrality สามารถเปลี่ยนแปลงได้ตามคำสั่ง หน่วยงานกำกับ และคำพิพากษา\nอ่านภาพและองค์ประกอบในสไลด์\nอ่าน bullet สามข้อด้านบนเป็นข้อจำกัดหลักต่อการปฏิบัติต่อ Internet traffic: ห้าม block, ห้ามลดคุณภาพ traffic โดยอิงเนื้อหา/บริการ และห้าม paid prioritization ตามถ้อยคำที่สไลด์สรุป. บรรทัดปี 2017 และ 2024 ด้านล่างเป็น timeline ของการเปลี่ยนนโยบายตามต้นฉบับ.\nประเด็นสำคัญที่ควรจำ\nตัวอย่าง FCC 2015 เน้น no blocking, no throttling และ no paid prioritization\ntimeline 2017/2024 ในสไลด์เป็นข้อมูลเชิงประวัติศาสตร์และอาจไม่ใช่สถานะกฎหมายปัจจุบัน"
+  },
+  {
+    "num": 40,
+    "title": "ISP: telecommunications or information service?",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านสไลด์จากคำถามด้านบน แล้วเทียบสองแขนง Title II กับ Title I. จุดสำคัญไม่ใช่จำถ้อยคำกฎหมายทุกคำ แต่เข้าใจว่า “classification” ของ ISP เปลี่ยนชุดหน้าที่และข้อกำกับที่ใช้กับผู้ให้บริการ."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ การจัด ISP เป็น telecommunications service หรือ information service มีผลด้านกฎระเบียบ Title II และ Title I มีกรอบหน้าที่ต่อผู้ให้บริการต่างกันตามที่สไลด์สรุป"
+      }
+    ],
+    "cleanFull": "Slide 40\nISP: telecommunications or information service?\nสไลด์ตั้งคำถามเชิงกำกับดูแลในบริบทกฎหมายสหรัฐฯ ว่า ISP ควรถูกจัดเป็น “telecommunications service” หรือ “information service” ตามกรอบที่สไลด์อ้างถึง การจัดประเภทนี้มีผลต่อหน้าที่และระดับการกำกับดูแล และไม่ควรนำกรอบ Title I/Title II นี้ไปเหมารวมกับกฎหมายของประเทศอื่น\nสไลด์สรุปว่า\nTitle II\nกำหนด common-carrier duties ต่อ telecommunications services เช่น reasonable rates, non-discrimination และการกำกับดูแล ขณะที่\nTitle I\nใช้กับ information services ซึ่งไม่มี common-carrier duties แบบเดียวกัน แต่สไลด์ระบุว่า FCC ยังมีอำนาจบางส่วน “as may be necessary in the execution of its functions”. ดังนั้นคำตอบว่าจัด ISP อยู่ในหมวดใดจึงมีความสำคัญจากมุม regulatory standpoint.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านสไลด์จากคำถามด้านบน แล้วเทียบสองแขนง Title II กับ Title I. จุดสำคัญไม่ใช่จำถ้อยคำกฎหมายทุกคำ แต่เข้าใจว่า “classification” ของ ISP เปลี่ยนชุดหน้าที่และข้อกำกับที่ใช้กับผู้ให้บริการ.\nประเด็นสำคัญที่ควรจำ\nการจัด ISP เป็น telecommunications service หรือ information service มีผลด้านกฎระเบียบ\nTitle II และ Title I มีกรอบหน้าที่ต่อผู้ให้บริการต่างกันตามที่สไลด์สรุป"
+  },
+  {
+    "num": 41,
+    "title": "Network layer: “data plane” roadmap",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพจากรายการหัวข้อทางซ้ายและขวา โดยสังเกตหัวข้อ IP: the Internet Protocol ที่ถูกเน้นสีแดง/น้ำเงิน ขณะที่หัวข้อที่ผ่านไปแล้วเป็นสีจาง ภาพนี้จึงทำหน้าที่เป็นแผนที่บอกตำแหน่งของเนื้อหาในบท ไม่ใช่แผนภาพการส่ง packet."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ จาก Slide 41 เริ่มเข้าสู่ IP โดยตรง หัวข้อ IP ใน roadmap ครอบคลุม datagram format, addressing, NAT และ IPv6"
+      }
+    ],
+    "cleanFull": "03\nIP: The Internet Protocol\nSlide 41\nNetwork layer: “data plane” roadmap\nสไลด์นี้เป็นจุดเปลี่ยนจากหัวข้อภายในเราเตอร์และการจัดคิว ไปสู่ส่วน\nIP: the Internet Protocol\nของ Network Layer โดย roadmap ระบุหัวข้อถัดไป ได้แก่ datagram format, addressing, network address translation (NAT) และ IPv6.\nหัวข้อก่อนหน้าบน roadmap เช่น data plane/control plane, router architecture, buffer management และ scheduling ถูกทำให้จางลง เพื่อชี้ว่าจากจุดนี้จะเริ่มศึกษาโครงสร้างและการทำงานของ IP โดยตรง ก่อนจะไปยัง Generalized Forwarding และ Internet architecture ในภายหลัง.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพจากรายการหัวข้อทางซ้ายและขวา โดยสังเกตหัวข้อ\nIP: the Internet Protocol\nที่ถูกเน้นสีแดง/น้ำเงิน ขณะที่หัวข้อที่ผ่านไปแล้วเป็นสีจาง ภาพนี้จึงทำหน้าที่เป็นแผนที่บอกตำแหน่งของเนื้อหาในบท ไม่ใช่แผนภาพการส่ง packet.\nประเด็นสำคัญที่ควรจำ\nจาก Slide 41 เริ่มเข้าสู่ IP โดยตรง\nหัวข้อ IP ใน roadmap ครอบคลุม datagram format, addressing, NAT และ IPv6"
+  },
+  {
+    "num": 42,
+    "title": "Network Layer: Internet",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านกรอบใหญ่จากซ้ายไปขวา: path-selection algorithms → forwarding table → IP protocol . กล่อง ICMP อยู่ข้าง IP เพื่อแสดงอีก protocol หนึ่งใน Network Layer ส่วนคำว่า transport layer ด้านบนและ link/physical layer ด้านล่างช่วยบอกตำแหน่งของ Network Layer ใน protocol stack."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ IP ดูแล datagram format, addressing และ packet handling routing/SDN สร้างข้อมูลที่ใช้ใน forwarding table ICMP ใช้สำหรับ error reporting และ router signaling ตามสไลด์"
+      }
+    ],
+    "cleanFull": "Slide 42\nNetwork Layer: Internet\nสไลด์สรุปองค์ประกอบสำคัญของ Network Layer ใน Internet โดยวาง\nIP protocol\nเป็นแกนหลักสำหรับ datagram format, addressing และ packet-handling conventions. ข้างกันคือ\nICMP protocol\nสำหรับ error reporting และ router “signaling”.\nอีกด้านหนึ่งของภาพคือกลไกเลือกเส้นทาง: path-selection algorithms ถูกนำไปใช้ผ่าน routing protocols เช่น OSPF และ BGP หรือผ่าน SDN controller แล้วผลที่ได้ถูกใช้สร้าง/ติดตั้ง\nforwarding table\nเพื่อให้การส่งต่อ packet ใน data plane ทำงานได้.\nภาพยังวาง Network Layer อยู่ระหว่าง transport layer (TCP, UDP) กับ link/physical layers เพื่อย้ำว่า IP รับข้อมูลจาก transport และอาศัยชั้นล่างในการส่งต่อไปบนแต่ละ link.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านกรอบใหญ่จากซ้ายไปขวา:\npath-selection algorithms → forwarding table → IP protocol\n. กล่อง ICMP อยู่ข้าง IP เพื่อแสดงอีก protocol หนึ่งใน Network Layer ส่วนคำว่า transport layer ด้านบนและ link/physical layer ด้านล่างช่วยบอกตำแหน่งของ Network Layer ใน protocol stack.\nประเด็นสำคัญที่ควรจำ\nIP ดูแล datagram format, addressing และ packet handling\nrouting/SDN สร้างข้อมูลที่ใช้ใน forwarding table\nICMP ใช้สำหรับ error reporting และ router signaling ตามสไลด์"
+  },
+  {
+    "num": 43,
+    "title": "IP Datagram format",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เริ่มจากแถวบนของ header แล้วอ่านลงตามช่องในกรอบ 32-bit. เส้นคำอธิบายรอบภาพชี้จากชื่อฟิลด์ไปยังความหมาย เช่น TTL, source/destination address และ checksum. แถบแนวตั้งด้านขวาแยก header ออกจาก payload ทำให้เห็นชัดว่าส่วนข้อมูลมีความยาวแปรผัน."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ IP datagram ประกอบด้วย header และ variable-length payload TTL ถูก decrement ที่แต่ละ router ตัวอย่าง overhead ในสไลด์คือ 20-byte TCP + 20-byte IP = 40 bytes ก่อน application overhead"
+      }
+    ],
+    "cleanFull": "Slide 43\nIP Datagram format\nสไลด์แสดงรูปแบบของ\nIP datagram\nเป็นแถวกว้าง 32 bits โดยส่วน header มีฟิลด์หลายชนิด เช่น version, header length, type of service, total length, identifier/flags/fragment offset, TTL, upper-layer protocol, header checksum, source IP address, destination IP address และ options (ถ้ามี). ด้านล่างคือ payload data ซึ่งโดยทั่วไปเป็น TCP หรือ UDP segment.\nฟิลด์ TTL แสดงค่าอายุสูงสุดที่ยังเหลือและถูกลดค่าที่แต่ละ router; ฟิลด์ upper layer ระบุ protocol ด้านบน เช่น TCP หรือ UDP; ส่วน Total Length เป็นฟิลด์ 16 บิตที่ระบุความยาวรวมของ IPv4 datagram เป็น bytes ดังนั้นค่าสูงสุดคือ 65,535 bytes (ประมาณ 64 KB) และสไลด์ระบุว่าโดยทั่วไป datagram มักมีขนาด 1500 bytes หรือน้อยกว่า\nกรอบ “overhead” ในภาพยกตัวอย่างว่า TCP header 20 bytes + IP header 20 bytes = 40 bytes ก่อนนับ application-layer overhead. จุดนี้ใช้ให้เห็นว่าการส่งข้อมูลจริงมี header เพิ่มจากหลายชั้น.\nอ่านภาพและองค์ประกอบในสไลด์\nเริ่มจากแถวบนของ header แล้วอ่านลงตามช่องในกรอบ 32-bit. เส้นคำอธิบายรอบภาพชี้จากชื่อฟิลด์ไปยังความหมาย เช่น TTL, source/destination address และ checksum. แถบแนวตั้งด้านขวาแยก\nheader\nออกจาก\npayload\nทำให้เห็นชัดว่าส่วนข้อมูลมีความยาวแปรผัน.\nประเด็นสำคัญที่ควรจำ\nIP datagram ประกอบด้วย header และ variable-length payload\nTTL ถูก decrement ที่แต่ละ router\nตัวอย่าง overhead ในสไลด์คือ 20-byte TCP + 20-byte IP = 40 bytes ก่อน application overhead"
+  },
+  {
+    "num": 44,
+    "title": "IP addressing: introduction",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สังเกต router ตรงกลางแต่ละจุดเชื่อมมีหมายเลข IP ต่างกันตาม interface. จากนั้นดูตัวอย่าง 223.1.1.1 ด้านล่าง ซึ่งแตกเป็น 4 กลุ่ม 8-bit และแมปกลับเป็นเลข 223, 1, 1, 1 เพื่ออธิบายรูปแบบ dotted decimal."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ IP address ในสไลด์ผูกกับ interface IPv4 address มี 32 bits dotted decimal แบ่ง 32 bits เป็น 4 กลุ่ม กลุ่มละ 8 bits"
+      }
+    ],
+    "cleanFull": "Slide 44\nIP addressing: introduction\nIP address\nในสไลด์หมายถึง identifier ขนาด 32 bits ที่ผูกกับแต่ละ host หรือ router\ninterface\nไม่ได้ผูกกับตัว router ทั้งเครื่องเพียงหนึ่งค่า. Interface คือจุดเชื่อมระหว่าง host/router กับ physical link.\nrouter โดยทั่วไปมีหลาย interfaces เพราะต้องเชื่อมหลายเครือข่าย ขณะที่ host มักมีหนึ่งหรือสอง interfaces เช่น wired Ethernet และ wireless 802.11. ภาพเครือข่ายด้านขวาจึงใส่ IP address แยกที่แต่ละ interface ของ router และ host.\nด้านล่างสไลด์แสดง\ndotted-decimal notation\n: 223.1.1.1 ถูกแทนด้วย binary 32 bits แบ่งเป็นสี่กลุ่ม กลุ่มละ 8 bits และแต่ละกลุ่มแสดงเป็นเลขฐานสิบคั่นด้วยจุด.\nอ่านภาพและองค์ประกอบในสไลด์\nสังเกต router ตรงกลางแต่ละจุดเชื่อมมีหมายเลข IP ต่างกันตาม interface. จากนั้นดูตัวอย่าง 223.1.1.1 ด้านล่าง ซึ่งแตกเป็น 4 กลุ่ม 8-bit และแมปกลับเป็นเลข 223, 1, 1, 1 เพื่ออธิบายรูปแบบ dotted decimal.\nประเด็นสำคัญที่ควรจำ\nIP address ในสไลด์ผูกกับ interface\nIPv4 address มี 32 bits\ndotted decimal แบ่ง 32 bits เป็น 4 กลุ่ม กลุ่มละ 8 bits"
+  },
+  {
+    "num": 45,
+    "title": "IP addressing: introduction — reading the interface diagram",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ไล่จาก host แต่ละตัวไปยัง interface ของ router ที่เชื่อมอยู่ แล้วสังเกต prefix ของ address ในแต่ละกลุ่ม เช่น 223.1.1, 223.1.2 และ 223.1.3. ยังไม่ต้องสรุปเรื่อง subnet จากภาพนี้เพียงอย่างเดียว เพราะนิยาม subnet จะถูกให้ใน Slide 47."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ หนึ่ง router สามารถมีหลาย IP addresses เพราะมีหลาย interfaces ภาพนี้เตรียมการมองกลุ่ม address ก่อนเข้าสู่ subnet"
+      }
+    ],
+    "cleanFull": "Slide 45\nIP addressing: introduction — reading the interface diagram\nสไลด์นี้เป็นขั้นของ animation ที่ลดความเด่นของข้อความนิยามทางซ้าย เพื่อให้โฟกัสที่ topology และหมายเลข IP ของแต่ละ interface. กลุ่มเครื่องที่เชื่อมอยู่รอบ router แสดงให้เห็นว่าแต่ละ link/เครือข่ายมีชุด address ที่สัมพันธ์กัน.\nตัวอย่างในภาพมี address กลุ่ม 223.1.1.x, 223.1.2.x และ 223.1.3.x อยู่คนละส่วนของ topology. จุดประสงค์ของภาพในขั้นนี้คือเตรียมให้นักศึกษามอง “interface และกลุ่ม address” ก่อนเข้าสู่คำถามเรื่องการเชื่อม interface และ subnet ในสไลด์ถัดไป.\nตัวอย่าง dotted-decimal 223.1.1.1 ที่ด้านล่างยังคงเชื่อมเลขฐานสิบกับ binary 32 bits เหมือนสไลด์ก่อนหน้า แต่ภาพรวมเน้นการอ่านตำแหน่งของ address บน network diagram มากขึ้น.\nอ่านภาพและองค์ประกอบในสไลด์\nไล่จาก host แต่ละตัวไปยัง interface ของ router ที่เชื่อมอยู่ แล้วสังเกต prefix ของ address ในแต่ละกลุ่ม เช่น 223.1.1, 223.1.2 และ 223.1.3. ยังไม่ต้องสรุปเรื่อง subnet จากภาพนี้เพียงอย่างเดียว เพราะนิยาม subnet จะถูกให้ใน Slide 47.\nประเด็นสำคัญที่ควรจำ\nหนึ่ง router สามารถมีหลาย IP addresses เพราะมีหลาย interfaces\nภาพนี้เตรียมการมองกลุ่ม address ก่อนเข้าสู่ subnet"
+  },
+  {
+    "num": 46,
+    "title": "IP addressing: how are interfaces actually connected?",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ดูคำตอบสีแดงสองฝั่งของภาพ: ฝั่ง wired ชี้ว่า Ethernet interfaces เชื่อมด้วย Ethernet switches; ฝั่ง wireless ชี้ว่า WiFi interfaces เชื่อมด้วย WiFi base station. ข้อความตรงกลางบอกขอบเขตการเรียน ณ จุดนี้ว่ารายละเอียดจะไปอยู่บทหลัง."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ wired interfaces เชื่อมผ่าน Ethernet switches ตามสไลด์ wireless WiFi interfaces เชื่อมผ่าน WiFi base station รายละเอียด link-layer connection จะศึกษาใน Chapters 6–7"
+      }
+    ],
+    "cleanFull": "Slide 46\nIP addressing: how are interfaces actually connected?\nสไลด์ตั้งคำถามว่า interfaces เชื่อมถึงกันจริงอย่างไร และตอบในระดับที่จำเป็นสำหรับบทนี้:\nwired Ethernet interfaces\nเชื่อมกันผ่าน Ethernet switches ส่วน\nwireless WiFi interfaces\nเชื่อมกันผ่าน WiFi base station.\nข้อความ “For now” ย้ำว่ายังไม่ต้องลงรายละเอียดว่าการเชื่อมต่อระหว่าง interfaces ที่ไม่มี router คั่นกลางทำงานอย่างไร เพราะรายละเอียดนั้นจะศึกษาใน Chapters 6 และ 7. ในตอนนี้ให้เข้าใจเพียงว่าอุปกรณ์ในเครือข่ายเดียวกันสามารถเชื่อมถึงกันผ่านเทคโนโลยี link layer ได้.\nภาพ network เดิมถูกนำกลับมาใช้ พร้อมข้อความสีแดงชี้ไปยังบริเวณ wired และ wireless เพื่อเชื่อมแนวคิด interface จากสไลด์ก่อนกับลักษณะการเชื่อมต่อจริง.\nอ่านภาพและองค์ประกอบในสไลด์\nดูคำตอบสีแดงสองฝั่งของภาพ: ฝั่ง wired ชี้ว่า Ethernet interfaces เชื่อมด้วย Ethernet switches; ฝั่ง wireless ชี้ว่า WiFi interfaces เชื่อมด้วย WiFi base station. ข้อความตรงกลางบอกขอบเขตการเรียน ณ จุดนี้ว่ารายละเอียดจะไปอยู่บทหลัง.\nประเด็นสำคัญที่ควรจำ\nwired interfaces เชื่อมผ่าน Ethernet switches ตามสไลด์\nwireless WiFi interfaces เชื่อมผ่าน WiFi base station\nรายละเอียด link-layer connection จะศึกษาใน Chapters 6–7"
+  },
+  {
+    "num": 47,
+    "title": "Subnets",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ลากสายตาภายในแต่ละพื้นที่สีฟ้า: interfaces ในพื้นที่เดียวกันเชื่อมถึงกันโดยไม่ข้าม router จึงเป็น subnet เดียว. เมื่อจะไปยังพื้นที่สีฟ้าอีกกลุ่มต้องผ่าน router จึงเป็นคนละ subnet ตามนิยามในสไลด์."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ subnet = interfaces ที่ถึงกันได้โดยไม่ผ่าน intervening router subnet part อยู่ใน high-order bits; host part คือ low-order bits ที่เหลือ"
+      }
+    ],
+    "cleanFull": "Slide 47\nSubnets\nสไลด์ให้นิยาม\nsubnet\nว่าเป็นกลุ่ม device interfaces ที่สามารถเข้าถึงกันทางกายภาพได้โดย\nไม่ต้องผ่าน intervening router\n. จาก topology ตัวอย่าง สไลด์ระบุว่าเครือข่ายนี้ประกอบด้วย 3 subnets.\nIP address มีโครงสร้างสองส่วน:\nsubnet part\nคือ high-order bits ที่อุปกรณ์ใน subnet เดียวกันมีร่วมกัน และ\nhost part\nคือ low-order bits ที่เหลือ. แนวคิดนี้ทำให้เราไม่ได้มอง IP address เป็นเลข 32 bits ที่ไม่มีโครงสร้าง แต่แบ่งส่วนเพื่อบอกเครือข่ายย่อยและ interface ภายในเครือข่ายนั้น.\nภาพด้านขวาใช้กลุ่ม address 223.1.1.x, 223.1.2.x และ 223.1.3.x เพื่อแสดงสามบริเวณที่มี router คั่นระหว่างกัน.\nอ่านภาพและองค์ประกอบในสไลด์\nลากสายตาภายในแต่ละพื้นที่สีฟ้า: interfaces ในพื้นที่เดียวกันเชื่อมถึงกันโดยไม่ข้าม router จึงเป็น subnet เดียว. เมื่อจะไปยังพื้นที่สีฟ้าอีกกลุ่มต้องผ่าน router จึงเป็นคนละ subnet ตามนิยามในสไลด์.\nประเด็นสำคัญที่ควรจำ\nsubnet = interfaces ที่ถึงกันได้โดยไม่ผ่าน intervening router\nsubnet part อยู่ใน high-order bits; host part คือ low-order bits ที่เหลือ"
+  },
+  {
+    "num": 48,
+    "title": "Subnets — recipe for defining subnets",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพแยก topology ออกเป็นสาม island และเขียน subnet address สีแดงไว้ข้างแต่ละกลุ่ม. อ่าน /24 เป็นการระบุจำนวน high-order bits ที่เป็น subnet part ตามคำอธิบายใต้ภาพ."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ การหา subnet ในภาพทำได้โดยแยก interfaces ออกเป็น network islands /24 หมายถึง 24 high-order bits เป็น subnet part ตามสไลด์"
+      }
+    ],
+    "cleanFull": "Slide 48\nSubnets — recipe for defining subnets\nสไลด์ให้ “recipe” สำหรับมองหา subnet: ให้จินตนาการว่า detach แต่ละ interface ออกจาก host หรือ router แล้วจะเหลือ “islands” ของเครือข่ายที่แยกจากกัน แต่ละ island นั้นคือหนึ่ง\nsubnet\n.\nในตัวอย่างสาม island ถูกกำกับเป็น 223.1.1.0/24, 223.1.2.0/24 และ 223.1.3.0/24. สไลด์อธิบาย\n/24\nว่า high-order 24 bits เป็น subnet part ของ IP address.\nวิธีคิดนี้ช่วยให้เห็นขอบเขต subnet จาก topology ก่อน แล้วจึงนำ address และ subnet mask มาประกอบ ไม่ใช่ดูเพียงตำแหน่งทางกายภาพอย่างเดียว.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพแยก topology ออกเป็นสาม island และเขียน subnet address สีแดงไว้ข้างแต่ละกลุ่ม. อ่าน /24 เป็นการระบุจำนวน high-order bits ที่เป็น subnet part ตามคำอธิบายใต้ภาพ.\nประเด็นสำคัญที่ควรจำ\nการหา subnet ในภาพทำได้โดยแยก interfaces ออกเป็น network islands\n/24 หมายถึง 24 high-order bits เป็น subnet part ตามสไลด์"
+  },
+  {
+    "num": 49,
+    "title": "Subnets — identifying the /24 subnets",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เริ่มจากสาม LAN ด้านนอกก่อน แล้วตามเส้นเชื่อมระหว่าง routers ตรงกลางทีละ link. ป้ายสีแดงในภาพแสดง subnet ที่สไลด์ต้องการให้ระบุ ดังนั้นควรสังเกตทั้ง access networks และ router-to-router links."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ subnet ไม่ได้มีเฉพาะ LAN ที่มี hosts; link ระหว่าง routers ก็เป็น subnet ได้ ภาพนี้แสดง /24 subnets หกกลุ่มตามป้ายในสไลด์"
+      }
+    ],
+    "cleanFull": "Slide 49\nSubnets — identifying the /24 subnets\nสไลด์ขยาย topology ให้ซับซ้อนขึ้นและถามสองคำถาม: “where are the subnets?” และ “what are the /24 subnet addresses?” จุดสำคัญคือไม่ควรมองเฉพาะ LAN ที่มีหลาย hosts เพราะ link ระหว่าง router interfaces ก็สามารถเป็น subnet แยกได้ตามนิยามก่อนหน้า.\nภาพกำกับ subnet หลายกลุ่ม ได้แก่ 223.1.1/24, 223.1.2/24, 223.1.3/24 สำหรับกลุ่มปลายทาง และ 223.1.7/24, 223.1.8/24, 223.1.9/24 สำหรับ links ระหว่าง routers. จึงทำให้ topology นี้มี subnet มากกว่าจำนวน LAN ของผู้ใช้ปลายทางที่เห็นด้านนอก.\nให้ใช้หลักเดิม: interfaces ที่ติดต่อกันได้โดยไม่มี router ตัวอื่นคั่นอยู่เป็นกลุ่มเดียวกัน แล้วตรวจ prefix /24 ที่กำกับในแต่ละกลุ่ม.\nอ่านภาพและองค์ประกอบในสไลด์\nเริ่มจากสาม LAN ด้านนอกก่อน แล้วตามเส้นเชื่อมระหว่าง routers ตรงกลางทีละ link. ป้ายสีแดงในภาพแสดง subnet ที่สไลด์ต้องการให้ระบุ ดังนั้นควรสังเกตทั้ง access networks และ router-to-router links.\nประเด็นสำคัญที่ควรจำ\nsubnet ไม่ได้มีเฉพาะ LAN ที่มี hosts; link ระหว่าง routers ก็เป็น subnet ได้\nภาพนี้แสดง /24 subnets หกกลุ่มตามป้ายในสไลด์"
+  },
+  {
+    "num": 50,
+    "title": "IP addressing: CIDR",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่าน binary string จากซ้ายไปขวา เส้นสีน้ำเงินเหนือช่วงแรกระบุ subnet part และเส้นสีดำช่วงหลังระบุ host part . ค่า /23 ใต้ภาพบอกว่าขอบเขตแบ่งอยู่หลัง 23 bits แรก."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ CIDR ใช้รูปแบบ a.b.c.d/x x คือจำนวน bits ของ subnet portion ตัวอย่างในสไลด์คือ 200.23.16.0/23"
+      }
+    ],
+    "cleanFull": "Slide 50\nIP addressing: CIDR\nCIDR\nย่อมาจาก Classless InterDomain Routing และสไลด์ระบุว่าออกเสียง “cider”. แนวคิดสำคัญคือ subnet portion ของ address สามารถมีความยาวได้ตามต้องการ ไม่จำเป็นต้องยึดขอบเขตแบบคงที่.\nรูปแบบการเขียนคือ\na.b.c.d/x\nโดย x คือจำนวน bits ใน subnet portion. ตัวอย่างในสไลด์คือ\n200.23.16.0/23\nซึ่งภาพ binary ด้านล่างแบ่ง high-order bits 23 bits เป็น subnet part และ bits ที่เหลือเป็น host part.\nCIDR จึงเชื่อมแนวคิดจากสไลด์ก่อนหน้า—การแบ่ง IP address เป็น subnet part และ host part—กับ notation ที่บอกขนาดของ subnet part โดยตรงด้วยค่า /x.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่าน binary string จากซ้ายไปขวา เส้นสีน้ำเงินเหนือช่วงแรกระบุ\nsubnet part\nและเส้นสีดำช่วงหลังระบุ\nhost part\n. ค่า /23 ใต้ภาพบอกว่าขอบเขตแบ่งอยู่หลัง 23 bits แรก.\nประเด็นสำคัญที่ควรจำ\nCIDR ใช้รูปแบบ a.b.c.d/x\nx คือจำนวน bits ของ subnet portion\nตัวอย่างในสไลด์คือ 200.23.16.0/23"
+  },
+  {
+    "num": 51,
+    "title": "IP addresses: how to get one?",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านข้อความจากบนลงล่าง: เริ่มจากสองคำถามสีดำ แล้วตามด้วยส่วน “How does host get IP address?” ด้านล่าง ซึ่งวางวิธี hard-coded และ DHCP ไว้เทียบกัน. คำว่า DHCP ถูกเน้นสีแดงเพื่อชี้ไปยังหัวข้อที่จะอธิบายต่อในสไลด์ถัดไป."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ แยกคำถามเรื่อง host address กับ network address ออกจากกัน Host อาจถูกกำหนด IP แบบ hard-coded หรือได้รับแบบ dynamic ผ่าน DHCP"
+      }
+    ],
+    "cleanFull": "Slide 51\nIP addresses: how to get one?\nสไลด์แยกคำถามเรื่องการได้มาของ IP address ออกเป็นสองระดับ คือ\nhost ได้ address ภายใน network อย่างไร\nและ\nnetwork ได้ network part ของ address อย่างไร\n. ในสไลด์นี้เริ่มตอบคำถามแรกก่อน.\nวิธีหนึ่งคือกำหนดค่าแบบ\nhard-coded\nโดยผู้ดูแลระบบในไฟล์ configuration ส่วนอีกวิธีคือ\nDHCP (Dynamic Host Configuration Protocol)\nซึ่งให้ host ขอ address จาก server แบบอัตโนมัติ และสไลด์เรียกแนวคิดนี้ว่า “plug-and-play”.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านข้อความจากบนลงล่าง: เริ่มจากสองคำถามสีดำ แล้วตามด้วยส่วน “How does host get IP address?” ด้านล่าง ซึ่งวางวิธี hard-coded และ DHCP ไว้เทียบกัน. คำว่า DHCP ถูกเน้นสีแดงเพื่อชี้ไปยังหัวข้อที่จะอธิบายต่อในสไลด์ถัดไป.\nประเด็นสำคัญที่ควรจำ\nแยกคำถามเรื่อง host address กับ network address ออกจากกัน\nHost อาจถูกกำหนด IP แบบ hard-coded หรือได้รับแบบ dynamic ผ่าน DHCP"
+  },
+  {
+    "num": 52,
+    "title": "DHCP: Dynamic Host Configuration Protocol",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ส่วนบนเป็นคุณสมบัติของ DHCP เช่น renew lease, reuse of addresses และรองรับผู้ใช้ที่ join/leave network. ส่วนล่างเป็น DHCP overview ให้ตามลูกศรเชิงตรรกะจาก client broadcast ค้นหา server ไปจนถึง server ส่ง ACK ยืนยัน address."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ DHCP จัดสรร IP address แบบ dynamic เมื่อ host เข้าร่วม network ลำดับหลักในสไลด์คือ Discover, Offer, Request และ ACK"
+      }
+    ],
+    "cleanFull": "Slide 52\nDHCP: Dynamic Host Configuration Protocol\nDHCP มีเป้าหมายให้ host\nได้รับ IP address แบบ dynamic จาก network server เมื่อเข้าร่วมเครือข่าย\n. Address ที่ได้รับสามารถต่ออายุ lease ได้ และแนวคิดการเช่าช่วยให้ address ถูกนำกลับมาใช้ใหม่เมื่ออุปกรณ์ไม่ได้เชื่อมต่ออยู่.\nสไลด์สรุปลำดับข้อความเป็น\nDHCP discover → DHCP offer → DHCP request → DHCP ACK\n. ในต้นฉบับระบุว่า discover และ offer เป็นขั้นตอนที่อาจเป็น optional ขณะที่ request และ ACK เป็นช่วงขอและยืนยัน address.\nอ่านภาพและองค์ประกอบในสไลด์\nส่วนบนเป็นคุณสมบัติของ DHCP เช่น renew lease, reuse of addresses และรองรับผู้ใช้ที่ join/leave network. ส่วนล่างเป็น DHCP overview ให้ตามลูกศรเชิงตรรกะจาก client broadcast ค้นหา server ไปจนถึง server ส่ง ACK ยืนยัน address.\nประเด็นสำคัญที่ควรจำ\nDHCP จัดสรร IP address แบบ dynamic เมื่อ host เข้าร่วม network\nลำดับหลักในสไลด์คือ Discover, Offer, Request และ ACK"
+  },
+  {
+    "num": 53,
+    "title": "DHCP client-server scenario",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เริ่มจาก laptop ทางขวาซึ่งเป็น arriving DHCP client แล้วตามลูกศรสีแดงไปยัง router/server ใน network. Address 223.1.2.5 ถูกกำกับไว้ที่ DHCP server ขณะที่กลุ่มอุปกรณ์รอบ ๆ แสดง subnets หลายส่วนที่เชื่อมผ่าน router."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Client ที่เพิ่งเข้าร่วม network ต้องขอ address สำหรับ subnet นั้น สไลด์ระบุว่า DHCP server มักอยู่ร่วมกับ router และให้บริการ subnets ที่ router เชื่อมต่อ"
+      }
+    ],
+    "cleanFull": "Slide 53\nDHCP client-server scenario\nภาพแสดงตัวอย่าง network ที่มีหลาย subnet และมี\nDHCP server ที่ address 223.1.2.5\n. Client ที่เพิ่งเข้ามาใน subnet ยังต้องการ address สำหรับใช้งานใน network นั้น.\nข้อความด้านขวาระบุว่าโดยทั่วไปในตัวอย่างนี้ DHCP server สามารถ co-locate อยู่กับ router และให้บริการ subnets ที่ router เชื่อมต่ออยู่ ประเด็นของภาพคือให้เห็นตำแหน่งของ client, server และ router ก่อนดูการแลกเปลี่ยนข้อความในสไลด์ถัดไป; ในเครือข่ายจริงที่ DHCP server อยู่คนละ subnet อาจต้องมี DHCP relay เพื่อส่งต่อข้อความระหว่าง subnet\nอ่านภาพและองค์ประกอบในสไลด์\nเริ่มจาก laptop ทางขวาซึ่งเป็น arriving DHCP client แล้วตามลูกศรสีแดงไปยัง router/server ใน network. Address 223.1.2.5 ถูกกำกับไว้ที่ DHCP server ขณะที่กลุ่มอุปกรณ์รอบ ๆ แสดง subnets หลายส่วนที่เชื่อมผ่าน router.\nประเด็นสำคัญที่ควรจำ\nClient ที่เพิ่งเข้าร่วม network ต้องขอ address สำหรับ subnet นั้น\nสไลด์ระบุว่า DHCP server มักอยู่ร่วมกับ router และให้บริการ subnets ที่ router เชื่อมต่อ"
+  },
+  {
+    "num": 54,
+    "title": "DHCP client-server scenario — message exchange",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพจากบนลงล่างตามเส้นข้อความระหว่างสองฝั่ง: Discover → Offer → Request → ACK. กล่องสีแดงสรุปความหมายในภาษาพูด เช่น “is there a DHCP server out there?” และ “You’ve got that IP address!”."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Client ใช้ broadcast ในช่วงที่ยังไม่ทราบ configuration ของตนเอง Offer เสนอ address และ lease; Request ขอใช้; ACK ยืนยันการจัดสรร"
+      }
+    ],
+    "cleanFull": "Slide 54\nDHCP client-server scenario — message exchange\nสไลด์แสดงการแลกเปลี่ยนข้อความระหว่าง arriving client กับ DHCP server 223.1.2.5. Client เริ่มด้วย\nDHCP discover\nจาก 0.0.0.0:68 ไปยัง broadcast 255.255.255.255:67 เพราะยังไม่มี IP address ของตนเอง.\nServer ตอบด้วย\nDHCP offer\nโดยเสนอ yiaddr 223.1.2.4 และ lifetime 3600 seconds. จากนั้น client ส่ง\nDHCP request\nเพื่อขอใช้ address นั้น และ server ส่ง\nDHCP ACK\nเพื่อยืนยัน. สไลด์ยังระบุว่าสองขั้นแรกอาจถูกข้ามได้เมื่อ client จำและต้องการ reuse address ที่เคยได้รับมาก่อน.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพจากบนลงล่างตามเส้นข้อความระหว่างสองฝั่ง: Discover → Offer → Request → ACK. กล่องสีแดงสรุปความหมายในภาษาพูด เช่น “is there a DHCP server out there?” และ “You’ve got that IP address!”.\nประเด็นสำคัญที่ควรจำ\nClient ใช้ broadcast ในช่วงที่ยังไม่ทราบ configuration ของตนเอง\nOffer เสนอ address และ lease; Request ขอใช้; ACK ยืนยันการจัดสรร"
+  },
+  {
+    "num": 55,
+    "title": "DHCP: more than IP addresses",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สไลด์นี้เป็นรายการสั้น ๆ จึงควรอ่านคำว่า “more than just allocated IP address” ก่อน แล้วไล่สามรายการด้านล่าง: first-hop router, DNS information และ network mask."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ DHCP ให้ข้อมูล configuration ได้มากกว่า IP address ข้อมูลสำคัญในสไลด์คือ first-hop router, DNS และ network mask"
+      }
+    ],
+    "cleanFull": "Slide 55\nDHCP: more than IP addresses\nDHCP ไม่ได้ส่งกลับเพียง IP address ของ client เท่านั้น. สไลด์ระบุว่าสามารถส่ง\naddress ของ first-hop router\n,\nชื่อและ IP address ของ DNS server\nและ\nnetwork mask\nที่บอกส่วน network กับ host ของ address ได้ด้วย.\nดังนั้นผลของ DHCP คือชุด configuration ที่จำเป็นต่อการเริ่มสื่อสารใน network ไม่ใช่เพียงเลข IP หนึ่งค่า.\nอ่านภาพและองค์ประกอบในสไลด์\nสไลด์นี้เป็นรายการสั้น ๆ จึงควรอ่านคำว่า “more than just allocated IP address” ก่อน แล้วไล่สามรายการด้านล่าง: first-hop router, DNS information และ network mask.\nประเด็นสำคัญที่ควรจำ\nDHCP ให้ข้อมูล configuration ได้มากกว่า IP address\nข้อมูลสำคัญในสไลด์คือ first-hop router, DNS และ network mask"
+  },
+  {
+    "num": 56,
+    "title": "DHCP: example — request encapsulation",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ดู stack ข้าง laptop จากบนลงล่างเป็น DHCP, UDP, IP, Eth, Phy เพื่อเห็นการ encapsulation. จากนั้นตาม frame ไปยัง router ทางขวา แล้วอ่าน stack ฝั่ง routerย้อนขึ้นเพื่อเห็นการ de-multiplex ไปถึง DHCP."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ DHCP message ถูกห่อผ่าน UDP, IP และ Ethernet ตามลำดับ Ethernet broadcast ทำให้ router ที่มี DHCP server รับ request แล้ว de-multiplex ขึ้นไปยัง DHCP"
+      }
+    ],
+    "cleanFull": "Slide 56\nDHCP: example — request encapsulation\nตัวอย่างแสดง laptop ที่กำลังเชื่อมต่อ network และใช้ DHCP เพื่อขอ IP address พร้อม address ของ first-hop router และ DNS server. จุดสำคัญของสไลด์คือการเชื่อม DHCP กับการทำงานแบบเป็นชั้น.\nDHCP REQUEST ถูก encapsulate ใน UDP จากนั้นใน IP และใน Ethernet. Ethernet frame ถูก broadcast บน LAN ด้วย destination MAC address FF:FF:FF:FF:FF:FF (ในสไลด์เขียนติดกันเป็น FFFFFFFFFFFF) และ router ที่รัน DHCP server รับ frame นั้น ฝั่ง router จึง de-multiplex จาก Ethernet → IP → UDP → DHCP\nอ่านภาพและองค์ประกอบในสไลด์\nดู stack ข้าง laptop จากบนลงล่างเป็น DHCP, UDP, IP, Eth, Phy เพื่อเห็นการ encapsulation. จากนั้นตาม frame ไปยัง router ทางขวา แล้วอ่าน stack ฝั่ง routerย้อนขึ้นเพื่อเห็นการ de-multiplex ไปถึง DHCP.\nประเด็นสำคัญที่ควรจำ\nDHCP message ถูกห่อผ่าน UDP, IP และ Ethernet ตามลำดับ\nEthernet broadcast ทำให้ router ที่มี DHCP server รับ request แล้ว de-multiplex ขึ้นไปยัง DHCP"
+  },
+  {
+    "num": 57,
+    "title": "DHCP: example — ACK and configuration",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพใช้ stack เดิมจากสไลด์ก่อนหน้า แต่ทิศทางหลักกลับจาก router/server ไปยัง laptop. อ่านจาก DHCP ที่ server ลงผ่าน UDP/IP/Ethernet/Physical แล้วตาม frame ไปฝั่ง client จากนั้นอ่านย้อนขึ้นจนถึง DHCP."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ DHCP ACK นำ configuration จาก server กลับไปยัง client หลัง de-multiplex ACK แล้ว client รู้ IP, DNS และ first-hop router ตามตัวอย่าง"
+      }
+    ],
+    "cleanFull": "Slide 57\nDHCP: example — ACK and configuration\nฝั่ง server สร้าง\nDHCP ACK\nที่บรรจุ IP address ของ client, IP address ของ first-hop router และข้อมูล DNS ตามที่สไลด์ระบุ. Reply นี้ถูก encapsulate แล้วส่งกลับไปยัง client.\nเมื่อ client รับ frame จะ de-multiplex ขึ้นตามชั้นจนถึง DHCP. ตอนจบของภาพ client จึงรู้ IP address ของตนเอง รวมทั้ง DNS และ first-hop router ที่ต้องใช้ต่อไป.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพใช้ stack เดิมจากสไลด์ก่อนหน้า แต่ทิศทางหลักกลับจาก router/server ไปยัง laptop. อ่านจาก DHCP ที่ server ลงผ่าน UDP/IP/Ethernet/Physical แล้วตาม frame ไปฝั่ง client จากนั้นอ่านย้อนขึ้นจนถึง DHCP.\nประเด็นสำคัญที่ควรจำ\nDHCP ACK นำ configuration จาก server กลับไปยัง client\nหลัง de-multiplex ACK แล้ว client รู้ IP, DNS และ first-hop router ตามตัวอย่าง"
+  },
+  {
+    "num": 58,
+    "title": "IP addresses: how to get one? — network address block",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่าน ISP block บรรทัดบนก่อน แล้วเทียบ binary prefix ของแต่ละองค์กรด้านล่าง. ภาพต้องการให้เห็นว่า block ใหญ่ของ ISP ถูกแบ่งและจัดสรรเป็น block ย่อยหลายชุดให้แต่ละ organization."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Network ได้ subnet portion จาก address space ที่ provider ISP จัดสรรให้ ตัวอย่างแบ่ง 200.23.16.0/20 ออกเป็น 8 blocks ขนาด /23"
+      }
+    ],
+    "cleanFull": "Slide 58\nIP addresses: how to get one? — network address block\nสไลด์กลับมาตอบคำถามข้อที่สองจาก Slide 51:\nnetwork ได้ subnet part ของ IP address อย่างไร\n. คำตอบในสไลด์คือได้รับการจัดสรรส่วนหนึ่งจาก address space ของ provider ISP.\nตัวอย่างให้ ISP มี block\n200.23.16.0/20\nแล้วแบ่งออกเป็น 8 blocks สำหรับองค์กร โดยแสดงตัวอย่าง Organization 0 = 200.23.16.0/23, Organization 1 = 200.23.18.0/23, Organization 2 = 200.23.20.0/23 และ Organization 7 = 200.23.30.0/23.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่าน ISP block บรรทัดบนก่อน แล้วเทียบ binary prefix ของแต่ละองค์กรด้านล่าง. ภาพต้องการให้เห็นว่า block ใหญ่ของ ISP ถูกแบ่งและจัดสรรเป็น block ย่อยหลายชุดให้แต่ละ organization.\nประเด็นสำคัญที่ควรจำ\nNetwork ได้ subnet portion จาก address space ที่ provider ISP จัดสรรให้\nตัวอย่างแบ่ง 200.23.16.0/20 ออกเป็น 8 blocks ขนาด /23"
+  },
+  {
+    "num": 59,
+    "title": "Hierarchical addressing: route aggregation",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านจาก organizations ทางซ้ายเข้าสู่ ISP แล้วออกไปยัง Internet. ป้ายข้อความข้างเส้นจาก Fly-By-Night-ISP แสดง aggregate prefix /20 ซึ่งสรุปหลาย /23 ที่อยู่ภายในกลุ่มเดียวกัน."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Hierarchical addressing ลดจำนวน routing advertisements ด้วยการ aggregate prefixes ตัวอย่าง Fly-By-Night-ISP ประกาศ 200.23.16.0/20 แทนหลาย /23"
+      }
+    ],
+    "cleanFull": "Slide 59\nHierarchical addressing: route aggregation\nHierarchical addressing ช่วยให้การประกาศ routing information มีประสิทธิภาพขึ้น. ในภาพ Fly-By-Night-ISP เชื่อม Organization 0, 1, 2 … 7 ซึ่งถือ address blocks ย่อย เช่น 200.23.16.0/23, 200.23.18.0/23 และ 200.23.30.0/23.\nแทนที่จะต้องประกาศทุก block ย่อยแยกกัน ภาพแสดงข้อความจาก ISP ว่า\n“Send me anything with addresses beginning 200.23.16.0/20”\n. นี่คือแนวคิด route aggregation ที่รวมหลาย prefixes ใต้ prefix ที่กว้างกว่า. อีก ISP ในภาพประกาศ 199.31.0.0/16 แยกต่างหาก.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านจาก organizations ทางซ้ายเข้าสู่ ISP แล้วออกไปยัง Internet. ป้ายข้อความข้างเส้นจาก Fly-By-Night-ISP แสดง aggregate prefix /20 ซึ่งสรุปหลาย /23 ที่อยู่ภายในกลุ่มเดียวกัน.\nประเด็นสำคัญที่ควรจำ\nHierarchical addressing ลดจำนวน routing advertisements ด้วยการ aggregate prefixes\nตัวอย่าง Fly-By-Night-ISP ประกาศ 200.23.16.0/20 แทนหลาย /23"
+  },
+  {
+    "num": 60,
+    "title": "Hierarchical addressing: more specific routes",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เปรียบเทียบกับ Slide 59: Organization 1 ถูกย้ายไปอยู่ใต้ ISPs-R-Us ที่ด้านล่าง และมีข้อความเพิ่ม “or 200.23.18.0/23”. ขณะที่ Fly-By-Night-ISP ยังคงมีข้อความ aggregate 200.23.16.0/20 อยู่."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Organization 1 ย้าย ISP แต่ address block 200.23.18.0/23 ยังคงถูกระบุในภาพ ISPs-R-Us ประกาศ route ที่ specific กว่าเพื่อ Organization 1"
+      }
+    ],
+    "cleanFull": "Slide 60\nHierarchical addressing: more specific routes\nสไลด์เปลี่ยนสถานการณ์โดยให้\nOrganization 1 ย้ายจาก Fly-By-Night-ISP ไปยัง ISPs-R-Us\n. อย่างไรก็ตาม Fly-By-Night-ISP ยังประกาศ aggregate 200.23.16.0/20 สำหรับกลุ่ม address เดิมของตน.\nเพื่อระบุเส้นทางของ Organization 1 ที่ย้ายออกมา ISPs-R-Us จึงประกาศ more-specific route 200.23.18.0/23 เพิ่มจาก prefix เดิม 199.31.0.0/16 ขณะที่ Fly-By-Night-ISP ยังประกาศ aggregate 200.23.16.0/20 ได้พร้อมกัน เมื่อปลายทางอยู่ใน 200.23.18.0/23 ทั้ง /20 และ /23 จะ match แต่ /23 เป็น prefix ที่ยาวกว่าและเฉพาะเจาะจงกว่า\nอ่านภาพและองค์ประกอบในสไลด์\nเปรียบเทียบกับ Slide 59: Organization 1 ถูกย้ายไปอยู่ใต้ ISPs-R-Us ที่ด้านล่าง และมีข้อความเพิ่ม “or 200.23.18.0/23”. ขณะที่ Fly-By-Night-ISP ยังคงมีข้อความ aggregate 200.23.16.0/20 อยู่.\nประเด็นสำคัญที่ควรจำ\nOrganization 1 ย้าย ISP แต่ address block 200.23.18.0/23 ยังคงถูกระบุในภาพ\nISPs-R-Us ประกาศ route ที่ specific กว่าเพื่อ Organization 1"
+  },
+  {
+    "num": 61,
+    "title": "Hierarchical addressing: more specific routes",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านจาก Organization 1 ที่ด้านล่างเข้าสู่ ISPs-R-Us แล้วดูข้อความประกาศ “or 200.23.18.0/23”. จากนั้นเปรียบเทียบกับ aggregate 200.23.16.0/20 ที่ Fly-By-Night-ISP ประกาศอยู่ด้านบน."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Aggregate route และ more-specific route สามารถถูกประกาศพร้อมกันได้ เมื่อ destination match ทั้ง /20 และ /23 จะเลือก /23 เพราะเป็น longest matching prefix"
+      }
+    ],
+    "cleanFull": "Slide 61\nHierarchical addressing: more specific routes\nสไลด์นี้แสดงสถานการณ์เดียวกับสไลด์ก่อนหน้าในสถานะที่เห็นเส้นทางใหม่ชัดขึ้น: Organization 1 ใช้ block 200.23.18.0/23 และย้ายไปเชื่อมกับ ISPs-R-Us ขณะที่ Fly-By-Night-ISP ยังประกาศ aggregate prefix 200.23.16.0/20 สำหรับกลุ่มเดิม.\nISPs-R-Us จึงประกาศ 200.23.18.0/23 ซึ่งเป็น more-specific route สำหรับ Organization 1 ภาพเส้นสีน้ำเงินในขั้น animation นี้เน้นเส้นทางที่ถูกเลือก: destination ใน block 200.23.18.0/23 จะใช้ประกาศ /23 ที่เฉพาะกว่าแทน aggregate /20 ตามหลัก longest-prefix matching ของ forwarding\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านจาก Organization 1 ที่ด้านล่างเข้าสู่ ISPs-R-Us แล้วดูข้อความประกาศ “or 200.23.18.0/23”. จากนั้นเปรียบเทียบกับ aggregate 200.23.16.0/20 ที่ Fly-By-Night-ISP ประกาศอยู่ด้านบน.\nประเด็นสำคัญที่ควรจำ\nAggregate route และ more-specific route สามารถถูกประกาศพร้อมกันได้\nเมื่อ destination match ทั้ง /20 และ /23 จะเลือก /23 เพราะเป็น longest matching prefix"
+  },
+  {
+    "num": 62,
+    "title": "IP addressing: last words …",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพแบ่งเป็นคำถามสองฝั่ง: ซ้ายถามว่า ISP ได้ address block จากไหน และขวาถามว่า 32-bit IP addresses เพียงพอหรือไม่. อ่านเป็นบทสรุปของกลไกการจัดสรรและข้อจำกัดด้านจำนวน address."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ ICANN จัดสรร IP address space ผ่าน regional registries ตามที่สไลด์ระบุ IPv4 มี 32-bit address space ส่วน IPv6 มี 128-bit address space"
+      }
+    ],
+    "cleanFull": "Slide 62\nIP addressing: last words …\nสไลด์สรุปสองประเด็นปลายหัวข้อ IP addressing. ประเด็นแรกคือ ISP ได้ block ของ IP addresses ผ่าน ICANN (Internet Corporation for Assigned Names and Numbers) ซึ่งจัดสรรผ่าน regional registries และยังมีบทบาทเกี่ยวกับ DNS root zone และการมอบหมายการจัดการ TLD.\nประเด็นที่สองคือข้อจำกัดของ IPv4 แบบ 32 บิต. สไลด์ระบุว่า ICANN จัดสรร IPv4 chunk สุดท้ายให้ regional registries ในปี 2011 และชี้ไปยัง NAT กับ IPv6 เป็นแนวทางที่เกี่ยวข้องกับปัญหาพื้นที่ IPv4 โดย IPv6 ใช้ address ขนาด 128 บิต.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพแบ่งเป็นคำถามสองฝั่ง: ซ้ายถามว่า ISP ได้ address block จากไหน และขวาถามว่า 32-bit IP addresses เพียงพอหรือไม่. อ่านเป็นบทสรุปของกลไกการจัดสรรและข้อจำกัดด้านจำนวน address.\nประเด็นสำคัญที่ควรจำ\nICANN จัดสรร IP address space ผ่าน regional registries ตามที่สไลด์ระบุ\nIPv4 มี 32-bit address space ส่วน IPv6 มี 128-bit address space"
+  },
+  {
+    "num": 63,
+    "title": "Network layer: “data plane” roadmap",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ รายการฝั่งซ้ายทำสีเน้นที่ IP: the Internet Protocol และหัวข้อย่อย NAT/IPv6. ส่วนหัวข้ออื่นจางลงเพื่อบอกตำแหน่งปัจจุบันของบท."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ NAT และ IPv6 เป็นหัวข้อถัดไปภายใต้ IP Roadmap ช่วยเชื่อม IP addressing ไปสู่การใช้งาน address ในเครือข่ายจริง"
+      }
+    ],
+    "cleanFull": "Slide 63\nNetwork layer: “data plane” roadmap\nRoadmap นี้บอกว่าหัวข้อถัดไปยังอยู่ใน IP: the Internet Protocol โดยโฟกัสที่ network address translation (NAT) ก่อนเข้าสู่ IPv6. หัวข้อ router, forwarding และ addressing ที่เรียนมาก่อนหน้านี้เป็นพื้นฐานสำหรับทำความเข้าใจว่าทำไม NAT ต้องแก้ไขข้อมูลบางส่วนของ datagram เมื่อผ่านขอบเครือข่าย.\nให้ใช้สไลด์นี้เป็นจุดเปลี่ยนหัวข้อ: จากการจัดสรรและโครงสร้าง IP address ไปสู่การแชร์ public IPv4 address ของอุปกรณ์หลายเครื่องใน local network.\nอ่านภาพและองค์ประกอบในสไลด์\nรายการฝั่งซ้ายทำสีเน้นที่ IP: the Internet Protocol และหัวข้อย่อย NAT/IPv6. ส่วนหัวข้ออื่นจางลงเพื่อบอกตำแหน่งปัจจุบันของบท.\nประเด็นสำคัญที่ควรจำ\nNAT และ IPv6 เป็นหัวข้อถัดไปภายใต้ IP\nRoadmap ช่วยเชื่อม IP addressing ไปสู่การใช้งาน address ในเครือข่ายจริง"
+  },
+  {
+    "num": 64,
+    "title": "NAT: network address translation",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพจากเครื่อง 10.0.0.1–10.0.0.3 ทางขวาเข้าสู่ NAT router. ด้าน LAN ของ router ใช้ 10.0.0.4 ขณะที่ด้าน Internet ใช้ 138.76.29.7. ข้อความสีแดงใต้ภาพเน้นการใช้ NAT IP เดียวแต่ port ต่างกัน."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ อุปกรณ์หลายเครื่องแชร์ public-facing IPv4 address เดียวตามตัวอย่าง NAT ใช้ทั้ง IP address และ port number ในการแยกการสื่อสาร"
+      }
+    ],
+    "cleanFull": "Slide 64\nNAT: network address translation\nแนวคิดหลักของ NAT ในสไลด์คือ อุปกรณ์หลายเครื่องใน local network มองจากโลกภายนอกแล้วแชร์ IPv4 address เดียวกัน. ตัวอย่าง local network คือ 10.0.0.0/24 ส่วน NAT router ใช้ address 138.76.29.7 ทางฝั่ง Internet.\nเมื่อ datagram อยู่ภายใน local network จะใช้ source/destination แบบ 10.0.0.x ตามปกติ. แต่ datagram ที่ออกจาก local network จะมี source NAT IP address เดียวคือ 138.76.29.7 และใช้ source port number ที่แตกต่างกันเพื่อแยกแต่ละการสื่อสาร.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพจากเครื่อง 10.0.0.1–10.0.0.3 ทางขวาเข้าสู่ NAT router. ด้าน LAN ของ router ใช้ 10.0.0.4 ขณะที่ด้าน Internet ใช้ 138.76.29.7. ข้อความสีแดงใต้ภาพเน้นการใช้ NAT IP เดียวแต่ port ต่างกัน.\nประเด็นสำคัญที่ควรจำ\nอุปกรณ์หลายเครื่องแชร์ public-facing IPv4 address เดียวตามตัวอย่าง\nNAT ใช้ทั้ง IP address และ port number ในการแยกการสื่อสาร"
+  },
+  {
+    "num": 65,
+    "title": "NAT: network address translation — private address space and advantages",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สไลด์นี้เป็นรายการเหตุผลมากกว่ากระบวนการ. อ่านจาก private address prefixes ก่อน แล้วจึงไล่ข้อดีทีละข้อเพื่อเชื่อมกับภาพ NAT ใน Slide 64."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Private IPv4 prefixes ที่สไลด์ยก: 10/8, 172.16/12, 192.168/16 NAT ลดจำนวน public IPv4 addresses ที่ local network ต้องขอจาก ISP"
+      }
+    ],
+    "cleanFull": "Slide 65\nNAT: network address translation — private address space and advantages\nอุปกรณ์ใน local network ใช้ address จาก private IPv4 address space ซึ่งสไลด์ยกตัวอย่าง prefixes 10/8, 172.16/12 และ 192.168/16 และระบุว่าใช้ภายใน local network.\nข้อดีที่สไลด์ระบุ ได้แก่ ต้องใช้ IP address จาก provider ISP เพียงหนึ่ง address สำหรับอุปกรณ์หลายเครื่อง, เปลี่ยน address ของ host ภายในได้โดยไม่ต้องแจ้งโลกภายนอก, เปลี่ยน ISP ได้โดยไม่ต้องเปลี่ยน address ของอุปกรณ์ภายใน และอุปกรณ์ภายในไม่ถูก address โดยตรงจากภายนอกตามรูปแบบ NAT ในสไลด์ อย่างไรก็ตาม ประเด็น “security” ตรงนี้ควรเข้าใจว่าเป็นผลจากการซ่อน private addressing/การไม่มีการเข้าถึงแบบตรง ๆ ไม่ใช่หลักประกันความปลอดภัยและไม่ใช่สิ่งทดแทน firewall\nอ่านภาพและองค์ประกอบในสไลด์\nสไลด์นี้เป็นรายการเหตุผลมากกว่ากระบวนการ. อ่านจาก private address prefixes ก่อน แล้วจึงไล่ข้อดีทีละข้อเพื่อเชื่อมกับภาพ NAT ใน Slide 64.\nประเด็นสำคัญที่ควรจำ\nPrivate IPv4 prefixes ที่สไลด์ยก: 10/8, 172.16/12, 192.168/16\nNAT ลดจำนวน public IPv4 addresses ที่ local network ต้องขอจาก ISP"
+  },
+  {
+    "num": 66,
+    "title": "NAT: network address translation — implementation",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านสามคำกริยาหลักในสไลด์ตามลำดับ: replace ตอนออก → remember ใน NAT table → replace ตอนกลับเข้า. ลำดับนี้เป็นแกนของการทำงาน NAT."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Outgoing: แปลง source IP/port เป็น NAT IP/new port Incoming: ใช้ NAT table แปลง destination กลับไปยัง host ภายใน"
+      }
+    ],
+    "cleanFull": "Slide 66\nNAT: network address translation — implementation\nNAT router ต้องทำงานแบบโปร่งใสตามสไลด์. สำหรับ outgoing datagram จะเปลี่ยนคู่ (source IP address, port) ภายในให้เป็น (NAT IP address, new port). ฝั่ง remote จึงตอบกลับมายังคู่ NAT IP และ port ใหม่นี้.\nRouter ต้องจำ mapping แต่ละคู่ไว้ใน NAT translation table. เมื่อ incoming datagram กลับมา Router ใช้ destination NAT IP/port หา mapping แล้วแทนค่ากลับเป็น IP address/port ของ host ภายในที่ตรงกัน.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านสามคำกริยาหลักในสไลด์ตามลำดับ: replace ตอนออก → remember ใน NAT table → replace ตอนกลับเข้า. ลำดับนี้เป็นแกนของการทำงาน NAT.\nประเด็นสำคัญที่ควรจำ\nOutgoing: แปลง source IP/port เป็น NAT IP/new port\nIncoming: ใช้ NAT table แปลง destination กลับไปยัง host ภายใน"
+  },
+  {
+    "num": 67,
+    "title": "NAT: network address translation — translation table example",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เริ่มที่หมายเลข 1 ข้าง host 10.0.0.1 → หมายเลข 2 หลัง NAT แปลง source → หมายเลข 3 เมื่อ reply กลับมายัง NAT IP:5001 → หมายเลข 4 หลัง Router แปลง destination กลับเป็น 10.0.0.1:3345. ตารางด้านบนคือข้อมูลที่ทำให้ขั้นตอน 4 เป็นไปได้."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Mapping ตัวอย่าง: 138.76.29.7:5001 ↔ 10.0.0.1:3345 NAT translation table เชื่อม traffic ขากลับกับ host/port ภายในที่ถูกต้อง"
+      }
+    ],
+    "cleanFull": "Slide 67\nNAT: network address translation — translation table example\nตัวอย่างนี้ติดตาม datagram จาก host 10.0.0.1 port 3345 ไปยัง server 128.119.40.186 port 80. NAT router เปลี่ยน source จาก 10.0.0.1:3345 เป็น 138.76.29.7:5001 และบันทึก mapping นี้ใน NAT translation table.\nเมื่อ reply กลับมายัง destination 138.76.29.7:5001 Router ค้นตารางแล้วเปลี่ยน destination กลับเป็น 10.0.0.1:3345 เพื่อส่งต่อให้ host ภายใน. ตัวเลข 1–4 ในภาพแสดงวงจร request และ reply ตั้งแต่ออกจาก LAN จนกลับถึงเครื่องต้นทาง.\nอ่านภาพและองค์ประกอบในสไลด์\nเริ่มที่หมายเลข 1 ข้าง host 10.0.0.1 → หมายเลข 2 หลัง NAT แปลง source → หมายเลข 3 เมื่อ reply กลับมายัง NAT IP:5001 → หมายเลข 4 หลัง Router แปลง destination กลับเป็น 10.0.0.1:3345. ตารางด้านบนคือข้อมูลที่ทำให้ขั้นตอน 4 เป็นไปได้.\nประเด็นสำคัญที่ควรจำ\nMapping ตัวอย่าง: 138.76.29.7:5001 ↔ 10.0.0.1:3345\nNAT translation table เชื่อม traffic ขากลับกับ host/port ภายในที่ถูกต้อง"
+  },
+  {
+    "num": 68,
+    "title": "NAT: network address translation — controversy",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สไลด์แบ่งความคิดเป็นสองส่วน: ด้านบนคือข้อโต้แย้งทางสถาปัตยกรรมและ NAT traversal; ด้านล่างคือข้อเท็จจริงว่ามีการใช้งาน NAT อย่างกว้างขวาง."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ NAT แก้ทั้ง IP address และ port จึงเกี่ยวข้องมากกว่า Layer 3 อย่างเดียว แม้มีข้อถกเถียง NAT ยังถูกใช้งานอย่างแพร่หลายตามสไลด์"
+      }
+    ],
+    "cleanFull": "Slide 68\nNAT: network address translation — controversy\nสไลด์สรุปเหตุผลที่ NAT เป็นแนวคิดที่ถูกถกเถียง: Router ตามแนวคิดดั้งเดิมควรประมวลผลเพียงถึง Layer 3 แต่ NAT มีการแก้ port number; ปัญหา address shortage อาจแก้ด้วย IPv6; และ NAT ถูกมองว่าไม่สอดคล้องกับ end-to-end argument.\nอีกปัญหาที่สไลด์ตั้งคำถามคือ NAT traversal เมื่อ client ภายนอกต้องการเชื่อมต่อ server ที่อยู่หลัง NAT. อย่างไรก็ตาม สไลด์ย้ำว่า NAT ถูกใช้อย่างแพร่หลายใน home/institutional networks และ 4G/5G cellular networks.\nอ่านภาพและองค์ประกอบในสไลด์\nสไลด์แบ่งความคิดเป็นสองส่วน: ด้านบนคือข้อโต้แย้งทางสถาปัตยกรรมและ NAT traversal; ด้านล่างคือข้อเท็จจริงว่ามีการใช้งาน NAT อย่างกว้างขวาง.\nประเด็นสำคัญที่ควรจำ\nNAT แก้ทั้ง IP address และ port จึงเกี่ยวข้องมากกว่า Layer 3 อย่างเดียว\nแม้มีข้อถกเถียง NAT ยังถูกใช้งานอย่างแพร่หลายตามสไลด์"
+  },
+  {
+    "num": 69,
+    "title": "IPv6: motivation",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านข้อความจาก initial motivation ก่อน แล้วแยก additional motivation สองข้อด้านล่าง. ไม่มีลำดับ packet ในภาพนี้ แต่เป็นรายการเหตุผลที่นำไปสู่รูปแบบ header ในสไลด์ถัดไป."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ IPv6 ตอบโจทย์ address space ที่ใหญ่ขึ้น 40 bytes ในสไลด์หมายถึงขนาดคงที่ของ IPv6 base header"
+      }
+    ],
+    "cleanFull": "Slide 69\nIPv6: motivation\nแรงผลักดันเริ่มต้นของ IPv6 ตามสไลด์คือพื้นที่ address แบบ IPv4 32 บิตมีแนวโน้มถูกจัดสรรหมด นอกจากเพิ่ม address space แล้ว สไลด์ยังระบุเป้าหมายด้านการประมวลผล/forwarding ด้วย IPv6 base header ที่มีขนาดคงที่ 40 bytes และการรองรับการปฏิบัติต่อ “flows” ที่แตกต่างกันใน network layer\nดังนั้นการมอง IPv6 เฉพาะว่า “เพิ่มจำนวน IP addresses” ยังไม่ครบตามสไลด์ เพราะการออกแบบ header และแนวคิด flow ก็เป็นแรงจูงใจเพิ่มเติม.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านข้อความจาก initial motivation ก่อน แล้วแยก additional motivation สองข้อด้านล่าง. ไม่มีลำดับ packet ในภาพนี้ แต่เป็นรายการเหตุผลที่นำไปสู่รูปแบบ header ในสไลด์ถัดไป.\nประเด็นสำคัญที่ควรจำ\nIPv6 ตอบโจทย์ address space ที่ใหญ่ขึ้น\n40 bytes ในสไลด์หมายถึงขนาดคงที่ของ IPv6 base header"
+  },
+  {
+    "num": 70,
+    "title": "IPv6 datagram format",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านแผนผัง header จากแถวบนลงล่าง: fields ควบคุมอยู่ช่วงต้น ตามด้วย source/destination 128-bit addresses และ payload. จากนั้นอ่านรายการ “What’s missing” ด้านล่างเพื่อเปรียบเทียบกับ IPv4."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ IPv6 ใช้ source/destination address ขนาด 128 บิต และ base header ขนาด 40 bytes ฟิลด์ที่สไลด์เรียก pri/priority ตรงกับ Traffic Class ในมาตรฐาน IPv6 ปัจจุบัน IPv6 routers ไม่ fragment ระหว่างทาง; source สามารถใช้ Fragment extension header เมื่อจำเป็น"
+      }
+    ],
+    "cleanFull": "Slide 70\nIPv6 datagram format\nIPv6 base header ในภาพมี source address และ destination address ขนาด 128 บิต พร้อม fields เช่น Version, Traffic Class, Flow Label, Payload Length, Next Header และ Hop Limit โดยสไลด์ย่อฟิลด์ Traffic Class ว่า “pri” และอธิบายในเชิง priority; ตามมาตรฐาน IPv6 ปัจจุบันชื่อฟิลด์ 8 บิตนี้คือ Traffic Class ส่วน Flow Label มีขนาด 20 บิตและใช้ติดป้ายลำดับ packet ที่ต้องการให้เครือข่ายมองเป็น flow เดียวกัน\nเมื่อเทียบกับ IPv4, IPv6 base header ไม่มี header checksum และไม่มี fragmentation fields หรือ options field แบบที่อยู่ใน IPv4 base header แต่ไม่ได้หมายความว่า IPv6 “ทำ fragmentation ไม่ได้เลย”: IPv6 routers ระหว่างทางไม่ทำ fragmentation; หากจำเป็น source node สามารถใช้ Fragment extension header และปลายทางเป็นผู้ reassemble ส่วน options ต่าง ๆ ถูกจัดผ่าน extension headers ที่อ้างด้วย Next Header\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านแผนผัง header จากแถวบนลงล่าง: fields ควบคุมอยู่ช่วงต้น ตามด้วย source/destination 128-bit addresses และ payload. จากนั้นอ่านรายการ “What’s missing” ด้านล่างเพื่อเปรียบเทียบกับ IPv4.\nประเด็นสำคัญที่ควรจำ\nIPv6 ใช้ source/destination address ขนาด 128 บิต และ base header ขนาด 40 bytes\nฟิลด์ที่สไลด์เรียก pri/priority ตรงกับ Traffic Class ในมาตรฐาน IPv6 ปัจจุบัน\nIPv6 routers ไม่ fragment ระหว่างทาง; source สามารถใช้ Fragment extension header เมื่อจำเป็น"
+  },
+  {
+    "num": 71,
+    "title": "Transition from IPv4 to IPv6",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ดูภาพ packet ด้านล่าง: ส่วน IPv6 datagram เดิมยังคงอยู่ แต่เมื่อผ่าน IPv4 network จะมี IPv4 header ครอบด้านนอก. จุดสำคัญคือการห่อหุ้มเพิ่มชั่วคราว ไม่ใช่การแปลง IPv6 header เดิมให้กลายเป็น IPv4 header."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Tunneling ใช้พา IPv6 datagram ผ่านช่วงเครือข่าย IPv4 IPv6 datagram ถูกบรรจุเป็น payload ของ IPv4 datagram"
+      }
+    ],
+    "cleanFull": "Slide 71\nTransition from IPv4 to IPv6\nการเปลี่ยนจาก IPv4 ไป IPv6 ไม่สามารถเกิดขึ้นพร้อมกันกับ Router ทุกตัวได้ สไลด์จึงตั้งคำถามว่าระบบจะทำงานอย่างไรในช่วงที่มีทั้ง IPv4 routers และ IPv6 routers อยู่ร่วมกัน โดยระบุว่าไม่มี “flag day” ที่ทุกอุปกรณ์อัปเกรดพร้อมกัน.\nวิธีที่สไลด์เน้นคือ\ntunneling\n: นำ IPv6 datagram ทั้งก้อนไปบรรจุเป็น payload ภายใน IPv4 datagram ระหว่างช่วงเครือข่ายที่รองรับเพียง IPv4 จึงมองได้ว่าเป็น “packet within a packet”.\nอ่านภาพและองค์ประกอบในสไลด์\nดูภาพ packet ด้านล่าง: ส่วน IPv6 datagram เดิมยังคงอยู่ แต่เมื่อผ่าน IPv4 network จะมี IPv4 header ครอบด้านนอก. จุดสำคัญคือการห่อหุ้มเพิ่มชั่วคราว ไม่ใช่การแปลง IPv6 header เดิมให้กลายเป็น IPv4 header.\nประเด็นสำคัญที่ควรจำ\nTunneling ใช้พา IPv6 datagram ผ่านช่วงเครือข่าย IPv4\nIPv6 datagram ถูกบรรจุเป็น payload ของ IPv4 datagram"
+  },
+  {
+    "num": 72,
+    "title": "Tunneling and encapsulation",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพจากซ้ายไปขวา A → B → ช่วง IPv4 network → E → F. ป้าย IPv6/v4 ที่ B และ E ชี้ว่าอุปกรณ์ขอบทั้งสองฝั่งรองรับการทำงานร่วมกันระหว่าง IPv6 และ IPv4 เพื่อสร้างทางผ่านให้ traffic."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Encapsulation ปกติ: IPv6 datagram อยู่ใน link-layer frame เมื่อมี IPv4 network คั่น ต้องมีกลไกช่วยให้ IPv6 traffic ผ่านช่วงนั้นได้"
+      }
+    ],
+    "cleanFull": "Slide 72\nTunneling and encapsulation\nสไลด์เปรียบเทียบสองสถานการณ์. ด้านบนเป็นกรณีปกติที่ Ethernet เชื่อม IPv6 routers โดยตรง: IPv6 datagram ถูกใส่เป็น payload ของ link-layer frame ตามกระบวนการ encapsulation ทั่วไป.\nด้านล่างแสดงกรณีที่ระหว่าง IPv6 routers มี\nIPv4 network\nคั่นอยู่. Router บริเวณขอบของช่วง IPv4 จึงต้องทำหน้าที่เชื่อมโลก IPv6 เข้ากับเส้นทางที่ภายในใช้ IPv4.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพจากซ้ายไปขวา A → B → ช่วง IPv4 network → E → F. ป้าย IPv6/v4 ที่ B และ E ชี้ว่าอุปกรณ์ขอบทั้งสองฝั่งรองรับการทำงานร่วมกันระหว่าง IPv6 และ IPv4 เพื่อสร้างทางผ่านให้ traffic.\nประเด็นสำคัญที่ควรจำ\nEncapsulation ปกติ: IPv6 datagram อยู่ใน link-layer frame\nเมื่อมี IPv4 network คั่น ต้องมีกลไกช่วยให้ IPv6 traffic ผ่านช่วงนั้นได้"
+  },
+  {
+    "num": 73,
+    "title": "Tunneling and encapsulation — IPv4 tunnel",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เปรียบเทียบแท่ง packet ด้านบนกับด้านล่างของภาพ. ด้านบนคือ IPv6 datagram ใน link-layer frame; ด้านล่างเพิ่ม IPv4 datagram ที่ครอบ IPv6 datagramอีกชั้นหนึ่ง เฉพาะช่วง B–E."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Tunnel คือช่วง IPv4 ที่เชื่อม IPv6 routers IPv6 datagram ยังคงอยู่ครบภายใน IPv4 datagram"
+      }
+    ],
+    "cleanFull": "Slide 73\nTunneling and encapsulation — IPv4 tunnel\nสไลด์นี้ทำให้แนวคิดจากสไลด์ก่อนชัดขึ้นโดยเรียกช่วงระหว่าง B และ E ว่า\nIPv4 tunnel connecting IPv6 routers\n. ภายใน tunnel นั้น IPv6 datagram ถูกบรรจุอยู่ภายใน IPv4 datagram.\nดังนั้นมีการ encapsulation ซ้อนกัน: ข้อมูลของชั้นบนอยู่ใน IPv6 datagram และ IPv6 datagram ทั้งก้อนกลายเป็น payload ของ IPv4 datagramสำหรับช่วง tunnel. เมื่อออกจาก tunnel การห่อ IPv4 ด้านนอกถูกนำออก แล้วเดินทางต่อในรูป IPv6.\nอ่านภาพและองค์ประกอบในสไลด์\nเปรียบเทียบแท่ง packet ด้านบนกับด้านล่างของภาพ. ด้านบนคือ IPv6 datagram ใน link-layer frame; ด้านล่างเพิ่ม IPv4 datagram ที่ครอบ IPv6 datagramอีกชั้นหนึ่ง เฉพาะช่วง B–E.\nประเด็นสำคัญที่ควรจำ\nTunnel คือช่วง IPv4 ที่เชื่อม IPv6 routers\nIPv6 datagram ยังคงอยู่ครบภายใน IPv4 datagram"
+  },
+  {
+    "num": 74,
+    "title": "Tunneling — logical view and physical view",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ติดตามสามช่วง A→B, B→E และ E→F. ช่วง B→E ให้มอง packet สองชั้น: ชั้นนอกเป็น IPv4 ที่ B→E ส่วนชั้นในเป็น IPv6 ที่ A→F. นี่คือเหตุผลที่สไลด์กำชับ “Note source and destination addresses!”."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Address ของ packet ชั้นในและชั้นนอกมีหน้าที่ต่างกัน Logical tunnel ซ่อนรายละเอียดของ IPv4 routers ภายในจากมุมมอง IPv6"
+      }
+    ],
+    "cleanFull": "Slide 74\nTunneling — logical view and physical view\nภาพนี้แยก\nlogical view\nกับ\nphysical view\n. ในมุม logical view ดูเสมือน B เชื่อมกับ E ผ่าน IPv4 tunnel โดยตรง แม้ในเส้นทางจริงจะมี IPv4 routers เช่น C และ D อยู่ระหว่างทาง.\nประเด็นสำคัญอยู่ที่ source/destination addresses. IPv6 packet ภายในยังคง\nSrc: A\nและ\nDest: F\nสำหรับการสื่อสารปลายทาง แต่ IPv4 packet ที่ใช้พาผ่าน tunnel ใช้ source/destination ของปลาย tunnel คือ\nsrc: B\nและ\ndest: E\n.\nอ่านภาพและองค์ประกอบในสไลด์\nติดตามสามช่วง A→B, B→E และ E→F. ช่วง B→E ให้มอง packet สองชั้น: ชั้นนอกเป็น IPv4 ที่ B→E ส่วนชั้นในเป็น IPv6 ที่ A→F. นี่คือเหตุผลที่สไลด์กำชับ “Note source and destination addresses!”.\nประเด็นสำคัญที่ควรจำ\nAddress ของ packet ชั้นในและชั้นนอกมีหน้าที่ต่างกัน\nLogical tunnel ซ่อนรายละเอียดของ IPv4 routers ภายในจากมุมมอง IPv6"
+  },
+  {
+    "num": 75,
+    "title": "IPv6: adoption",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านแกนนอนเป็นเวลาและเส้นกราฟเป็นสัดส่วนการเข้าถึงผ่าน IPv6. เส้นที่ค่อย ๆ สูงขึ้นสอดคล้องกับแนวคิด coexistence และ transition จากสไลด์ก่อนหน้า."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ IPv6 adoption เพิ่มขึ้นแบบค่อยเป็นค่อยไป IPv4 และ IPv6 ต้องอยู่ร่วมกันเป็นเวลานานระหว่างการเปลี่ยนผ่าน"
+      }
+    ],
+    "cleanFull": "Slide 75\nIPv6: adoption\nสไลด์แสดงภาพการยอมรับ IPv6 โดยยก “ข้อมูล ณ ช่วงเวลาที่สไลด์อ้างอิง” ว่า Google ประมาณ 40% ของ clients เข้าถึงบริการผ่าน IPv6 ในปี 2023 และ NIST ระบุว่าประมาณหนึ่งในสามของโดเมนหน่วยงานรัฐบาลสหรัฐฯ รองรับ IPv6 ตัวเลขเหล่านี้เป็น snapshot เชิงประวัติศาสตร์ ไม่ควรใช้เป็นค่าปัจจุบันโดยไม่ตรวจข้อมูลใหม่\nกราฟด้านล่างแสดงแนวโน้มสัดส่วนการใช้งาน IPv6 ที่เพิ่มขึ้นตามเวลา จุดประสงค์ของสไลด์ไม่ใช่ให้จำค่าทุกจุดบนกราฟ แต่ให้เห็นว่าการ deploy เกิดขึ้นอย่างค่อยเป็นค่อยไป ไม่ได้แทน IPv4 ในครั้งเดียว.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านแกนนอนเป็นเวลาและเส้นกราฟเป็นสัดส่วนการเข้าถึงผ่าน IPv6. เส้นที่ค่อย ๆ สูงขึ้นสอดคล้องกับแนวคิด coexistence และ transition จากสไลด์ก่อนหน้า.\nประเด็นสำคัญที่ควรจำ\nIPv6 adoption เพิ่มขึ้นแบบค่อยเป็นค่อยไป\nIPv4 และ IPv6 ต้องอยู่ร่วมกันเป็นเวลานานระหว่างการเปลี่ยนผ่าน"
+  },
+  {
+    "num": 76,
+    "title": "IPv6: adoption — why so long?",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่าน bullet สองส่วน: สถิติการใช้งานจริงด้านบน และข้อความ “Long (long!) time for deployment, use” ด้านล่าง จากนั้นเชื่อมกับตัวอย่าง application-level changes ที่เกิดขึ้นในช่วงเดียวกัน."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ การ deploy network-layer protocol ใหม่ใช้เวลานานมาก สไลด์ใช้คำถาม “Why?” เพื่อชวนวิเคราะห์เหตุผลของการเปลี่ยนผ่านที่ช้า"
+      }
+    ],
+    "cleanFull": "Slide 76\nIPv6: adoption — why so long?\nสไลด์ย้ำว่าการ deploy IPv6 ใช้เวลายาวนานมาก — “25 years and counting!” ตามข้อความในสไลด์ — และเปรียบเทียบกับ application-level technologies เช่น WWW, social media, streaming media, gaming และ telepresence ที่เปลี่ยนแปลงรวดเร็วกว่า ตัวเลขเวลาและสถิติในสไลด์ควรอ่านตามบริบทของปีที่จัดทำสไลด์\nคำถาม “Why?” ในสไลด์ต้องการชวนคิดถึงความแตกต่างระหว่างการเปลี่ยน application ที่ปลายระบบกับการเปลี่ยน network-layer protocol ซึ่งต้องเกี่ยวข้องกับอุปกรณ์ เครือข่าย และผู้ให้บริการจำนวนมาก. สไลด์นี้ไม่ได้ให้คำตอบเชิงรายการเพิ่มเติม แต่ใช้เป็นคำถามสะท้อนการ deploy ที่ช้า.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่าน bullet สองส่วน: สถิติการใช้งานจริงด้านบน และข้อความ “Long (long!) time for deployment, use” ด้านล่าง จากนั้นเชื่อมกับตัวอย่าง application-level changes ที่เกิดขึ้นในช่วงเดียวกัน.\nประเด็นสำคัญที่ควรจำ\nการ deploy network-layer protocol ใหม่ใช้เวลานานมาก\nสไลด์ใช้คำถาม “Why?” เพื่อชวนวิเคราะห์เหตุผลของการเปลี่ยนผ่านที่ช้า"
+  },
+  {
+    "num": 77,
+    "title": "Network layer: “data plane” roadmap",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ส่วนที่ถูกเน้นใน roadmap คือ Generalized Forwarding. ใช้สไลด์นี้เป็นแผนที่ว่าหัวข้อใหม่จะเริ่มจาก abstraction “match + action” ก่อนลงรายละเอียด flow table และ OpenFlow ในสไลด์ต่อ ๆ ไป."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Generalized Forwarding เป็นหัวข้อถัดจาก IPv6 แนวคิดหลักที่จะตามมาคือ Match + Action"
+      }
+    ],
+    "cleanFull": "Slide 77\nNetwork layer: “data plane” roadmap\nสไลด์ roadmap แสดงว่าหลังจากเรียนส่วนของ Router และ IP ซึ่งรวม NAT และ IPv6 แล้ว เนื้อหาจะเข้าสู่\nGeneralized Forwarding\nโดยมีหัวข้อย่อย Match+action, OpenFlow และ Middleboxes ก่อนเชื่อมไปยัง Internet architecture.\nจุดเปลี่ยนสำคัญคือจากการ forwarding แบบดั้งเดิมที่เน้น destination IP ไปสู่แนวคิดที่สามารถพิจารณา packet header หลาย field และกำหนด action ได้หลากหลายมากขึ้น.\nอ่านภาพและองค์ประกอบในสไลด์\nส่วนที่ถูกเน้นใน roadmap คือ Generalized Forwarding. ใช้สไลด์นี้เป็นแผนที่ว่าหัวข้อใหม่จะเริ่มจาก abstraction “match + action” ก่อนลงรายละเอียด flow table และ OpenFlow ในสไลด์ต่อ ๆ ไป.\nประเด็นสำคัญที่ควรจำ\nGeneralized Forwarding เป็นหัวข้อถัดจาก IPv6\nแนวคิดหลักที่จะตามมาคือ Match + Action"
+  },
+  {
+    "num": 78,
+    "title": "Generalized forwarding: match plus action",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพ Router และตารางด้านล่างให้มองว่า packet เข้ามา → อ่านค่า header → หาแถวที่ตรงใน table → ทำ action ของแถวนั้น. คำที่ถูกขีดฆ่า/แทนที่ในสไลด์ชี้การเปลี่ยนจาก destination-based forwarding ไป generalized forwarding."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Match + Action เป็น abstraction ของ generalized forwarding Generalized forwarding สามารถพิจารณาหลาย header fields และทำได้หลาย action"
+      }
+    ],
+    "cleanFull": "04\nGeneralized Forwarding: Match + Action\nSlide 78\nGeneralized forwarding: match plus action\nRouter ทุกตัวมี forwarding table และสามารถอธิบายพฤติกรรมด้วย abstraction\nmatch plus action\n: ตรวจค่า bits/fields ใน packet ที่เข้ามา แล้วเลือก action ตามกฎที่ match. Destination-based forwarding แบบเดิมเป็นกรณีหนึ่งที่ match จาก destination IP address.\nGeneralized forwarding ขยายแนวคิดนี้ให้ match ได้จาก header fields หลายชนิด และ action ก็ไม่จำกัดแค่เลือก output link แต่สามารถ\ndrop, copy, modify หรือ log\npacket ได้ตามที่สไลด์ระบุ. Forwarding table ในบริบทนี้เรียกได้ว่า\nflow table\n.\nอ่านภาพและองค์ประกอบในสไลด์\nภาพ Router และตารางด้านล่างให้มองว่า packet เข้ามา → อ่านค่า header → หาแถวที่ตรงใน table → ทำ action ของแถวนั้น. คำที่ถูกขีดฆ่า/แทนที่ในสไลด์ชี้การเปลี่ยนจาก destination-based forwarding ไป generalized forwarding.\nประเด็นสำคัญที่ควรจำ\nMatch + Action เป็น abstraction ของ generalized forwarding\nGeneralized forwarding สามารถพิจารณาหลาย header fields และทำได้หลาย action"
+  },
+  {
+    "num": 79,
+    "title": "Flow table abstraction",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านกล่อง flow table เป็น “เงื่อนไข → การกระทำ”. แม้รูปยังเป็น abstraction ไม่แสดงค่าตัวอย่างมากนัก แต่ข้อความด้านซ้ายกำหนดองค์ประกอบที่แต่ละ rule ต้องมีเพื่ออธิบาย packet-handling behavior."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Flow table rule ไม่ได้มีแค่ match/action แต่มี priority และ counters ด้วย Flow สามารถนิยามจาก fields ข้ามหลาย layers"
+      }
+    ],
+    "cleanFull": "Slide 79\nFlow table abstraction\nสไลด์นิยาม\nflow\nจากค่า header fields ซึ่งอาจมาจาก link, network และ transport layers. กฎใน flow table ประกอบด้วยองค์ประกอบหลัก:\nmatch\n,\naction\n,\npriority\nและ\ncounters\n.\nMatch คือ pattern ของค่าที่ต้องการตรวจ; action คือสิ่งที่ทำกับ packet ที่ match เช่น drop, forward, modify หรือส่งไป controller; priority ใช้แก้กรณีหลาย pattern ซ้อนทับกัน; counters เก็บจำนวน bytes และ packets เพื่อเป็นสถิติ.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านกล่อง flow table เป็น “เงื่อนไข → การกระทำ”. แม้รูปยังเป็น abstraction ไม่แสดงค่าตัวอย่างมากนัก แต่ข้อความด้านซ้ายกำหนดองค์ประกอบที่แต่ละ rule ต้องมีเพื่ออธิบาย packet-handling behavior.\nประเด็นสำคัญที่ควรจำ\nFlow table rule ไม่ได้มีแค่ match/action แต่มี priority และ counters ด้วย\nFlow สามารถนิยามจาก fields ข้ามหลาย layers"
+  },
+  {
+    "num": 80,
+    "title": "Flow table abstraction — example rules",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านแต่ละแถวจากคอลัมน์ match ไปยัง action: แถวแรกจับ source host เฉพาะแล้วส่ง controller; แถวสองจับ source prefix 1.2.*.* แล้ว drop; แถวสามจับ destination prefix 3.4.*.* แล้ว forward ออก port 2. เครื่องหมาย * ทำให้ rule ครอบคลุมหลาย address."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Wildcard * ใช้แทนค่าที่ไม่จำกัดใน pattern Flow table สามารถกำหนด action ต่างกันตาม source/destination patterns"
+      }
+    ],
+    "cleanFull": "Slide 80\nFlow table abstraction — example rules\nสไลด์นี้เติมตัวอย่างจริงลงใน flow table เพื่อให้เห็นว่า wildcard\n*\nหมายถึง “ค่าใดก็ได้”. ตัวอย่าง rule ได้แก่\nsrc=10.1.2.3, dest=*.*.*.* → send to controller\n,\nsrc=1.2.*.*, dest=*.*.*.* → drop\nและ\nsrc=*.*.*.*, dest=3.4.*.* → forward(2)\n.\nตัวอย่างแสดงว่า generalized forwarding ไม่จำเป็นต้อง match destination เพียงอย่างเดียว และ action ของแต่ละ rule ต่างกันได้. Packet จึงถูกจัดการตาม pattern ที่ตรงกับ header fields และกฎที่กำหนดไว้ใน flow table.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านแต่ละแถวจากคอลัมน์ match ไปยัง action: แถวแรกจับ source host เฉพาะแล้วส่ง controller; แถวสองจับ source prefix 1.2.*.* แล้ว drop; แถวสามจับ destination prefix 3.4.*.* แล้ว forward ออก port 2. เครื่องหมาย * ทำให้ rule ครอบคลุมหลาย address.\nประเด็นสำคัญที่ควรจำ\nWildcard * ใช้แทนค่าที่ไม่จำกัดใน pattern\nFlow table สามารถกำหนด action ต่างกันตาม source/destination patterns"
+  },
+  {
+    "num": 81,
+    "title": "OpenFlow: flow table entries",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพจากบนลงล่าง: แถวบนคือโครงสร้าง Match–Action–Stats; กล่องสีเขียวแสดงตัวอย่าง action; แถวล่างแสดง field ที่สามารถใช้ match โดยมีวงเล็บกำกับว่า field ใดอยู่ใน Link, Network และ Transport layer. จุดสำคัญคือกฎหนึ่งกฎสามารถพิจารณาข้อมูลข้ามหลาย layer ได้."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ OpenFlow entry ประกอบด้วย Match, Action และ Stats Match fields สามารถมาจาก Link, Network และ Transport layer"
+      }
+    ],
+    "cleanFull": "Slide 81\nOpenFlow: flow table entries\nสไลด์นี้ลงรายละเอียดโครงสร้างของ\nOpenFlow flow table entry\nซึ่งแบ่งองค์ประกอบหลักเป็น\nMatch\n,\nAction\nและ\nStats\n. ส่วน Match ใช้ตรวจค่า header fields ของ packet ส่วน Action ระบุสิ่งที่อุปกรณ์ต้องทำเมื่อพบกฎที่ตรงกัน และ Stats เก็บตัวนับจำนวน packet/byte.\nAction ที่ยกตัวอย่างในสไลด์ ได้แก่ forward packet ไปยัง port ที่กำหนด, drop packet, modify header fields และ encapsulate แล้วส่ง packet ไปยัง controller ส่วน header fields ที่ใช้ match ครอบคลุม Link, Network และ Transport layer เช่น MAC address, VLAN, IP source/destination, IP protocol และ TCP/UDP port รายการนี้ควรอ่านว่าเป็น field set ตาม OpenFlow abstraction/ตัวอย่างในสไลด์ ไม่ใช่ข้อสรุปว่าทุก OpenFlow version มี field เหมือนกันทั้งหมด\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพจากบนลงล่าง: แถวบนคือโครงสร้าง Match–Action–Stats; กล่องสีเขียวแสดงตัวอย่าง action; แถวล่างแสดง field ที่สามารถใช้ match โดยมีวงเล็บกำกับว่า field ใดอยู่ใน Link, Network และ Transport layer. จุดสำคัญคือกฎหนึ่งกฎสามารถพิจารณาข้อมูลข้ามหลาย layer ได้.\nประเด็นสำคัญที่ควรจำ\nOpenFlow entry ประกอบด้วย Match, Action และ Stats\nMatch fields สามารถมาจาก Link, Network และ Transport layer"
+  },
+  {
+    "num": 82,
+    "title": "OpenFlow: examples — IP forwarding and firewall",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านแต่ละตารางจาก field ทางซ้ายไปหา Action ทางขวา. ตารางแรกมีค่าที่ IP Dst แล้ว action เป็น port6; ตารางที่สองมีค่า TCP d-port = 22 แล้ว action เป็น drop; ตารางที่สามมีค่า IP Src = 128.119.1.1 แล้ว action เป็น drop. จึงเห็นว่าเปลี่ยน field ที่ match ก็เปลี่ยนหน้าที่ของอุปกรณ์ได้."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Flow rule ใช้ทำได้ทั้ง forwarding และ filtering Firewall rule สามารถ match จาก IP address หรือ TCP port แล้วกำหนด action = drop"
+      }
+    ],
+    "cleanFull": "Slide 82\nOpenFlow: examples — IP forwarding and firewall\nสไลด์แสดงตัวอย่างว่ากฎแบบเดียวกันสามารถใช้สร้างพฤติกรรมต่างชนิดได้. ตัวอย่าง\ndestination-based forwarding\nกำหนดให้ IP datagram ที่มีปลายทาง\n51.6.0.8\nถูกส่งออก\nport 6\n. ส่วนตัวอย่าง Firewall ใช้ field ของ TCP/IP เพื่อกำหนดให้ packet บางชนิดถูก\ndrop\n.\nตัวอย่าง Firewall สองกรณีในสไลด์คือ การ block datagram ที่มี TCP destination port\n22\nซึ่งเป็น SSH และการ block datagram ที่ส่งมาจาก host\n128.119.1.1\n. ช่องที่เป็น\n*\nหมายถึงไม่กำหนดเงื่อนไขสำหรับ field นั้น.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านแต่ละตารางจาก field ทางซ้ายไปหา Action ทางขวา. ตารางแรกมีค่าที่ IP Dst แล้ว action เป็น port6; ตารางที่สองมีค่า TCP d-port = 22 แล้ว action เป็น drop; ตารางที่สามมีค่า IP Src = 128.119.1.1 แล้ว action เป็น drop. จึงเห็นว่าเปลี่ยน field ที่ match ก็เปลี่ยนหน้าที่ของอุปกรณ์ได้.\nประเด็นสำคัญที่ควรจำ\nFlow rule ใช้ทำได้ทั้ง forwarding และ filtering\nFirewall rule สามารถ match จาก IP address หรือ TCP port แล้วกำหนด action = drop"
+  },
+  {
+    "num": 83,
+    "title": "OpenFlow: example — Layer 2 forwarding",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ มองแถว flow table จะเห็นค่าจริงอยู่ที่คอลัมน์ MAC dst และ Action เท่านั้น ส่วนคอลัมน์อื่นเป็น * . อ่านความหมายเป็น “ถ้า destination MAC ตรงกับค่านี้ → forward ออก port 3”."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ OpenFlow สามารถ match จาก MAC address ที่ Layer 2 Wildcard ทำให้กฎสนใจเฉพาะ field ที่ต้องการ"
+      }
+    ],
+    "cleanFull": "Slide 83\nOpenFlow: example — Layer 2 forwarding\nตัวอย่างนี้ย้ายการ match ลงมาที่\nLayer 2\n. สไลด์กำหนดว่า frame ที่มี destination MAC address\n22:A7:23:11:E1:02\nให้ถูกส่งออก\nport 3\n. Field อื่น ๆ ในตารางเป็น wildcard จึงไม่ได้ถูกใช้เป็นเงื่อนไขของกฎนี้.\nตัวอย่างชี้ให้เห็นว่า OpenFlow ไม่ได้จำกัดอยู่เฉพาะ IP routing. อุปกรณ์สามารถใช้ destination MAC address เป็นเงื่อนไข แล้วทำ action แบบ forwarding ที่ระดับ link layer ได้ด้วย.\nอ่านภาพและองค์ประกอบในสไลด์\nมองแถว flow table จะเห็นค่าจริงอยู่ที่คอลัมน์ MAC dst และ Action เท่านั้น ส่วนคอลัมน์อื่นเป็น\n*\n. อ่านความหมายเป็น “ถ้า destination MAC ตรงกับค่านี้ → forward ออก port 3”.\nประเด็นสำคัญที่ควรจำ\nOpenFlow สามารถ match จาก MAC address ที่ Layer 2\nWildcard ทำให้กฎสนใจเฉพาะ field ที่ต้องการ"
+  },
+  {
+    "num": 84,
+    "title": "OpenFlow abstraction",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านเป็นสี่กลุ่ม Router, Switch, Firewall และ NAT. ในแต่ละกลุ่มมีคู่ “match:” และ “action:”. การจัดวางแบบเดียวกันทั้งสี่กลุ่มต้องการชี้ว่าอุปกรณ์ที่ดูต่างหน้าที่กันสามารถอธิบายด้วยรูปแบบกฎเดียวกันได้."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Match + Action เป็น abstraction ร่วมของอุปกรณ์หลายประเภท สิ่งที่แตกต่างคือ field ที่ match และ action ที่กำหนด"
+      }
+    ],
+    "cleanFull": "Slide 84\nOpenFlow abstraction\nสไลด์สรุปว่า abstraction แบบ\nmatch + action\nสามารถใช้อธิบายอุปกรณ์เครือข่ายหลายชนิดด้วยกรอบเดียวกัน. สิ่งที่ต่างกันคือ field ที่นำมา match และ action ที่ทำเมื่อ match สำเร็จ.\nRouter: match จาก longest destination IP prefix แล้ว forward ออก link; Switch: match destination MAC แล้ว forward หรือ flood; Firewall: match IP address และ TCP/UDP ports แล้ว permit หรือ deny; NAT: match IP address และ port แล้ว rewrite address และ port.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านเป็นสี่กลุ่ม Router, Switch, Firewall และ NAT. ในแต่ละกลุ่มมีคู่ “match:” และ “action:”. การจัดวางแบบเดียวกันทั้งสี่กลุ่มต้องการชี้ว่าอุปกรณ์ที่ดูต่างหน้าที่กันสามารถอธิบายด้วยรูปแบบกฎเดียวกันได้.\nประเด็นสำคัญที่ควรจำ\nMatch + Action เป็น abstraction ร่วมของอุปกรณ์หลายประเภท\nสิ่งที่แตกต่างคือ field ที่ match และ action ที่กำหนด"
+  },
+  {
+    "num": 85,
+    "title": "OpenFlow example — network-wide behavior",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ติดตามลูกศรสีแดงจากเครือข่าย 10.3.0.* ที่ h5/h6 ลงมาทาง s3 → s1 → s2 แล้วไปยังเครือข่าย 10.2.0.* ที่ h3/h4. รูป controller ด้านบนแสดงบทบาทในการ orchestrate ตาราง ไม่ได้หมายความว่า data packet ทุกก้อนต้องวิ่งผ่าน controller."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ หลาย flow tables สามารถร่วมกันสร้างพฤติกรรมทั้งเครือข่าย ตัวอย่างต้องการพา traffic 10.3.*.* ไปยัง 10.2.*.* ผ่าน switches ตามเส้นทางที่กำหนด"
+      }
+    ],
+    "cleanFull": "Slide 85\nOpenFlow example — network-wide behavior\nสไลด์นี้ขยายจากกฎในอุปกรณ์ตัวเดียวไปสู่\nnetwork-wide behavior\n. เครือข่ายตัวอย่างมี hosts h1–h6, switches s1–s3 และ controller โดยโจทย์กำหนดให้ datagrams จาก h5 และ h6 ถูกส่งไปยัง h3 หรือ h4 ผ่าน s1 และจากนั้นไปยัง s2.\nแนวคิดสำคัญคือ controller สามารถจัดวางกฎใน flow tables ของ switches หลายตัวให้ประสานกัน. เมื่อ packet เดินทางผ่านแต่ละ switch แต่ละอุปกรณ์ใช้กฎในตารางของตนเอง แต่ผลรวมของกฎเหล่านั้นทำให้เกิดเส้นทางที่ต้องการในระดับทั้งเครือข่าย.\nอ่านภาพและองค์ประกอบในสไลด์\nติดตามลูกศรสีแดงจากเครือข่าย 10.3.0.* ที่ h5/h6 ลงมาทาง s3 → s1 → s2 แล้วไปยังเครือข่าย 10.2.0.* ที่ h3/h4. รูป controller ด้านบนแสดงบทบาทในการ orchestrate ตาราง ไม่ได้หมายความว่า data packet ทุกก้อนต้องวิ่งผ่าน controller.\nประเด็นสำคัญที่ควรจำ\nหลาย flow tables สามารถร่วมกันสร้างพฤติกรรมทั้งเครือข่าย\nตัวอย่างต้องการพา traffic 10.3.*.* ไปยัง 10.2.*.* ผ่าน switches ตามเส้นทางที่กำหนด"
+  },
+  {
+    "num": 86,
+    "title": "OpenFlow example — orchestrated flow tables",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านกฎพร้อมเส้นทางจากต้นทางไปปลายทาง: เริ่มที่ 10.3.*.* → ใช้ rule ที่ s3 → ต่อด้วย rule ที่ s1 → ถึง s2 แล้วเลือก output ตาม IP destination เฉพาะของ h3 หรือ h4. ตารางที่วางใกล้แต่ละ switch คือกฎเฉพาะของอุปกรณ์นั้น."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Flow rules ของแต่ละ switch สามารถต่างกันตามตำแหน่งและหน้าที่ การ orchestrate rules ทำให้ได้เส้นทาง end-to-end ตามนโยบายที่ต้องการ"
+      }
+    ],
+    "cleanFull": "Slide 86\nOpenFlow example — orchestrated flow tables\nสไลด์นี้ใส่ flow-table rules ลงบน topology ของสไลด์ก่อนหน้า. ตัวอย่างกฎที่ s3 match\nIP Src = 10.3.*.*\nและ\nIP Dst = 10.2.*.*\nแล้ว\nforward(3)\n. ที่ s1 มีการ match traffic กลุ่มเดียวกันเมื่อเข้าทาง port ที่กำหนด แล้วส่งต่อไปยัง port ที่นำไปสู่ s2.\nที่ s2 การตัดสินใจละเอียดขึ้นตามปลายทาง: packet ที่มุ่งไป\n10.2.0.3\nและ\n10.2.0.4\nถูกส่งออกคนละ port. จึงเห็นว่าแต่ละ switch ไม่จำเป็นต้องใช้กฎเหมือนกัน แต่กฎทั้งหมดถูกจัดให้ทำงานต่อเนื่องกันจน packet ไปถึง host ปลายทาง.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านกฎพร้อมเส้นทางจากต้นทางไปปลายทาง: เริ่มที่ 10.3.*.* → ใช้ rule ที่ s3 → ต่อด้วย rule ที่ s1 → ถึง s2 แล้วเลือก output ตาม IP destination เฉพาะของ h3 หรือ h4. ตารางที่วางใกล้แต่ละ switch คือกฎเฉพาะของอุปกรณ์นั้น.\nประเด็นสำคัญที่ควรจำ\nFlow rules ของแต่ละ switch สามารถต่างกันตามตำแหน่งและหน้าที่\nการ orchestrate rules ทำให้ได้เส้นทาง end-to-end ตามนโยบายที่ต้องการ"
+  },
+  {
+    "num": 87,
+    "title": "Generalized forwarding: summary",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่าน bullet ตามลำดับจาก abstraction → fields ที่ match → local actions → network-wide behaviors → network programmability. ลำดับนี้สรุปการพัฒนาความคิดทั้งหมดจาก Slide 78 เป็นต้นมา."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Generalized forwarding ทำ packet processing แบบ programmable ต่อ packet การรวม rules หลายจุดสามารถโปรแกรมพฤติกรรมระดับเครือข่ายได้"
+      }
+    ],
+    "cleanFull": "Slide 87\nGeneralized forwarding: summary\nสไลด์สรุป Generalized Forwarding ด้วยแนวคิด\nmatch plus action\n: match bits ใน packet headers ที่อาจอยู่ในหลาย layer แล้วทำ local action เช่น drop, forward, modify หรือส่ง packet ที่ match ไปยัง controller.\nเมื่อ flow tables ของหลายอุปกรณ์ถูกจัดโปรแกรมร่วมกัน จะสามารถสร้าง network-wide behaviors ได้. สไลด์จึงมอง generalized forwarding เป็นรูปแบบหนึ่งของ\nnetwork programmability\nและกล่าวถึงรากทางประวัติศาสตร์จาก active networking รวมถึงการเขียนโปรแกรมที่ general มากขึ้น เช่น P4.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่าน bullet ตามลำดับจาก abstraction → fields ที่ match → local actions → network-wide behaviors → network programmability. ลำดับนี้สรุปการพัฒนาความคิดทั้งหมดจาก Slide 78 เป็นต้นมา.\nประเด็นสำคัญที่ควรจำ\nGeneralized forwarding ทำ packet processing แบบ programmable ต่อ packet\nการรวม rules หลายจุดสามารถโปรแกรมพฤติกรรมระดับเครือข่ายได้"
+  },
+  {
+    "num": 88,
+    "title": "Middleboxes",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สไลด์ตั้งใจให้โฟกัสที่ข้อความนิยามในกรอบสีแดง. อ่านคำสำคัญสามส่วน: intermediary box → functions apart from normal IP router functions → อยู่บน data path ระหว่าง source และ destination."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Middlebox เป็นอุปกรณ์ตัวกลางบนเส้นทางข้อมูล หน้าที่ของมันเกินกว่าการทำงานมาตรฐานของ IP router"
+      }
+    ],
+    "cleanFull": "05\nMiddleboxes\nSlide 88\nMiddleboxes\nสไลด์เริ่มหัวข้อ\nMiddleboxes\nด้วยคำนิยามจาก RFC 3234 ว่าเป็นอุปกรณ์ตัวกลางบน data path ระหว่าง source host กับ destination host ที่ทำหน้าที่นอกเหนือจากหน้าที่ปกติมาตรฐานของ IP router.\nคำว่า “intermediary box” จึงเน้นว่าอุปกรณ์นี้อยู่ระหว่างปลายทางและทำ processing เพิ่มเติม ไม่ได้มีหน้าที่เพียง forwarding แบบ IP router มาตรฐาน.\nอ่านภาพและองค์ประกอบในสไลด์\nสไลด์ตั้งใจให้โฟกัสที่ข้อความนิยามในกรอบสีแดง. อ่านคำสำคัญสามส่วน: intermediary box → functions apart from normal IP router functions → อยู่บน data path ระหว่าง source และ destination.\nประเด็นสำคัญที่ควรจำ\nMiddlebox เป็นอุปกรณ์ตัวกลางบนเส้นทางข้อมูล\nหน้าที่ของมันเกินกว่าการทำงานมาตรฐานของ IP router"
+  },
+  {
+    "num": 89,
+    "title": "Middleboxes everywhere!",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านข้อความรอบภาพจากแต่ละหมวด แล้วเชื่อมกลับไปยังตำแหน่งใน topology ตรงกลาง. ประเด็นของภาพคือความแพร่หลายและความหลากหลายของ middlebox มากกว่าการให้จำตำแหน่งอุปกรณ์ทุกตัว."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ NAT, firewall/IDS, load balancer และ cache เป็นตัวอย่าง middleboxes ในสไลด์ Middleboxes พบได้ทั้งเครือข่ายบ้าน องค์กร ISP mobile และ datacenter/CDN"
+      }
+    ],
+    "cleanFull": "Slide 89\nMiddleboxes everywhere!\nสไลด์แสดงว่า middleboxes พบได้ในหลายบริบทของ Internet. ตัวอย่างที่ระบุ ได้แก่\nNAT\nใน home/cellular/institutional networks,\nFirewalls และ IDS\nในองค์กรและผู้ให้บริการ,\nLoad balancers\nในองค์กร/ผู้ให้บริการ/data centers/mobile networks,\nCaches\nใน service providers/mobile/CDNs และอุปกรณ์แบบ application-specific.\nภาพเครือข่ายตรงกลางเชื่อม mobile network, enterprise network, ISP และ datacenter network เพื่อชี้ว่า middlebox ไม่ใช่อุปกรณ์เฉพาะตำแหน่งเดียว แต่สามารถปรากฏได้หลายจุดและทำหน้าที่ต่างกันตามบริบท.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านข้อความรอบภาพจากแต่ละหมวด แล้วเชื่อมกลับไปยังตำแหน่งใน topology ตรงกลาง. ประเด็นของภาพคือความแพร่หลายและความหลากหลายของ middlebox มากกว่าการให้จำตำแหน่งอุปกรณ์ทุกตัว.\nประเด็นสำคัญที่ควรจำ\nNAT, firewall/IDS, load balancer และ cache เป็นตัวอย่าง middleboxes ในสไลด์\nMiddleboxes พบได้ทั้งเครือข่ายบ้าน องค์กร ISP mobile และ datacenter/CDN"
+  },
+  {
+    "num": 90,
+    "title": "Middleboxes — toward programmable infrastructure",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่าน bullet เป็นพัฒนาการ: proprietary hardware → whitebox + open API → programmable actions/software → SDN และ NFV. สไลด์นี้จึงเชื่อมหัวข้อ Middleboxes กลับเข้ากับแนวคิด programmability ที่เรียนมาก่อนหน้า."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ แนวโน้มคือย้ายจาก proprietary hardware ไปสู่ whitebox และ software programmability SDN และ NFV เป็นแนวคิดสำคัญที่สไลด์เชื่อมกับ middlebox ยุคใหม่"
+      }
+    ],
+    "cleanFull": "Slide 90\nMiddleboxes — toward programmable infrastructure\nสไลด์อธิบายแนวโน้มของ middleboxes จากเดิมที่มักเป็น\nproprietary (closed) hardware solutions\nไปสู่\nwhitebox hardware\nที่มี open API. แนวทางนี้ช่วยย้ายความแตกต่างและนวัตกรรมจาก hardware เฉพาะผู้ผลิตไปสู่ software มากขึ้น.\nสไลด์เชื่อมแนวโน้มนี้กับ programmable local actions ผ่าน match+action,\nSDN\nซึ่งให้ control/configuration management แบบ logically centralized และ\nNetwork Functions Virtualization (NFV)\nที่ทำ network services แบบ programmable บน white-box networking, computation และ storage.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่าน bullet เป็นพัฒนาการ: proprietary hardware → whitebox + open API → programmable actions/software → SDN และ NFV. สไลด์นี้จึงเชื่อมหัวข้อ Middleboxes กลับเข้ากับแนวคิด programmability ที่เรียนมาก่อนหน้า.\nประเด็นสำคัญที่ควรจำ\nแนวโน้มคือย้ายจาก proprietary hardware ไปสู่ whitebox และ software programmability\nSDN และ NFV เป็นแนวคิดสำคัญที่สไลด์เชื่อมกับ middlebox ยุคใหม่"
+  },
+  {
+    "num": 91,
+    "title": "Network layer: “data plane” roadmap — Internet architecture",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สังเกต Roadmap ด้านซ้ายและขวา: รายการส่วนใหญ่เป็นสีเทา ขณะที่ Internet architecture เป็นสีแดง. ภาพสะพานเป็นภาพประกอบของหัวข้อ ไม่ใช่ topology ของเครือข่าย."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Roadmap นี้เป็นจุดเปลี่ยนเข้าสู่หัวข้อ Internet architecture ช่วงนี้เน้นหลักการออกแบบ Internet มากกว่ากลไก forwarding ราย packet"
+      }
+    ],
+    "cleanFull": "06\nInternet Architecture\nSlide 91\nNetwork layer: “data plane” roadmap — Internet architecture\nสไลด์ Roadmap กลับมาอีกครั้งเพื่อบอกตำแหน่งของเนื้อหาปัจจุบัน โดยหัวข้อที่ถูกเน้นคือ\nInternet architecture\n. หัวข้อก่อนหน้านี้ ได้แก่ Network-layer overview, router internals, IP, Generalized Forwarding และ Middleboxes ถูกทำให้จางลง เพื่อแสดงว่าเราได้ผ่านหัวข้อเหล่านั้นมาแล้ว.\nดังนั้นช่วงต่อไปไม่ได้เพิ่มกลไก forwarding ใหม่ แต่ใช้แนวคิดที่เรียนมาแล้วมองย้อนกลับไปที่ “โครงสร้างและหลักคิด” ของ Internet ว่าเหตุใด IP จึงอยู่ตรงกลางของสถาปัตยกรรม และเหตุใดความซับซ้อนจำนวนมากจึงอยู่ที่ปลายเครือข่าย.\nอ่านภาพและองค์ประกอบในสไลด์\nสังเกต Roadmap ด้านซ้ายและขวา: รายการส่วนใหญ่เป็นสีเทา ขณะที่\nInternet architecture\nเป็นสีแดง. ภาพสะพานเป็นภาพประกอบของหัวข้อ ไม่ใช่ topology ของเครือข่าย.\nประเด็นสำคัญที่ควรจำ\nRoadmap นี้เป็นจุดเปลี่ยนเข้าสู่หัวข้อ Internet architecture\nช่วงนี้เน้นหลักการออกแบบ Internet มากกว่ากลไก forwarding ราย packet"
+  },
+  {
+    "num": 92,
+    "title": "The IP hourglass",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านรูปทรงนาฬิกาทรายจากบนลงล่าง: ด้านบนกว้าง = protocols จำนวนมากใน transport/application; ตรงคอด = IP เพียงหนึ่งชั้นกลาง; ด้านล่างกว้าง = link และ physical technologies จำนวนมาก. ลูกศรสีแดงชี้จากข้อความ “many protocols” เข้าหาหลายชั้น ยกเว้นตรงคอดที่เน้น IP."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ IP คือ “thin waist” ของ Internet architecture เหนือและใต้ IP สามารถมี protocols/technologies ได้หลากหลาย"
+      }
+    ],
+    "cleanFull": "Slide 92\nThe IP hourglass\nสไลด์ใช้อุปมา\nIP hourglass\nเพื่ออธิบายสถาปัตยกรรมของ Internet. ส่วนคอดตรงกลางหรือ “thin waist” คือ\nIP\nซึ่งเป็น network-layer protocol ที่อุปกรณ์ที่เชื่อมต่อ Internet ทุกชนิดต้องรองรับ.\nเหนือ IP สามารถมี transport และ application protocols ได้หลายชนิด เช่น TCP, UDP, HTTP, SMTP, QUIC และ RTP; ใต้ IP ก็มี link/physical technologies ได้หลายแบบ เช่น Ethernet, WiFi, Bluetooth, PPP, copper, radio และ fiber. การมีจุดร่วมตรงกลางเป็น IP ทำให้เทคโนโลยีที่หลากหลายทั้งด้านบนและด้านล่างเชื่อมทำงานร่วมกันได้.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านรูปทรงนาฬิกาทรายจากบนลงล่าง: ด้านบนกว้าง = protocols จำนวนมากใน transport/application; ตรงคอด = IP เพียงหนึ่งชั้นกลาง; ด้านล่างกว้าง = link และ physical technologies จำนวนมาก. ลูกศรสีแดงชี้จากข้อความ “many protocols” เข้าหาหลายชั้น ยกเว้นตรงคอดที่เน้น IP.\nประเด็นสำคัญที่ควรจำ\nIP คือ “thin waist” ของ Internet architecture\nเหนือและใต้ IP สามารถมี protocols/technologies ได้หลากหลาย"
+  },
+  {
+    "num": 93,
+    "title": "The IP hourglass, at middle age",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เปรียบเทียบกับ Slide 92: รูปยังมี IP อยู่ตรงคอด แต่สไลด์นี้วาดส่วนโป่งรอบ IP พร้อมคำว่า NAT, caching, NFV และ Firewalls. คำว่า “middle age love handles?” เป็นอุปมาเชิงภาพเพื่อชี้การเพิ่มขึ้นของ middleboxes."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Middleboxes เพิ่ม functionality ภายใน network รอบ IP thin waist ภาพ “love handles” เป็นอุปมาของ Internet ที่ซับซ้อนขึ้นภายในเครือข่าย"
+      }
+    ],
+    "cleanFull": "Slide 93\nThe IP hourglass, at middle age\nสไลด์ดัดแปลงรูป hourglass เดิมโดยเติม “love handles” รอบบริเวณ IP เพื่อสื่อว่า Internet ยุคปัจจุบันมี\nmiddleboxes\nทำงานอยู่ภายในเครือข่ายมากขึ้น เช่น NAT, firewalls, caching และ NFV.\nแนวคิดนี้เชื่อมกับหัวข้อก่อนหน้า: สถาปัตยกรรมดั้งเดิมมอง IP เป็นแกนกลางที่ค่อนข้างเรียบง่าย แต่เมื่อ Internet เติบโต อุปกรณ์และฟังก์ชันพิเศษภายในเครือข่ายเพิ่มขึ้น จึงทำให้บริเวณรอบ “thin waist” ไม่ได้เรียบง่ายเหมือนภาพ hourglass แบบดั้งเดิม.\nอ่านภาพและองค์ประกอบในสไลด์\nเปรียบเทียบกับ Slide 92: รูปยังมี IP อยู่ตรงคอด แต่สไลด์นี้วาดส่วนโป่งรอบ IP พร้อมคำว่า NAT, caching, NFV และ Firewalls. คำว่า “middle age love handles?” เป็นอุปมาเชิงภาพเพื่อชี้การเพิ่มขึ้นของ middleboxes.\nประเด็นสำคัญที่ควรจำ\nMiddleboxes เพิ่ม functionality ภายใน network รอบ IP thin waist\nภาพ “love handles” เป็นอุปมาของ Internet ที่ซับซ้อนขึ้นภายในเครือข่าย"
+  },
+  {
+    "num": 94,
+    "title": "Architectural Principles of the Internet",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ กรอบสีแดงด้านบนคือข้อความอ้างอิงจาก RFC 1958; ด้านล่างเป็นการย่อสาระให้เหลือสามข้อ. เวลาอ่านให้จับคำว่า connectivity → IP → end-to-end intelligence แล้วเชื่อมกับสาม bullet ด้านล่าง."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ RFC 1958 เน้น connectivity, IP และ end-to-end intelligence หลักสำคัญของสไลด์คือ intelligence/complexity อยู่ที่ network edge"
+      }
+    ],
+    "cleanFull": "Slide 94\nArchitectural Principles of the Internet\nสไลด์อ้างแนวคิดจาก\nRFC 1958\nโดยสรุปว่าเป้าหมายคือ\nconnectivity\n, เครื่องมือหลักคือ\nInternet Protocol (IP)\n, และ intelligence ควรเป็นแบบ\nend to end\nมากกว่าซ่อนอยู่ภายในเครือข่าย.\nสไลด์สรุปเป็นสาม cornerstone beliefs ได้แก่\nsimple connectivity\n,\nIP protocol เป็น narrow waist\nและ\nintelligence/complexity อยู่ที่ network edge\n. ทั้งสามข้อเชื่อมกัน: network core พยายามคงหน้าที่พื้นฐานไว้ ขณะที่ปลายทางสามารถพัฒนาฟังก์ชันที่ซับซ้อนได้.\nอ่านภาพและองค์ประกอบในสไลด์\nกรอบสีแดงด้านบนคือข้อความอ้างอิงจาก RFC 1958; ด้านล่างเป็นการย่อสาระให้เหลือสามข้อ. เวลาอ่านให้จับคำว่า connectivity → IP → end-to-end intelligence แล้วเชื่อมกับสาม bullet ด้านล่าง.\nประเด็นสำคัญที่ควรจำ\nRFC 1958 เน้น connectivity, IP และ end-to-end intelligence\nหลักสำคัญของสไลด์คือ intelligence/complexity อยู่ที่ network edge"
+  },
+  {
+    "num": 95,
+    "title": "The end-end argument — edge vs in-network implementation",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพคู่กัน: แถวบนมีกรอบ reliable transfer ที่ปลายซ้ายและปลายขวาเป็นหลัก; แถวล่างมีกรอบเพิ่มตามอุปกรณ์หลายจุดในเส้นทาง. จุดต่างจึงไม่ใช่ปลายทางหรือเส้นทางคนละชุด แต่คือ function ถูก implement ที่ไหน ."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ End-to-end และ hop-by-hop ต่างกันที่ตำแหน่งของ implementation สไลด์ใช้ reliable data transfer เป็นตัวอย่างเพื่อเปรียบเทียบ edge กับ in-network"
+      }
+    ],
+    "cleanFull": "Slide 95\nThe end-end argument — edge vs in-network implementation\nสไลด์เริ่มอธิบาย\nend-end argument\nด้วยตัวอย่างว่า network functionality บางอย่าง เช่น reliable data transfer หรือ congestion-related functionality สามารถวาง implementation ไว้ใน network หรือไว้ที่ network edge ได้.\nภาพบนแสดง\nend-to-end implementation of reliable data transfer\nคือความสามารถหลักอยู่ที่สอง endpoint. ภาพล่างแสดง\nhop-by-hop (in-network) implementation\nซึ่งแต่ละช่วง/อุปกรณ์ภายในเส้นทางมีส่วนทำ reliable transfer. สไลด์ต้องการให้เปรียบเทียบ “ตำแหน่งที่วาง functionality” สองแนวทาง.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพคู่กัน: แถวบนมีกรอบ reliable transfer ที่ปลายซ้ายและปลายขวาเป็นหลัก; แถวล่างมีกรอบเพิ่มตามอุปกรณ์หลายจุดในเส้นทาง. จุดต่างจึงไม่ใช่ปลายทางหรือเส้นทางคนละชุด แต่คือ\nfunction ถูก implement ที่ไหน\n.\nประเด็นสำคัญที่ควรจำ\nEnd-to-end และ hop-by-hop ต่างกันที่ตำแหน่งของ implementation\nสไลด์ใช้ reliable data transfer เป็นตัวอย่างเพื่อเปรียบเทียบ edge กับ in-network"
+  },
+  {
+    "num": 96,
+    "title": "The end-end argument — principle",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ กรอบสีแดงคือใจความหลักของ end-to-end argument. ประโยคในวงเล็บที่กล่าวถึง incomplete version as a performance enhancement เป็นจุดสำคัญ เพราะทำให้เห็นว่า argument นี้ไม่ได้บอกให้ network core ทำอะไรไม่ได้เลย."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ ความถูกต้องสมบูรณ์ของบาง function ต้องอาศัย knowledge ที่ endpoints In-network implementation อาจยังมีประโยชน์เพื่อเพิ่ม performance แม้ไม่แทน endpoint ได้ทั้งหมด"
+      }
+    ],
+    "cleanFull": "Slide 96\nThe end-end argument — principle\nสไลด์ให้ข้อความหลักของ\nend-to-end argument\nจาก Saltzer, Reed และ Clark (1981): function บางอย่างจะทำให้ “สมบูรณ์และถูกต้อง” ได้เมื่อมีความรู้และความช่วยเหลือจาก application ที่ endpoints ของระบบสื่อสาร.\nดังนั้นการทำ function นั้นที่ระดับล่างของ communication system อาจไม่สามารถแทน endpoint implementation ได้ทั้งหมด อย่างไรก็ตาม สไลด์ระบุด้วยว่า implementation ที่ไม่สมบูรณ์ใน network อาจยังมีประโยชน์ในฐานะ\nperformance enhancement\n. นี่คือเหตุผลที่แนวคิดนี้ไม่ควรถูกตีความว่า “ห้ามมี functionality ใน network ทุกชนิด”.\nอ่านภาพและองค์ประกอบในสไลด์\nกรอบสีแดงคือใจความหลักของ end-to-end argument. ประโยคในวงเล็บที่กล่าวถึง incomplete version as a performance enhancement เป็นจุดสำคัญ เพราะทำให้เห็นว่า argument นี้ไม่ได้บอกให้ network core ทำอะไรไม่ได้เลย.\nประเด็นสำคัญที่ควรจำ\nความถูกต้องสมบูรณ์ของบาง function ต้องอาศัย knowledge ที่ endpoints\nIn-network implementation อาจยังมีประโยชน์เพื่อเพิ่ม performance แม้ไม่แทน endpoint ได้ทั้งหมด"
+  },
+  {
+    "num": 97,
+    "title": "Where’s the intelligence?",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านภาพจากซ้ายไปขวาตามเวลา: phone network → Internet pre-2005 → Internet post-2005. สัญลักษณ์สมองแสดงตำแหน่งของ intelligence; ภาพขวาสุดมีทั้งสมองในเครือข่ายและ infrastructure ขนาดใหญ่ที่ edge จึงต่างจากภาพกลาง."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Phone network แบบเดิมเน้น intelligence ใน network switches Internet ยุคใหม่มีทั้ง programmable network devices และ application-level infrastructure ที่ edge"
+      }
+    ],
+    "cleanFull": "Slide 97\nWhere’s the intelligence?\nสไลด์เปรียบเทียบตำแหน่งของ “intelligence/computing” ในสามยุค.\n20th century phone network\nวาง intelligence/computing ไว้ที่ network switches เพราะ endpoints เป็นโทรศัพท์ที่มีความสามารถจำกัด.\nInternet (pre-2005)\nย้าย intelligence/computing ไปที่ edge มากขึ้น.\nใน\nInternet (post-2005)\nภาพแสดงทั้ง programmable network devices ภายในเครือข่าย และ intelligence/computing พร้อม massive application-level infrastructure ที่ edge. สไลด์จึงชี้ว่า Internet ปัจจุบันไม่ได้มีความฉลาดอยู่เพียงตำแหน่งเดียว แต่ทั้งอุปกรณ์เครือข่ายและ infrastructure ที่ปลายทางมีความสามารถเพิ่มขึ้น.\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านภาพจากซ้ายไปขวาตามเวลา: phone network → Internet pre-2005 → Internet post-2005. สัญลักษณ์สมองแสดงตำแหน่งของ intelligence; ภาพขวาสุดมีทั้งสมองในเครือข่ายและ infrastructure ขนาดใหญ่ที่ edge จึงต่างจากภาพกลาง.\nประเด็นสำคัญที่ควรจำ\nPhone network แบบเดิมเน้น intelligence ใน network switches\nInternet ยุคใหม่มีทั้ง programmable network devices และ application-level infrastructure ที่ edge"
+  },
+  {
+    "num": 98,
+    "title": "Chapter 4: done!",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ รายการ bullet ด้านซ้ายคือหัวข้อที่เรียนจบแล้ว. ข้อความสีแดงด้านล่างเป็นสะพานไปยังบทถัดไป: Chapter 4 ศึกษาว่า Data Plane ใช้ตารางอย่างไร ส่วนการคำนวณ/สร้างตารางจะไปศึกษาใน Control Plane."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Chapter 4 ปิดเนื้อหาหลักของ Network Layer: Data Plane Forwarding/flow tables ถูกคำนวณโดย Control Plane ซึ่งเป็นหัวข้อถัดไป"
+      }
+    ],
+    "cleanFull": "Slide 98\nChapter 4: done!\nสไลด์สรุปหัวข้อหลักของ Chapter 4 ได้แก่ Network layer overview, What’s inside a router, IP, Generalized Forwarding/SDN และ Middleboxes. เป็นการปิดเนื้อหาหลักของบท Data Plane.\nคำถามท้ายสไลด์เชื่อมไปบทถัดไป: forwarding tables สำหรับ destination-based forwarding และ flow tables สำหรับ generalized forwarding ถูกคำนวณอย่างไร? คำตอบในสไลด์คือ\nโดย control plane\nซึ่งจะเป็นหัวข้อของบทถัดไป.\nอ่านภาพและองค์ประกอบในสไลด์\nรายการ bullet ด้านซ้ายคือหัวข้อที่เรียนจบแล้ว. ข้อความสีแดงด้านล่างเป็นสะพานไปยังบทถัดไป: Chapter 4 ศึกษาว่า Data Plane ใช้ตารางอย่างไร ส่วนการคำนวณ/สร้างตารางจะไปศึกษาใน Control Plane.\nประเด็นสำคัญที่ควรจำ\nChapter 4 ปิดเนื้อหาหลักของ Network Layer: Data Plane\nForwarding/flow tables ถูกคำนวณโดย Control Plane ซึ่งเป็นหัวข้อถัดไป"
+  },
+  {
+    "num": 99,
+    "title": "Additional Chapter 4 slides",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ สไลด์มีเพียงข้อความ “Additional Chapter 4 slides” อยู่กลางหน้า จึงทำหน้าที่เป็นหน้าคั่นหัวข้อ ไม่ใช่สไลด์เนื้อหาที่ต้องจำรายละเอียด."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Slide 99 เป็นหน้าคั่นเข้าสู่สไลด์เสริม เนื้อหาเพิ่มเติมเริ่มตั้งแต่สไลด์ถัดไป"
+      }
+    ],
+    "cleanFull": "07\nAdditional Chapter 4 Slides\nSlide 99\nAdditional Chapter 4 slides\nสไลด์นี้เป็น\nsection divider\nสำหรับเนื้อหาเพิ่มเติมของ Chapter 4. ไม่มีกลไกใหม่ให้วิเคราะห์ในสไลด์นี้ แต่บอกว่าหลังจากสรุปบทแล้วจะมีสไลด์เสริมต่อจากเนื้อหาหลัก.\nดังนั้นเวลาอ่านให้ใช้สไลด์นี้เป็นจุดแบ่ง: Slide 98 คือการจบบทหลัก ส่วน Slide 99 เป็นต้นไปเป็นรายละเอียดเสริมที่ช่วยขยายบางหัวข้อ เช่น IP fragmentation/reassembly.\nอ่านภาพและองค์ประกอบในสไลด์\nสไลด์มีเพียงข้อความ “Additional Chapter 4 slides” อยู่กลางหน้า จึงทำหน้าที่เป็นหน้าคั่นหัวข้อ ไม่ใช่สไลด์เนื้อหาที่ต้องจำรายละเอียด.\nประเด็นสำคัญที่ควรจำ\nSlide 99 เป็นหน้าคั่นเข้าสู่สไลด์เสริม\nเนื้อหาเพิ่มเติมเริ่มตั้งแต่สไลด์ถัดไป"
+  },
+  {
+    "num": 100,
+    "title": "IP fragmentation/reassembly",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ ภาพด้านขวาแสดงลำดับ IPv4 fragmentation: one large datagram → 3 smaller datagrams → reassembly ที่ destination ข้อความในสไลด์ใช้คำอธิบาย MTU แบบย่อ; สำหรับการอ่านเชิงมาตรฐานให้จำว่า MTU อ้างถึงขนาด IP packet ที่ link ส่งได้โดยไม่ต้องแบ่ง ไม่ใช่ขนาด Ethernet frame ทั้งก้อนรวม header/trailer"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ MTU ย่อจาก Maximum Transmission Unit และในบริบท IETF หมายถึงขนาดสูงสุดของ IP packet ที่ส่งผ่าน link ได้เป็นชิ้นเดียว กลไก fragmentation ใน Slide 100–101 เป็นตัวอย่าง IPv4 IPv4 fragments ถูก reassemble ที่ destination"
+      }
+    ],
+    "cleanFull": "Slide 100\nIP fragmentation/reassembly\nสไลด์อธิบายว่า network link แต่ละชนิดมี MTU (Maximum Transmission Unit) และ link ต่างชนิดอาจมี MTU ต่างกัน ในความหมายของ IETF, link MTU คือขนาดสูงสุดของ IP packet (รวม IP header และ payload แต่ไม่รวม link-layer header/trailer) ที่สามารถส่งผ่าน link ได้เป็นชิ้นเดียว กลไก fragmentation ที่แสดงในสไลด์เสริมนี้เป็นการอธิบาย IPv4: หาก IPv4 datagram ใหญ่เกิน MTU ของ link และอนุญาตให้ fragment ได้ datagram อาจถูกแบ่งเป็น fragments ระหว่างทาง\nหนึ่ง IPv4 datagram จึงอาจกลายเป็นหลาย fragments และถูก reassembled ที่ destination โดย IPv4 header มี Identification, Flags และ Fragment Offset สำหรับช่วยเชื่อมและจัดตำแหน่ง fragments ควรแยกจาก IPv6 ซึ่ง routers ระหว่างทางไม่ทำ fragmentation\nอ่านภาพและองค์ประกอบในสไลด์\nภาพด้านขวาแสดงลำดับ IPv4 fragmentation: one large datagram → 3 smaller datagrams → reassembly ที่ destination ข้อความในสไลด์ใช้คำอธิบาย MTU แบบย่อ; สำหรับการอ่านเชิงมาตรฐานให้จำว่า MTU อ้างถึงขนาด IP packet ที่ link ส่งได้โดยไม่ต้องแบ่ง ไม่ใช่ขนาด Ethernet frame ทั้งก้อนรวม header/trailer\nประเด็นสำคัญที่ควรจำ\nMTU ย่อจาก Maximum Transmission Unit และในบริบท IETF หมายถึงขนาดสูงสุดของ IP packet ที่ส่งผ่าน link ได้เป็นชิ้นเดียว\nกลไก fragmentation ใน Slide 100–101 เป็นตัวอย่าง IPv4\nIPv4 fragments ถูก reassemble ที่ destination"
+  },
+  {
+    "num": 101,
+    "title": "IP fragmentation/reassembly — example",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ เริ่มจาก datagram เดิม Total Length = 4000 แล้วตามลูกศรลงมายัง 3 fragments: 1500, 1500 และ 1040 bytes ข้อมูลจริงรวมกันคือ 1480 + 1480 + 1020 = 3980 bytes เมื่อรวม IPv4 header เดิม 20 bytes จะกลับเป็น 4000 bytes พอดี ID เหมือนกันทุกชิ้น แต่ offset ต่างกันเพื่อบอกตำแหน่งข้อมูลสำหรับ reassembly"
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ 4000-byte IPv4 datagram เมื่อ MTU = 1500 ถูกแบ่งเป็น 3 fragments แต่ละ fragment มี IPv4 header ของตัวเอง; สองชิ้นแรกมี data 1480 bytes Fragment Offset ใช้หน่วย 8 bytes: 0, 185, 370 MF/fragflag = 1 หมายถึงยังมี fragment ต่อ; ชิ้นสุดท้ายเป็น 0"
+      }
+    ],
+    "cleanFull": "Slide 101\nIP fragmentation/reassembly — example\nสไลด์นี้นำ IPv4 fragmentation จากสไลด์ก่อนหน้ามาคำนวณด้วยตัวอย่าง datagram ขนาด 4000 bytes ที่ต้องผ่าน link ซึ่งมี MTU = 1500 bytes โดยสมมติ IPv4 header ขนาด 20 bytes ดังนั้น fragment ที่มี Total Length = 1500 bytes จะบรรทุก data ได้ 1480 bytes\nDatagram เดิมถูกแบ่งเป็น 3 fragments โดยทุก fragment ใช้ ID = x เดียวกัน สองชิ้นแรกมี fragflag = 1 ซึ่งสอดคล้องกับความหมาย More Fragments (MF=1) ว่ายังมี fragment ตามมา ส่วนชิ้นสุดท้ายมีค่า 0 ค่า Fragment Offset เป็น 0, 185 และ 370 เพราะ offset นับเป็นหน่วย 8 bytes: 1480/8 = 185 และ 2960/8 = 370\nอ่านภาพและองค์ประกอบในสไลด์\nเริ่มจาก datagram เดิม Total Length = 4000 แล้วตามลูกศรลงมายัง 3 fragments: 1500, 1500 และ 1040 bytes ข้อมูลจริงรวมกันคือ 1480 + 1480 + 1020 = 3980 bytes เมื่อรวม IPv4 header เดิม 20 bytes จะกลับเป็น 4000 bytes พอดี ID เหมือนกันทุกชิ้น แต่ offset ต่างกันเพื่อบอกตำแหน่งข้อมูลสำหรับ reassembly\nประเด็นสำคัญที่ควรจำ\n4000-byte IPv4 datagram เมื่อ MTU = 1500 ถูกแบ่งเป็น 3 fragments\nแต่ละ fragment มี IPv4 header ของตัวเอง; สองชิ้นแรกมี data 1480 bytes\nFragment Offset ใช้หน่วย 8 bytes: 0, 185, 370\nMF/fragflag = 1 หมายถึงยังมี fragment ต่อ; ชิ้นสุดท้ายเป็น 0"
+  },
+  {
+    "num": 102,
+    "title": "DHCP: Wireshark output (home LAN)",
+    "sections": [
+      {
+        "class": "visual-reading",
+        "text": "อ่านภาพและองค์ประกอบในสไลด์ อ่านสไลด์เป็นสองคอลัมน์: ซ้ายคือ request และขวาคือ reply. ข้อความสีแดงเน้น field สำคัญที่ควรเทียบกัน เช่น Transaction ID , Client MAC address , DHCP Message Type และ options. ฝั่ง request แสดงสิ่งที่ client ขอ ส่วนฝั่ง reply แสดงค่าที่ server ตอบกลับ เช่น subnet mask, router, DNS และ domain name."
+      },
+      {
+        "class": "key-idea",
+        "text": "ประเด็นสำคัญที่ควรจำ Wireshark ทำให้เห็นรายละเอียด DHCP request/reply และ options ภายใน message Transaction ID เดียวกันช่วยจับคู่ request กับ reply ในตัวอย่าง DHCP ACK ให้ข้อมูลมากกว่า IP address เช่น subnet mask, router และ DNS server Slide 102 เป็นสไลด์สุดท้ายของไฟล์ Chapter 4 ต้นฉบับชุดนี้"
+      }
+    ],
+    "cleanFull": "Slide 102\nDHCP: Wireshark output (home LAN)\nสไลด์สุดท้ายแสดงตัวอย่างข้อมูลที่มองเห็นได้จาก\nWireshark\nสำหรับ DHCP บน home LAN โดยเปรียบเทียบฝั่ง\nrequest\nกับ\nreply\n. ฝั่ง request เป็น Boot Request และมี DHCP Message Type = DHCP Request; client ระบุ Requested IP Address =\n192.168.1.101\nพร้อม Parameter Request List ที่ขอข้อมูล เช่น Subnet Mask, Domain Name, Router และ Domain Name Server.\nฝั่ง reply เป็น Boot Reply และมี DHCP Message Type = DHCP ACK ใน capture นี้ reply ใช้ Transaction ID เดียวกับ request คือ 0x6b3a11b7 และแสดง configuration หลายรายการ เช่น Client IP address 192.168.1.101, Server Identifier/Router 192.168.1.1, Subnet Mask 255.255.255.0, DNS server addresses และ Domain Name ค่าฟิลด์บางช่อง เช่น ciaddr/yiaddr สามารถต่างกันได้ตามสถานะของ DHCP client; จุดสำคัญของสไลด์คือการอ่าน field และ options จาก packet capture จริง\nอ่านภาพและองค์ประกอบในสไลด์\nอ่านสไลด์เป็นสองคอลัมน์: ซ้ายคือ request และขวาคือ reply. ข้อความสีแดงเน้น field สำคัญที่ควรเทียบกัน เช่น\nTransaction ID\n,\nClient MAC address\n, DHCP Message Type และ options. ฝั่ง request แสดงสิ่งที่ client ขอ ส่วนฝั่ง reply แสดงค่าที่ server ตอบกลับ เช่น subnet mask, router, DNS และ domain name.\nประเด็นสำคัญที่ควรจำ\nWireshark ทำให้เห็นรายละเอียด DHCP request/reply และ options ภายใน message\nTransaction ID เดียวกันช่วยจับคู่ request กับ reply ในตัวอย่าง\nDHCP ACK ให้ข้อมูลมากกว่า IP address เช่น subnet mask, router และ DNS server\nSlide 102 เป็นสไลด์สุดท้ายของไฟล์ Chapter 4 ต้นฉบับชุดนี้"
+  }
+]

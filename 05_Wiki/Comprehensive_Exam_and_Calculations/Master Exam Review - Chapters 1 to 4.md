@@ -70,7 +70,7 @@ flowchart TD
         S1["Transmitter"] -->|ทิศทางเดียวตลอดกาล| R1["Receiver Only"]
     end
     subgraph HalfDuplex ["2. Half-Duplex Mode (สองทางสลับกัน)"]
-        S2["Station A"] <--->|"เวลา t1: A ส่ง B / เวลา t2: B ส่ง A"| R2["Station B"]
+        S2["Station A"] <-->|"เวลา t1: A ส่ง B / เวลา t2: B ส่ง A"| R2["Station B"]
     end
     subgraph FullDuplex ["3. Full-Duplex Mode (สองทางพร้อมกัน)"]
         S3["Station A"] ===|ส่งและรับได้พร้อมกันในเวลาเดียวกัน| R3["Station B"]
@@ -254,10 +254,10 @@ flowchart LR
         R1(("Router 1"))
         R2(("Router 2"))
         R3(("Router 3"))
-        R1 <---> R2 <---> R3 <---> R1
+        R1 <--> R2 <--> R3 <--> R1
     end
 
-    Edge <---> Core
+    Edge <--> Core
 ```
 
 1. **Network Edge (ขอบระบบเครือข่าย):**
@@ -353,14 +353,14 @@ flowchart TD
         L_N["Layer N"]
     end
 
-    L_N1 <--->|"Service Request / Response"| SAP
-    SAP <---> L_N
+    L_N1 <-->|"Service Request / Response"| SAP
+    SAP <--> L_N
     
     subgraph PeerHost ["Peer Host"]
         L_N_Peer["Layer N (Peer)"]
     end
 
-    L_N <--->|Protocol Rules: Horizontal Peer-to-Peer| L_N_Peer
+    L_N <-->|Protocol Rules: Horizontal Peer-to-Peer| L_N_Peer
 ```
 
 - **Service (บริการ):** การทำงานที่ Layer ด้านล่างจัดเตรียมและส่งมอบให้กับ Layer ที่อยู่ติดกันด้านบน (Vertical communication) ผ่านทาง **Service Access Point (SAP) / Interface**
@@ -408,7 +408,7 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    App["Application Process"] <--->|"Read / Write"| Sock(["Socket: Port Number"])
+    App["Application Process"] <-->|"Read / Write"| Sock(["Socket: Port Number"])
     Sock <--> OS["OS / Transport Layer"]
     OS <--> Net["Network Layer: IP Address"]
 ```

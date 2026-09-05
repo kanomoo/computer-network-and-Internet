@@ -196,7 +196,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     subgraph PTP ["Point-to-Point Connection (จุดต่อจุดเฉพาะเจาะจง)"]
-        P1["Device A"] <===|"Dedicated Link (100% Capacity)"|===> P2["Device B"]
+        P1["Device A"] <==>|"Dedicated Link (100% Capacity)"| P2["Device B"]
     end
 
     subgraph MULTIPOINT ["Multipoint / Multi-drop Connection (จุดต่อหลายจุด ใช้งานร่วมกัน)"]
@@ -348,7 +348,7 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph CORE_LAYER ["1. Core Layer (แกนหลักความเร็วสูง)"]
-        CR1["⚡ Core Router / Switch A"] <===> CR2["⚡ Core Router / Switch B"]
+        CR1["⚡ Core Router / Switch A"] <==> CR2["⚡ Core Router / Switch B"]
     end
 
     subgraph DIST_LAYER ["2. Distribution Layer (ควบคุมนโยบายและเส้นทาง)"]

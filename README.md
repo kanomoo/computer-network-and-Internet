@@ -38,11 +38,15 @@ computer-network-&-Internet/
 ├── 📁 04_Quizzes_and_Exams/         # ข้อสอบและแบบทดสอบ
 │   └── 📁 Current_Year_Quizzes/             # แบบทดสอบปีปัจจุบัน (Quiz 2026, Exam Review, Screenshots)
 │
-├── 📁 05_Wiki/                      # คลังความรู้ Obsidian Vault (Markdown)
-│   ├── 📂 01_Lectures/                      # [ปีปัจจุบัน] สรุปเนื้อหาเจาะลึก Lecture 1 - 6 สมบูรณ์
-│   ├── 📂 02_Lab_Guides/                    # คู่มือ Interactive Lab & Packet Tracing
-│   ├── 📂 03_Exam_and_Calculations/         # แบบฝึกหัดคำนวณและ Master Question Bank
-│   ├── 📂 04_Indexes_and_Tracking/          # Master Index & Progress Checklist
+├── 📁 05_Wiki/                      # คลังความรู้ Obsidian Vault จัดระเบียบแยกตามบทเรียน
+│   ├── 📂 00_Master_Roadmap_and_Index/      # แผนที่นำทางการอ่านทั้งวิชา, Master Index, Checklist
+│   ├── 📂 Chapter_01_Fundamentals_and_Architecture/ # บทที่ 1 & 2: พื้นฐานเครือข่าย และโมเดล OSI/TCP-IP
+│   ├── 📂 Chapter_02_Application_Layer/     # บทที่ 2 (Kurose ch2): HTTP/1-3, DNS, Sockets, CDN
+│   ├── 📂 Chapter_03_Transport_Layer/       # บทที่ 3: TCP/UDP, Handshake, Checksum, Congestion Control
+│   ├── 📂 Chapter_04_Network_Data_Plane/    # บทที่ 4: Router, IPv4/v6, Subnetting FLSM/VLSM, NAT
+│   ├── 📂 Chapter_05_Network_Control_Plane/ # บทที่ 5: Routing Algorithms, Dijkstra, OSPF, BGP, SDN
+│   ├── 📂 Chapter_06_Link_Layer_and_Wireless/ # บทที่ 6 & 7: MAC, Switches, VLAN, WiFi 802.11, CRC
+│   ├── 📂 Comprehensive_Exam_and_Calculations/ # คลังข้อสอบ 80 ข้อ และคู่มือรวมวิธีคำนวณทุกบท
 │   ├── 📂 Archive_Old_Curriculum_Notes/     # [ปีเก่า] โน้ตความรู้ฉบับหลักสูตรปีก่อนหน้า (แยกเด็ดขาด)
 │   └── 📂 Assets/                           # รูปภาพและสื่อประกอบ
 │
@@ -55,11 +59,15 @@ computer-network-&-Internet/
 
 ## 🚀 สรุปเนื้อหาสำคัญในคลังความรู้ (`05_Wiki/`)
 
-| หมวดหมู่ | เอกสารสำคัญ | รายละเอียด |
+| โฟลเดอร์บทเรียน | เอกสารนำทางและเนื้อหาหลัก | รายละเอียดการศึกษา |
 | :--- | :--- | :--- |
-| **01_Lectures** | `Lecture 1 - 6` | สรุปเนื้อหาครบทุกบท พร้อม Mermaid Architecture, Sequence Diagram, Header Layout |
-| **02_Lab_Guides** | `Interactive Lab Guide` | แบบฝึกหัดเชิงปฏิบัติการ, คำสั่งเครือข่าย, Wireshark packet analysis |
-| **03_Exams** | `Calculations & Trace Workbook` | รวมโจทย์คำนวณ RTT, Subnetting, Dijkstra, Distance Vector, CRC |
-| **04_Indexes** | `Computer Network Master Index` | แผนผังเชื่อมโยงเนื้อหาทั้งหมด (Knowledge Graph) |
+| **00_Master_Roadmap** | `00_START_HERE_Reading_Roadmap.md` | แผนที่นำทางการอ่านทั้งวิชาทีละสเต็ป พร้อมเทคนิคเตรียมตัวสอบ |
+| **Chapter_01** | `00_Chapter_01_Reading_Guide.md` | ทฤษฎีพื้นฐาน, โมเดล OSI 7 ชั้น vs TCP/IP 5 ชั้น, Lab Guide ch1 & ch2 |
+| **Chapter_02** | `00_Chapter_02_Reading_Guide.md` | โพรโทคอล Application, HTTP/1-3, DNS, Sockets, Lab Guide ch3 |
+| **Chapter_03** | `00_Chapter_03_Reading_Guide.md` | Transport Layer, UDP Checksum, TCP Handshake & Flow/Congestion Control |
+| **Chapter_04** | `00_Chapter_04_Reading_Guide.md` | Network Data Plane, ถอดรหัส Video.md & เฉลยแบบฝึกหัด Subnetting Example.md |
+| **Chapter_05** | `00_Chapter_05_Reading_Guide.md` | Network Control Plane, Dijkstra Shortest Path, Distance Vector |
+| **Chapter_06** | `00_Chapter_06_Reading_Guide.md` | Link Layer, MAC, Switches, VLAN, WiFi 802.11, CRC Polynomial Division |
+| **Comprehensive_Exam** | `Exam Preparation Guide & Question Bank` | คลังข้อสอบ 80 ข้อเสมือนจริง และสมุดรวมวิธีทำโจทย์คำนวณ Workbook |
 
 ---

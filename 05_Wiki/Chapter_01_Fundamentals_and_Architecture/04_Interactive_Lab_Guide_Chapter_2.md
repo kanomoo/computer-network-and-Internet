@@ -84,7 +84,7 @@ flowchart TD
     end
 
     subgraph FLIGHT_PHYSICAL ["การเดินทางทางกายภาพ (Physical Transfer)"]
-        L1_D ===|"เส้นทางบินข้ามทวีป (Physical Air Route)"|===> L1_A
+        L1_D ==>|"เส้นทางบินข้ามทวีป (Physical Air Route)"| L1_A
     end
 
     subgraph FLIGHT_ARRIVAL ["ปลายทาง (Arrival Airport)"]
@@ -353,7 +353,7 @@ flowchart TD
         D4 -->|ส่งขึ้นชั้นบน| D5["Application Layer: ส่งมอบ User Data เข้าโปรเซสแอปพลิเคชัน"]
     end
 
-    E1 ===|"Transmission Medium"|===> D1
+    E1 ==>|"Transmission Medium"| D1
 
 ```
 

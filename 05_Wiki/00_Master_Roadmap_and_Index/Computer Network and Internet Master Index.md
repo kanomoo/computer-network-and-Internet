@@ -86,22 +86,36 @@ mindmap
 
 ## 📚 รายละเอียดชุดเอกสารใน Wiki (Complete Wiki Knowledge Base)
 
-### 🔹 1. หมวดบันทึกการสอนหลัก (Core Lecture Series):
-1. **[[Lecture 1 - Fundamental of Computer Network]]** — พื้นฐานการสื่อสาร, Topologies, สื่อสัญญาณ, Delays, Packet Switching, ประวัติอินเทอร์เน็ต
-2. **[[Lecture 2 - Network Models and Layered Architecture]]** — สถาปัตยกรรมแบบลำดับชั้น, OSI 7 Layer vs TCP/IP 5 Layer, PDU, Encapsulation Trace
-3. **[[Lecture 3 - Application Layer Protocols and Architectures]]** — สถาปัตยกรรม Application, HTTP/1.0-3, DNS, Email, Sockets, CDN, DASH
-4. **[[Lecture 4 - Transport Layer Protocols and Mechanics]]** — Mux/Demux, UDP Checksum, RDT 1.0-3.0, GBN/SR, TCP Handshake, Seq/ACK, Flow/Congestion Control
-5. **[[Lecture 5 - Network Layer, Routing, and IP Addressing]]** — Data/Control Plane, IPv4/v6 Header, Subnetting, VLSM Master Table, NAT, ICMP, Dijkstra, Bellman-Ford, OSPF, BGP, SDN
-6. **[[Lecture 6 - Link Layer, Local Area Networks, and Wireless]]** — Link Services, CRC Modulo-2, CSMA/CD, CSMA/CA, ARP, Ethernet Switches, VLAN 802.1Q, Wi-Fi 802.11, Bluetooth, Mobility
+### 🔹 ชุดเอกสารคลังความรู้แยกตามบทเรียน (Chapter-Based Structure):
 
-### 🔹 2. หมวดคู่มือบทเรียนโต้ตอบและแล็บปฏิบัติการ (Interactive Courseware & Lab Guides):
-1. **[[Interactive Lab Guide - Chapter 1 Network Fundamentals]]** — คู่มือถอดรหัส `New/ch1.html` ครบ 25 Sections (Messenger Trace, Topologies, 3-Tier Hierarchy, Scenario Labs, Quiz Bank)
-2. **[[Interactive Lab Guide - Chapter 2 Network Models & Layered Stack]]** — คู่มือถอดรหัส `New/ch2.html` ครบ 23 Sections (Flight Analogy, OSI Troubleshooting Matrix, Bit-by-bit Encapsulation, Quiz Bank)
-3. **[[Interactive Lab Guide - Chapter 3 Application Layer Protocols]]** — คู่มือถอดรหัส `New/ch3.html` ครบ 36 Sections (Socket API Lifecycle, DNS Recursive Trace, HTTP Evolution, DHCP DORA/Relay, FTP, Wireshark Lab, Quiz Bank)
-
-### 🔹 3. หมวดแบบฝึกหัดคำนวณและคลังข้อสอบ (Calculations & Exam Bank):
-1. **[[Calculations and Trace Workbook]]** — รวมสูตรวิธีคำนวณ Step-by-Step พร้อม Trace Table: Delays, Internet Checksum, TCP Byte Stream, Subnetting VLSM, Dijkstra Routing, CRC Modulo-2 Division
-2. **[[Exam Preparation Guide and Master 80-Question Bank]]** — คลังข้อสอบ 80 ข้อเสมือนจริง พร้อมเฉลย วิเคราะห์เหตุผล และคลังข้อสอบจริง Quiz 1–11, Post-Test, Chapter 3 Quiz
+1. **[[00_START_HERE_Reading_Roadmap]]** — แผนที่นำทางหลักทั้งวิชา ลำดับการอ่านทีละขั้นตอน และกลยุทธ์เตรียมสอบ
+2. **`Chapter_01_Fundamentals_and_Architecture/`**
+   - [[00_Chapter_01_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 1
+   - [[01_Lecture_01_Network_Fundamentals]] — พื้นฐานการสื่อสาร, Topologies, สื่อสัญญาณ, Delays, Packet Switching
+   - [[02_Lecture_02_Network_Models_and_Architecture]] — สถาปัตยกรรมแบบลำดับชั้น, OSI 7 Layer vs TCP/IP 5 Layer, PDU, Encapsulation Trace
+   - [[03_Interactive_Lab_Guide_Chapter_1]] — คู่มือถอดรหัสสื่อการสอนโต้ตอบ Chapter 1 (25 Sections)
+   - [[04_Interactive_Lab_Guide_Chapter_2]] — คู่มือถอดรหัสสื่อการสอนโต้ตอบ Chapter 2 (23 Sections)
+3. **`Chapter_02_Application_Layer/`**
+   - [[00_Chapter_02_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 2
+   - [[01_Lecture_03_Application_Layer_Protocols]] — สถาปัตยกรรม Application, HTTP/1.0-3, DNS, Email, Sockets, CDN
+   - [[02_Interactive_Lab_Guide_Chapter_3]] — คู่มือถอดรหัสสื่อการสอนโต้ตอบ Chapter 3 (36 Sections) & Wireshark Lab
+4. **`Chapter_03_Transport_Layer/`**
+   - [[00_Chapter_03_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 3
+   - [[01_Lecture_04_Transport_Layer_Protocols_and_Mechanics]] — Mux/Demux, UDP Checksum, RDT 1.0-3.0, GBN/SR, TCP Handshake, Seq/ACK, Flow & Congestion Control
+5. **`Chapter_04_Network_Data_Plane/`**
+   - [[00_Chapter_04_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 4
+   - [[01_Lecture_05_Chapter_4_Network_Data_Plane_v9]] — Router Architecture, Switching Fabric, Buffer Sizing, IPv4 Header, DHCP, NAT, IPv6
+   - [[02_Subnetting_and_FLSM_Master_Guide_Video_and_Example]] — ถอดรหัส Video.md (FLSM Class C & B), เทคนิค Magic Number, และเฉลยละเอียด Quiz 1 & 2 จาก Example.md
+6. **`Chapter_05_Network_Control_Plane/`**
+   - [[00_Chapter_05_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 5
+7. **`Chapter_06_Link_Layer_and_Wireless/`**
+   - [[00_Chapter_06_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 6
+   - [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] — Link Services, CRC Modulo-2, CSMA/CD, CSMA/CA, ARP, Switches, VLAN, WiFi 802.11
+8. **`Comprehensive_Exam_and_Calculations/`**
+   - [[00_Exam_and_Calculations_Guide]] — สรุปแนวทางการฝึกคำนวณและข้อสอบ
+   - [[Calculations and Trace Workbook]] — รวมสูตรวิธีคำนวณ Step-by-Step พร้อม Trace Table ครบทุกบท
+   - [[Exam Preparation Guide and Master 80-Question Bank]] — คลังข้อสอบ 80 ข้อเสมือนจริง พร้อมเฉลยละเอียด
+   - [[Master Exam Review - Chapters 1 to 4]] — สรุปย่อ 4 บทแรกก่อนเข้าห้องสอบ
 
 ---
 

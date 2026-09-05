@@ -139,7 +139,7 @@ flowchart LR
     end
 
     subgraph TRANSPORT_NET ["Transport Layer & Internet Infrastructure"]
-        CSOCK <===|"TCP / UDP Logical Connection"|===> SSOCK
+        CSOCK <==>|"TCP / UDP Logical Connection"| SSOCK
     end
 
     subgraph SERVER_HOST ["Server Host (IP: 93.184.216.34)"]
@@ -493,8 +493,8 @@ flowchart TD
         CLIENT["💻 FTP Client"]
         SERVER["🗄️ FTP Server"]
 
-        CLIENT <===|"1. Control Connection (TCP Port 21)<br/>[คำสั่ง: USER, PASS, CWD, LIST, RETR, QUIT]"|===> SERVER
-        CLIENT <===|"2. Data Connection (TCP Port 20 หรือ Dynamic Port)<br/>[ส่งผ่านไบต์ข้อมูลไฟล์ดิบ]"|===> SERVER
+        CLIENT <==>|"1. Control Connection (TCP Port 21)<br/>[คำสั่ง: USER, PASS, CWD, LIST, RETR, QUIT]"| SERVER
+        CLIENT <==>|"2. Data Connection (TCP Port 20 หรือ Dynamic Port)<br/>[ส่งผ่านไบต์ข้อมูลไฟล์ดิบ]"| SERVER
     end
 
 ```

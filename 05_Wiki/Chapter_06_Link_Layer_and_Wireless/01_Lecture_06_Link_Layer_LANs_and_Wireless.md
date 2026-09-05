@@ -43,7 +43,7 @@ Data Link Layer รับผิดชอบการส่งถ่ายเฟ�
 ```mermaid
 flowchart LR
     HOST_A["💻 Sending Host<br/>[IP Datagram]"] --> NIC_A["🎴 Network Adapter (NIC)<br/>[Encapsulates into Frame]"]
-    NIC_A ===|"Physical Link (Cable / Air)"|===> NIC_B["🎴 Receiving NIC<br/>[Checks CRC & Extracts]"]
+    NIC_A ==>|"Physical Link (Cable / Air)"| NIC_B["🎴 Receiving NIC<br/>[Checks CRC & Extracts]"]
     NIC_B --> HOST_B["💻 Receiving Host<br/>[Delivers IP Datagram]"]
 
 ```
@@ -357,7 +357,7 @@ flowchart TD
         end
     end
 
-    TRUNK["Trunk Port (802.1Q Tagged Link)"] <===> ROUTER_STICK["🛡️ Router-on-a-Stick / L3 Switch<br/>(Inter-VLAN Routing)"]
+    TRUNK["Trunk Port (802.1Q Tagged Link)"] <==> ROUTER_STICK["🛡️ Router-on-a-Stick / L3 Switch<br/>(Inter-VLAN Routing)"]
     PHYSICAL_SWITCH === TRUNK
 
 ```
@@ -489,24 +489,24 @@ sequenceDiagram
 ```mermaid
 flowchart TD
     subgraph PICONET_1 ["Piconet 1"]
-        M1["👑 Master Node"]
+        M1["👑 Master Node 1"]
         S1["Slave 1"]
         S2["Slave 2"]
-        S3["Slave 3 (Bridge Node)"]
+    end
 
-        M1 <--> S1 & S2 & S3
+    subgraph SCATTERNET ["Scatternet Interconnection"]
+        S3["🌉 Slave 3 / Bridge Node<br/>(Belongs to both Piconets)"]
     end
 
     subgraph PICONET_2 ["Piconet 2"]
         M2["👑 Master Node 2"]
         S4["Slave 4"]
-
-        M2 <--> S4 & S3
     end
 
-    subgraph SCATTERNET ["Scatternet (โครงข่าย Piconet เชื่อมต่อกันผ่าน Bridge)"]
-        PICONET_1 <===> PICONET_2
-    end
+    M1 <--> S1 & S2
+    M1 <-->|"Piconet 1 Link"| S3
+    M2 <--> S4
+    M2 <-->|"Piconet 2 Link"| S3
 
 ```
 
@@ -530,10 +530,10 @@ flowchart TD
             SMF["🧭 SMF (Session Management)"]
         end
 
-        GNB <===|"N3 Interface (GTP Tunnel)"|===> UPF
+        GNB <==>|"N3 Interface (GTP Tunnel)"| UPF
         GNB --- AMF
         AMF --- SMF
-        UPF <===> INTERNET["🌐 Global Internet / Data Network"]
+        UPF <==> INTERNET["🌐 Global Internet / Data Network"]
     end
 
 ```

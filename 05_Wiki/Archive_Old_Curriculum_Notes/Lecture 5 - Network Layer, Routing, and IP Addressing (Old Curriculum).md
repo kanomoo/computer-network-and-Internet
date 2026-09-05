@@ -499,7 +499,7 @@ $$\mathbf{d_x(y) = \min_v \{ c(x,v) + d_v(y) \}}$$
 flowchart TD
     subgraph HIERARCHICAL_OSPF ["Hierarchical OSPF Autonomous System"]
         subgraph BACKBONE_AREA ["Backbone Area 0"]
-            CR1["Core Router 1"] <===> CR2["Core Router 2"]
+            CR1["Core Router 1"] <==> CR2["Core Router 2"]
         end
 
         subgraph AREA_1 ["Area 1 (Engineering)"]
@@ -550,8 +550,8 @@ flowchart LR
         R3A["Gateway 3A"]
     end
 
-    R1B <===|"eBGP Session"|===> R2A
-    R2B <===|"eBGP Session"|===> R3A
+    R1B <==>|"eBGP Session"| R2A
+    R2B <==>|"eBGP Session"| R3A
 
 ```
 
@@ -592,7 +592,7 @@ flowchart TD
     end
 
     APP1 & APP2 & APP3 --> N_API
-    S_API <===|"OpenFlow Protocol (TCP/TLS 6653)"|===> SW1 & SW2 & SW3
+    S_API <==>|"OpenFlow Protocol (TCP/TLS 6653)"| SW1 & SW2 & SW3
 
 ```
 

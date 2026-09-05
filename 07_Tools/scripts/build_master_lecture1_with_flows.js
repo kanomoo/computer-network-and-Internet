@@ -338,8 +338,8 @@ flowchart TD
 
   42: `\`\`\`mermaid
 flowchart LR
-    T1A["Tier-1 ISP A"] <===|"Peering"|===> T1B["Tier-1 ISP B"]
-    R1["Regional ISP 1"] & R2["Regional ISP 2"] <===> IXP["🏢 Internet Exchange Point (IXP)"]
+    T1A["Tier-1 ISP A"] <==>|"Peering"| T1B["Tier-1 ISP B"]
+    R1["Regional ISP 1"] & R2["Regional ISP 2"] <==> IXP["🏢 Internet Exchange Point (IXP)"]
 \`\`\``,
 
   43: `\`\`\`mermaid

@@ -1,7 +1,10 @@
 # เฉลยแบบฝึกหัด Chapter 04: Example.md (อย่างละเอียด)
 
-> โน้ตฉบับเต็มพร้อมทฤษฎีและคำอธิบายจาก Video.md สามารถเปิดดูได้ที่:
-> 🔗 [Subnetting and FLSM Master Guide](file:///c:/Project/computer-network-&-Internet/05_Wiki/Chapter_04_Network_Data_Plane/02_Subnetting_and_FLSM_Master_Guide_Video_and_Example.md)
+> [!TIP] **เอกสารทางการและไฟล์แบบฝึกหัด (Word / Excel / Printable PDF Worksheet)**
+> - 📄 **HTML Printable Worksheet (พิมพ์เป็น PDF ได้ทันทีด้วยปุ่ม Print):** [Subnetting_Worksheet_Chapter04.html](file:///c:/Project/computer-network-&-Internet/02_Slides/Chapter_04_Network_Data_Plane/Current_Year_Course_v9.0/Subnetting_Worksheet_Chapter04.html) หรือ [ในโฟลเดอร์การบ้าน](file:///c:/Project/computer-network-&-Internet/03_Homework/Current_Year_Assignments/Subnetting_Worksheet_Chapter04.html)
+> - 📊 **Microsoft Excel Workbook (.xls):** [Subnetting_Solutions_Quiz1_Quiz2.xls](file:///c:/Project/computer-network-&-Internet/02_Slides/Chapter_04_Network_Data_Plane/Current_Year_Course_v9.0/Subnetting_Solutions_Quiz1_Quiz2.xls)
+> - 📝 **Microsoft Word Document (.doc):** [Subnetting_Solutions_Quiz1_Quiz2.doc](file:///c:/Project/computer-network-&-Internet/02_Slides/Chapter_04_Network_Data_Plane/Current_Year_Course_v9.0/Subnetting_Solutions_Quiz1_Quiz2.doc)
+> - 🔗 **โน้ตวิกิฉบับเต็มพร้อมทฤษฎีและคำอธิบายจาก Video.md:** [[02_Subnetting_and_FLSM_Master_Guide_Video_and_Example]]
 
 ---
 

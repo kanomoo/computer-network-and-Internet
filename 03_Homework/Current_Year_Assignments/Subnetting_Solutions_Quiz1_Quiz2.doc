@@ -1,0 +1,98 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>รายงานเฉลยแบบฝึกหัด Subnetting Chapter 04</title>
+<!--[if gte mso 9]>
+<xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+@page { size: A4; margin: 20mm 20mm 20mm 20mm; }
+body { font-family: 'TH Sarabun New', Tahoma, sans-serif; font-size: 16pt; line-height: 1.35; color: #111827; }
+h1 { font-size: 22pt; color: #1E3A8A; text-align: center; margin-bottom: 4pt; font-weight: bold; }
+h2 { font-size: 18pt; color: #1E40AF; border-bottom: 2pt solid #DBEAFE; padding-bottom: 4pt; margin-top: 18pt; margin-bottom: 8pt; }
+h3 { font-size: 16pt; color: #1E3A8A; margin-top: 12pt; margin-bottom: 4pt; }
+.header-card { border: 1.5pt solid #93C5FD; background-color: #EFF6FF; padding: 10pt 14pt; border-radius: 6pt; margin-bottom: 14pt; }
+table.styled-table { width: 100%; border-collapse: collapse; margin-top: 8pt; margin-bottom: 14pt; font-size: 14pt; }
+table.styled-table th { background-color: #1E3A8A; color: #FFFFFF; font-weight: bold; text-align: center; padding: 6pt 4pt; border: 1pt solid #1E3A8A; }
+table.styled-table td { padding: 5pt 4pt; border: 1pt solid #CBD5E1; text-align: center; }
+table.styled-table tr:nth-child(even) { background-color: #F8FAFC; }
+.badge-blue { background-color: #DBEAFE; color: #1E40AF; padding: 2pt 6pt; font-weight: bold; }
+.callout-analysis { border-left: 4pt solid #10B981; background-color: #F0FDF4; padding: 8pt 12pt; margin: 10pt 0; }
+.page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+<div class="header-card">
+  <h1>รายงานเฉลยแบบฝึกหัด: Subnetting &amp; CIDR (Chapter 04)</h1>
+  <p style="text-align:center; color:#4B5563; margin-bottom: 8pt;">วิชา Computer Networks and Internet Architecture</p>
+</div>
+
+<h2>Quiz 1: CIDR &amp; Subnet Addressing</h2>
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>ข้อ</th><th>โจทย์ที่กำหนด</th><th>Subnet Mask / Prefix</th><th>Network ID</th><th>First IP Addr.</th><th>Last IP Addr.</th><th>Broadcast IP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td style="text-align:left;">192.168.15.72</td><td>255.255.255.128 (/25)</td><td><strong>192.168.15.0</strong></td><td>192.168.15.1</td><td>192.168.15.126</td><td>192.168.15.127</td></tr>
+    <tr><td>2</td><td style="text-align:left;">172.16.20.35</td><td>255.255.255.224 (/27)</td><td><strong>172.16.20.32</strong></td><td>172.16.20.33</td><td>172.16.20.62</td><td>172.16.20.63</td></tr>
+    <tr><td>3</td><td style="text-align:left;">10.0.50.200</td><td>255.255.254.0 (/23)</td><td><strong>10.0.50.0</strong></td><td>10.0.50.1</td><td>10.0.51.254</td><td>10.0.51.255</td></tr>
+    <tr><td>4</td><td style="text-align:left;">10.0.0.0/16</td><td>255.255.0.0 (/16)</td><td><strong>10.0.0.0</strong></td><td>10.0.0.1</td><td>10.0.255.254</td><td>10.0.255.255</td></tr>
+    <tr><td>5</td><td style="text-align:left;">172.16.0.0/20</td><td>255.255.240.0 (/20)</td><td><strong>172.16.0.0</strong></td><td>172.16.0.1</td><td>172.16.15.254</td><td>172.16.15.255</td></tr>
+    <tr><td>6</td><td style="text-align:left;">192.168.5.10/23</td><td>255.255.254.0 (/23)</td><td><strong>192.168.4.0</strong></td><td>192.168.4.1</td><td>192.168.5.254</td><td>192.168.5.255</td></tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>Quiz 2: Subnetting Calculation</h2>
+<h3>ข้อ 1: 10.0.0.0/8 แบ่ง 8 แผนก</h3>
+<p><strong>Prefix:</strong> /11 | <strong>Subnet Mask:</strong> 255.224.0.0 | <strong>Hosts/Subnet:</strong> 2,097,150 เครื่อง</p>
+<table class="styled-table">
+  <thead><tr><th>Subnet</th><th>Network Address</th><th>First Host Address</th><th>Last Host Address</th><th>Broadcast Address</th><th>/</th><th>Numbers of Host</th></tr></thead>
+  <tbody>
+    <tr><td>แผนก 1</td><td>10.0.0.0</td><td>10.0.0.1</td><td>10.31.255.254</td><td>10.31.255.255</td><td>/11</td><td>2,097,150</td></tr>
+    <tr><td>แผนก 2</td><td>10.32.0.0</td><td>10.32.0.1</td><td>10.63.255.254</td><td>10.63.255.255</td><td>/11</td><td>2,097,150</td></tr>
+    <tr><td>แผนก 3</td><td>10.64.0.0</td><td>10.64.0.1</td><td>10.95.255.254</td><td>10.95.255.255</td><td>/11</td><td>2,097,150</td></tr>
+    <tr><td>แผนก 4</td><td>10.96.0.0</td><td>10.96.0.1</td><td>10.127.255.254</td><td>10.127.255.255</td><td>/11</td><td>2,097,150</td></tr>
+    <tr><td>แผนก 5</td><td>10.128.0.0</td><td>10.128.0.1</td><td>10.159.255.254</td><td>10.159.255.255</td><td>/11</td><td>2,097,150</td></tr>
+    <tr><td>แผนก 6</td><td>10.160.0.0</td><td>10.160.0.1</td><td>10.191.255.254</td><td>10.191.255.255</td><td>/11</td><td>2,097,150</td></tr>
+    <tr><td>แผนก 7</td><td>10.192.0.0</td><td>10.192.0.1</td><td>10.223.255.254</td><td>10.223.255.255</td><td>/11</td><td>2,097,150</td></tr>
+    <tr><td>แผนก 8</td><td>10.224.0.0</td><td>10.224.0.1</td><td>10.255.255.254</td><td>10.255.255.255</td><td>/11</td><td>2,097,150</td></tr>
+  </tbody>
+</table>
+
+<h3>ข้อ 2: 10.0.0.0/8 แบ่ง 1,000 เครื่องต่อ Subnet</h3>
+<p><strong>Prefix:</strong> /22 | <strong>Subnet Mask:</strong> 255.255.252.0 | <strong>Hosts/Subnet:</strong> 1,022 เครื่อง | <strong>จำนวน Subnets:</strong> 16,384 Subnets</p>
+<table class="styled-table">
+  <thead><tr><th>Subnet</th><th>Network Address</th><th>First Host Address</th><th>Last Host Address</th><th>Broadcast Address</th><th>/</th><th>Numbers of Host</th></tr></thead>
+  <tbody>
+    <tr><td>Subnet 1</td><td>10.0.0.0</td><td>10.0.0.1</td><td>10.0.3.254</td><td>10.0.3.255</td><td>/22</td><td>1,022</td></tr>
+    <tr><td>Subnet 2</td><td>10.0.4.0</td><td>10.0.4.1</td><td>10.0.7.254</td><td>10.0.7.255</td><td>/22</td><td>1,022</td></tr>
+    <tr><td>Subnet 3</td><td>10.0.8.0</td><td>10.0.8.1</td><td>10.0.11.254</td><td>10.0.11.255</td><td>/22</td><td>1,022</td></tr>
+    <tr><td>Subnet 4</td><td>10.0.12.0</td><td>10.0.12.1</td><td>10.0.15.254</td><td>10.0.15.255</td><td>/22</td><td>1,022</td></tr>
+  </tbody>
+</table>
+
+<h3>ข้อ 3: การแบ่ง 4 Subnets และบทวิเคราะห์ความเหมาะสม</h3>
+<p><strong>Class A (10.0.0.0/8):</strong> Prefix /10, Mask 255.192.0.0, Hosts: 4,194,302 เครื่อง/Subnet</p>
+<p><strong>Class B (172.16.0.0/12):</strong> Prefix /14, Mask 255.252.0.0, Hosts: 262,142 เครื่อง/Subnet</p>
+<p><strong>Class C (192.168.0.0/16):</strong> Prefix /18, Mask 255.255.192.0, Hosts: 16,382 เครื่อง/Subnet (เหมาะสมที่สุด ⭐)</p>
+
+<div class="callout-analysis">
+  <h4 style="color:#065F46; margin:0 0 6pt 0;">บทวิเคราะห์: ทำไม Class C จึงเหมาะสมที่สุด?</h4>
+  <p>1. <strong>ป้องกัน Broadcast Storm:</strong> หากใช้ Class A หรือ B จะมีขนาดของ Broadcast Domain ที่ใหญ่เกินไป (นับแสนถึงนับล้านเครื่อง) ก่อให้เกิด Broadcast Storm ทำให้เครือข่ายหยุดชะงัก<br>
+  2. <strong>ลดการสูญเสีย IP Address ว่างเปล่า:</strong> การใช้ Class C จัดสรรไอพีได้สมเหตุสมผล ไม่สูญเสียพื้นที่ไอพีโดยเปล่าประโยชน์นับล้านหมายเลข<br>
+  3. <strong>การจัดการมาตรฐานสากล:</strong> เป็นช่วง Private IP ยอดนิยมที่อุปกรณ์สวิตช์และไฟร์วอลล์จัดการ VLAN และ Routing ได้อย่างคล่องตัวที่สุด</p>
+</div>
+</body>
+</html>

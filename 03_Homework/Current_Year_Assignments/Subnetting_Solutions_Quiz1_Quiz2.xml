@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Title>เฉลยและใบงานคำนวณ Subnetting Chapter 04</Title>
+  <Subject>Computer Networks and Internet Architecture</Subject>
+  <Author>Academic Assistant</Author>
+ </DocumentProperties>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Center"/>
+   <Borders/>
+   <Font ss:FontName="TH Sarabun New" x:CharSet="222" ss:Size="14" ss:Color="#000000"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="HeaderTitle">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Font ss:FontName="TH Sarabun New" x:CharSet="222" ss:Size="18" ss:Bold="1" ss:Color="#1E3A8A"/>
+  </Style>
+  <Style ss:ID="SubTitle">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Font ss:FontName="TH Sarabun New" x:CharSet="222" ss:Size="14" ss:Italic="1" ss:Color="#4B5563"/>
+  </Style>
+  <Style ss:ID="TableHeader">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#1E3A8A"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#1E3A8A"/>
+   </Borders>
+   <Font ss:FontName="TH Sarabun New" x:CharSet="222" ss:Size="14" ss:Bold="1" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#1E3A8A" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="TableCellCenter">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+   </Borders>
+   <Font ss:FontName="TH Sarabun New" x:CharSet="222" ss:Size="14"/>
+  </Style>
+  <Style ss:ID="TableCellCenterBold">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+   </Borders>
+   <Font ss:FontName="TH Sarabun New" x:CharSet="222" ss:Size="14" ss:Bold="1" ss:Color="#0F172A"/>
+  </Style>
+  <Style ss:ID="TableCellLeft">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+   </Borders>
+   <Font ss:FontName="TH Sarabun New" x:CharSet="222" ss:Size="14"/>
+  </Style>
+  <Style ss:ID="InfoBox">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Center" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#93C5FD"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="4" ss:Color="#2563EB"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#93C5FD"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#93C5FD"/>
+   </Borders>
+   <Font ss:FontName="TH Sarabun New" x:CharSet="222" ss:Size="13" ss:Color="#1E3A8A"/>
+   <Interior ss:Color="#EFF6FF" ss:Pattern="Solid"/>
+  </Style>
+ </Styles>
+
+ <!-- SHEET 1: MASTER SUMMARY -->
+ <Worksheet ss:Name="Master_Summary">
+  <Table ss:ExpandedColumnCount="8" ss:DefaultRowHeight="24">
+   <Column ss:Width="50"/>
+   <Column ss:Width="160"/>
+   <Column ss:Width="140"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="110"/>
+   <Column ss:Width="120"/>
+   
+   <Row ss:Height="32">
+    <Cell ss:MergeAcross="7" ss:StyleID="HeaderTitle"><Data ss:Type="String">ตารางสรุปผลการคำนวณ Subnetting: Quiz 1 และ Quiz 2</Data></Cell>
+   </Row>
+   <Row ss:Height="22">
+    <Cell ss:MergeAcross="7" ss:StyleID="SubTitle"><Data ss:Type="String">วิชา Computer Network and Internet — Chapter 04 Network Data Plane</Data></Cell>
+   </Row>
+   <Row ss:Height="15"/>
+
+   <Row ss:Height="26">
+    <Cell ss:MergeAcross="7" ss:StyleID="InfoBox"><Data ss:Type="String">หมวดที่ 1: เฉลยแบบฝึกหัด Quiz 1 — CIDR &amp; Subnet Addressing</Data></Cell>
+   </Row>
+   <Row ss:Height="28">
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">ข้อ</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">โจทย์ที่กำหนด</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Subnet Mask</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Prefix</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Network ID</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">First Usable IP</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Last Usable IP</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Broadcast IP</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="TableCellLeft"><Data ss:Type="String">192.168.15.72</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.255.255.128</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/25</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">192.168.15.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.15.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.15.126</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.15.127</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="Number">2</Data></Cell>
+    <Cell ss:StyleID="TableCellLeft"><Data ss:Type="String">172.16.20.35</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.255.255.224</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/27</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">172.16.20.32</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.16.20.33</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.16.20.62</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.16.20.63</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="Number">3</Data></Cell>
+    <Cell ss:StyleID="TableCellLeft"><Data ss:Type="String">10.0.50.200</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.255.254.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/23</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">10.0.50.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.50.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.51.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.51.255</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="Number">4</Data></Cell>
+    <Cell ss:StyleID="TableCellLeft"><Data ss:Type="String">10.0.0.0/16</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.255.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/16</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">10.0.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.255.255</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="Number">5</Data></Cell>
+    <Cell ss:StyleID="TableCellLeft"><Data ss:Type="String">172.16.0.0/20</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.255.240.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/20</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">172.16.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.16.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.16.15.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.16.15.255</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="Number">6</Data></Cell>
+    <Cell ss:StyleID="TableCellLeft"><Data ss:Type="String">192.168.5.10/23</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.255.254.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/23</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">192.168.4.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.4.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.5.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.5.255</Data></Cell>
+   </Row>
+
+   <Row ss:Height="20"/>
+   <Row ss:Height="26">
+    <Cell ss:MergeAcross="7" ss:StyleID="InfoBox"><Data ss:Type="String">หมวดที่ 2: สรุปผล Quiz 2 — Subnetting Calculation</Data></Cell>
+   </Row>
+   <Row ss:Height="28">
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">ข้อที่</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableHeader"><Data ss:Type="String">โจทย์ที่กำหนด</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Prefix (/n)</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Subnet Mask</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">จำนวน Subnets</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableHeader"><Data ss:Type="String">จำนวน Hosts ใช้งานได้/Subnet</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">ข้อ 1</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellLeft"><Data ss:Type="String">10.0.0.0/8 แบ่ง 8 แผนก</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.224.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">8 Subnets</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenterBold"><Data ss:Type="String">2,097,150 เครื่อง</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">ข้อ 2</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellLeft"><Data ss:Type="String">10.0.0.0/8 แบ่ง 1,000 เครื่อง/Subnet</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">/22</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.255.252.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">16,384 Subnets</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenterBold"><Data ss:Type="String">1,022 เครื่อง (แสดง 4 ซับเน็ตแรก)</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">ข้อ 3.1</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellLeft"><Data ss:Type="String">Class A: 10.0.0.0/8 แบ่ง 4 Subnets</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">/10</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.192.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">4 Subnets</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenterBold"><Data ss:Type="String">4,194,302 เครื่อง</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">ข้อ 3.2</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellLeft"><Data ss:Type="String">Class B: 172.16.0.0/12 แบ่ง 4 Subnets</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">/14</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.252.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">4 Subnets</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenterBold"><Data ss:Type="String">262,142 เครื่อง</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">ข้อ 3.3</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellLeft"><Data ss:Type="String">Class C: 192.168.0.0/16 แบ่ง 4 Subnets</Data></Cell>
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">/18</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">255.255.192.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">4 Subnets</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenterBold"><Data ss:Type="String">16,382 เครื่อง (เหมาะสมที่สุด)</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+
+ <!-- SHEET 2: QUIZ 2 Q1 -->
+ <Worksheet ss:Name="Quiz2_Q1_8Depts">
+  <Table ss:ExpandedColumnCount="7" ss:DefaultRowHeight="24">
+   <Column ss:Width="70"/>
+   <Column ss:Width="140"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="60"/>
+   <Column ss:Width="120"/>
+
+   <Row ss:Height="30">
+    <Cell ss:MergeAcross="6" ss:StyleID="HeaderTitle"><Data ss:Type="String">Quiz 2 ข้อ 1: บริษัทได้รับ 10.0.0.0/8 แบ่ง 8 แผนก</Data></Cell>
+   </Row>
+   <Row ss:Height="22">
+    <Cell ss:MergeAcross="6" ss:StyleID="SubTitle"><Data ss:Type="String">Prefix: /11 | Subnet Mask: 255.224.0.0 | Hosts/Subnet: 2,097,150 | Magic Number: 32 (Octet 2)</Data></Cell>
+   </Row>
+   <Row ss:Height="15"/>
+
+   <Row ss:Height="28">
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Subnet</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Network Address</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">First Host Address</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Last Host Address</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Broadcast Address</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">/</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Numbers of Host</Data></Cell>
+   </Row>
+   
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">แผนก 1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.31.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.31.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">2,097,150</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">แผนก 2</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.32.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.32.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.63.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.63.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">2,097,150</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">แผนก 3</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.64.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.64.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.95.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.95.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">2,097,150</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">แผนก 4</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.96.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.96.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.127.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.127.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">2,097,150</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">แผนก 5</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.128.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.128.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.159.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.159.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">2,097,150</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">แผนก 6</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.160.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.160.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.191.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.191.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">2,097,150</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">แผนก 7</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.192.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.192.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.223.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.223.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">2,097,150</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">แผนก 8</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.224.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.224.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.255.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.255.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/11</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">2,097,150</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+
+ <!-- SHEET 3: QUIZ 2 Q2 -->
+ <Worksheet ss:Name="Quiz2_Q2_1000Hosts">
+  <Table ss:ExpandedColumnCount="7" ss:DefaultRowHeight="24">
+   <Column ss:Width="70"/>
+   <Column ss:Width="140"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="60"/>
+   <Column ss:Width="120"/>
+
+   <Row ss:Height="30">
+    <Cell ss:MergeAcross="6" ss:StyleID="HeaderTitle"><Data ss:Type="String">Quiz 2 ข้อ 2: บริษัทได้รับ 10.0.0.0/8 แบ่ง 1,000 เครื่องต่อ Subnet</Data></Cell>
+   </Row>
+   <Row ss:Height="22">
+    <Cell ss:MergeAcross="6" ss:StyleID="SubTitle"><Data ss:Type="String">Prefix: /22 | Subnet Mask: 255.255.252.0 | จำนวน 16,384 Subnets (แสดง 4 Subnets แรก)</Data></Cell>
+   </Row>
+   <Row ss:Height="15"/>
+
+   <Row ss:Height="28">
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Subnet</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Network Address</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">First Host Address</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Last Host Address</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Broadcast Address</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">/</Data></Cell>
+    <Cell ss:StyleID="TableHeader"><Data ss:Type="String">Numbers of Host</Data></Cell>
+   </Row>
+   
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">Subnet 1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.3.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.3.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/22</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">1,022</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">Subnet 2</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.4.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.4.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.7.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.7.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/22</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">1,022</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">Subnet 3</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.8.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.8.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.11.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.11.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/22</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">1,022</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">Subnet 4</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.12.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.12.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.15.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.15.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/22</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">1,022</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+
+ <!-- SHEET 4: QUIZ 2 Q3 -->
+ <Worksheet ss:Name="Quiz2_Q3_Compare">
+  <Table ss:ExpandedColumnCount="8" ss:DefaultRowHeight="24">
+   <Column ss:Width="60"/>
+   <Column ss:Width="160"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="130"/>
+   <Column ss:Width="60"/>
+   <Column ss:Width="120"/>
+
+   <Row ss:Height="30">
+    <Cell ss:MergeAcross="7" ss:StyleID="HeaderTitle"><Data ss:Type="String">Quiz 2 ข้อ 3: การแบ่ง 4 Subnets ด้วย Class A, B, C และบทวิเคราะห์</Data></Cell>
+   </Row>
+   <Row ss:Height="15"/>
+
+   <Row ss:Height="26">
+    <Cell ss:MergeAcross="7" ss:StyleID="InfoBox"><Data ss:Type="String">Class A: 10.0.0.0/8 -> /10 (255.192.0.0) | Hosts/Subnet: 4,194,302 เครื่อง</Data></Cell>
+   </Row>
+   
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.0.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.63.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.63.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/10</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">4,194,302</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">2</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.64.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.64.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.127.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.127.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/10</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">4,194,302</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">3</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.128.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.128.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.191.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.191.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/10</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">4,194,302</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">4</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.192.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.192.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.255.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">10.255.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/10</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">4,194,302</Data></Cell>
+   </Row>
+
+   <Row ss:Height="15"/>
+   <Row ss:Height="26">
+    <Cell ss:MergeAcross="7" ss:StyleID="InfoBox"><Data ss:Type="String">Class B: 172.16.0.0/12 -> /14 (255.252.0.0) | Hosts/Subnet: 262,142 เครื่อง</Data></Cell>
+   </Row>
+   
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.16.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.16.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.19.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.19.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/14</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">262,142</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">2</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.20.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.20.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.23.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.23.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/14</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">262,142</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">3</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.24.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.24.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.27.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.27.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/14</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">262,142</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">4</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.28.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.28.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.31.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">172.31.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/14</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">262,142</Data></Cell>
+   </Row>
+
+   <Row ss:Height="15"/>
+   <Row ss:Height="26">
+    <Cell ss:MergeAcross="7" ss:StyleID="InfoBox"><Data ss:Type="String">Class C: 192.168.0.0/16 -> /18 (255.255.192.0) | Hosts/Subnet: 16,382 เครื่อง (เหมาะสมที่สุด)</Data></Cell>
+   </Row>
+   
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.0.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.0.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.63.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.63.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/18</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">16,382</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">2</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.64.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.64.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.127.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.127.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/18</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">16,382</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">3</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.128.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.128.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.191.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.191.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/18</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">16,382</Data></Cell>
+   </Row>
+   <Row ss:Height="24">
+    <Cell ss:StyleID="TableCellCenterBold"><Data ss:Type="String">4</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.192.0</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.192.1</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.255.254</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">192.168.255.255</Data></Cell>
+    <Cell ss:StyleID="TableCellCenter"><Data ss:Type="String">/18</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="TableCellCenter"><Data ss:Type="String">16,382</Data></Cell>
+   </Row>
+
+   <Row ss:Height="20"/>
+   <Row ss:Height="26">
+    <Cell ss:MergeAcross="7" ss:StyleID="InfoBox"><Data ss:Type="String">บทวิเคราะห์: Class C เหมาะสมที่สุดเพราะ: 1) ป้องกัน Broadcast Storm 2) ไม่สูญเสีย IP ว่างเปล่านับล้าน 3) ง่ายต่อการจัด VLAN และ Security</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+</Workbook>

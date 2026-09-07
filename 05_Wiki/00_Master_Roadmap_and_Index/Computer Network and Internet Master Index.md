@@ -108,6 +108,7 @@ mindmap
    - [[02_Subnetting_and_FLSM_Master_Guide_Video_and_Example]] — ถอดรหัส Video.md (FLSM Class C & B), เทคนิค Magic Number, และเฉลยละเอียด Quiz 1 & 2 จาก Example.md
 6. **`Chapter_05_Network_Control_Plane/`**
    - [[00_Chapter_05_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 5
+   - [[01_Lecture_06_Chapter_5_Network_Control_Plane_v9]] — Control Plane Architectures, Dijkstra LS, Bellman-Ford DV, OSPF, BGP, SDN OpenFlow, ICMP, SNMP, NETCONF/YANG
 7. **`Chapter_06_Link_Layer_and_Wireless/`**
    - [[00_Chapter_06_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 6
    - [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] — Link Services, CRC Modulo-2, CSMA/CD, CSMA/CA, ARP, Switches, VLAN, WiFi 802.11

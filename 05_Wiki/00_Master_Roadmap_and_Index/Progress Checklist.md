@@ -23,7 +23,8 @@ type: checklist
 - [x] **[[Lecture 2 - Network Models and Layered Architecture]]** — สถาปัตยกรรมแบบลำดับชั้น, OSI 7 Layers vs TCP/IP 5 Layers, PDU, Encapsulation, Header และ Trace www.google.com
 - [x] **[[Lecture 3 - Application Layer Protocols and Architectures]]** — สถาปัตยกรรม Application, Sockets, HTTP/1.0, HTTP/1.1, HTTP/2, HTTP/3, HTTPS, DNS, Email (SMTP/IMAP/POP3), CDN, Video Streaming DASH, Socket Programming Python (สไลด์ 1–119)
 - [x] **[[Lecture 4 - Transport Layer Protocols and Mechanics]]** — บริการ Transport Layer, Mux/Demux (2-tuple vs 4-tuple), UDP Header & Checksum, Principles of RDT (rdt 1.0 - 3.0), GBN vs SR, โครงสร้าง TCP Header & Flags, 3-Way Handshake, Sequence & ACK Numbers, Cumulative ACK, RTT Estimation, Fast Retransmit, Flow Control (rwnd), Congestion Control (AIMD, Slow Start, Congestion Avoidance, Fast Recovery, ECN, BBR) (สไลด์ 1–154)
-- [x] **[[Lecture 5 - Network Layer, Routing, and IP Addressing]]** — Data Plane vs Control Plane, Router Architecture, IPv4 Header & Fragmentation, Subnetting & VLSM Master Table, NAT/NAPT, ICMP, IPv6 Architecture, Dijkstra Link-State Trace Table, Bellman-Ford Distance Vector, OSPF, BGP-4, SDN OpenFlow
+- [x] **[[01_Lecture_05_Chapter_4_Network_Data_Plane_v9]]** — Data Plane, Router Architecture, Switching Fabrics, Buffer Sizing, IPv4 Header & Fragmentation, Subnetting & CIDR, DHCP, NAT, IPv6, Generalized Forwarding (สไลด์ 1–102)
+- [x] **[[01_Lecture_06_Chapter_5_Network_Control_Plane_v9]]** — Control Plane, Dijkstra Link-State, Bellman-Ford Distance Vector, Count-to-Infinity & Poisoned Reverse, Hierarchical OSPF, BGP-4 Policy Routing, SDN OpenFlow Control Plane, ICMP & Traceroute, SNMP & NETCONF/YANG (สไลด์ 1–121)
 - [x] **[[Lecture 6 - Link Layer, Local Area Networks, and Wireless]]** — Link Layer Services, Error Detection (Parity, Checksum, CRC Modulo-2 Trace), Multiple Access (ALOHA, CSMA/CD Minimum Frame Size & Backoff, CSMA/CA RTS/CTS), MAC Addressing, ARP Protocol, Ethernet Switch Self-Learning, VLAN 802.1Q Tagging, Wi-Fi 802.11 Architecture, Bluetooth, Cellular 4G/5G & Mobility
 - [x] **[[Calculations and Trace Workbook]]** — รวมสูตรวิธีคำนวณและ Trace Table: Delays, Internet Checksum, TCP Handshake & Byte Stream, Subnetting VLSM, Dijkstra Routing, CRC Polynomial Division
 - [x] **[[Exam Preparation Guide and Master 80-Question Bank]]** — รวมข้อสอบเสมือนจริง 80 ข้อ (Close Book Prep) + เฉลยและวิเคราะห์ข้อสอบ Quiz 1–11, Post-Test, Quiz Chapter 3 อย่างละเอียด
@@ -103,3 +104,28 @@ type: checklist
 - [x] TCP Tahoe vs TCP Reno (พฤติกรรมเมื่อเกิด Timeout vs 3 Duplicate ACKs)
 - [x] Explicit Congestion Notification (ECN IP ECT/CE, TCP ECE/CWR)
 - [x] TCP Fairness (AIMD convergence along $45^\circ$ line)
+
+### บทที่ 5: Network Layer — Control Plane
+- [x] สถาปัตยกรรม Control Plane: Per-Router Control Plane vs Centralized SDN Control Plane
+- [x] นิยาม Good Path และ Graph Abstraction $G=(V, E)$ กับ Link Cost
+- [x] การจำแนกประเภท Routing Algorithms: Global vs Decentralized, Static vs Dynamic
+- [x] Link-State Routing & Dijkstra's Algorithm (นิยาม $c(x,y), D(v), p(v), N'$, Trace Table, Complexity $O(n^2)$)
+- [x] ปัญหา Route Oscillations ใน Congestion-Sensitive Routing
+- [x] Distance-Vector Routing & Bellman-Ford Equation ($d_x(y) = \min_v \{ c(x,v) + d_v(y) \}$)
+- [x] การแลกเปลี่ยนเวกเตอร์และสภาวะการทำงานแบบกระจายศูนย์ (Distributed Asynchronous Mechanics)
+- [x] ปัญหา Count-to-Infinity และวิธีแก้ปัญหาด้วย Poisoned Reverse (พร้อมข้อจำกัด Loop $\ge 3$ โหนด)
+- [x] การเปรียบเทียบเชิงลึก LS vs DV (Message Complexity, Convergence Speed, Robustness)
+- [x] Autonomous Systems (AS) และการแบ่ง Intra-AS vs Inter-AS Routing
+- [x] Open Shortest Path First (OSPF): Link-State, MD5 Authentication, ECMP, Two-level Hierarchical OSPF (Area 0, ABR, ASBR)
+- [x] Border Gateway Protocol (BGP-4): eBGP vs iBGP บน TCP Port 179
+- [x] BGP Attributes: `AS-PATH` (Loop prevention) และ `NEXT-HOP`
+- [x] BGP Route Selection Criteria (Local Preference -> Shortest AS-PATH -> Closest NEXT-HOP)
+- [x] Hot-Potato Routing Mechanics
+- [x] นโยบายพาณิชย์การส่งต่อทราฟฟิก (Customer-Provider vs Peer-Peer)
+- [x] สถาปัตยกรรม SDN 3 ชั้น: Data Plane Switches, SDN Controller (Network OS), Control Applications
+- [x] โปรโตคอล OpenFlow และข้อความ Controller-to-Switch / Switch-to-Controller
+- [x] Internet Control Message Protocol (ICMP RFC 792): Header, Types & Codes (Type 0, 3, 8, 11)
+- [x] กลไกการทำงานของคำสั่ง Traceroute (TTL Exceeded ICMP Type 11 & Port Unreachable Type 3 Code 3)
+- [x] การบริหารจัดการเครือข่าย FCAPS และสถาปัตยกรรม SNMP (Manager, Agent, MIB, SMI, PDU Types, SNMPv3 Security)
+- [x] สถาปัตยกรรมการตั้งค่าเครือข่ายยุคใหม่: ภาษาโมเดล YANG และโปรโตคอล NETCONF (RPC over SSH)
+

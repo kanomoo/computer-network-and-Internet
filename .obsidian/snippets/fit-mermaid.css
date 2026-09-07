@@ -1,0 +1,9 @@
+/* ปรับให้ไดอะแกรม Mermaid ย่อขนาดพอดีกับหน้าจออัตโนมัติ ไม่ล้นหรือขาด */
+.mermaid {
+    text-align: center;
+}
+
+.mermaid svg {
+    max-width: 100% !important;
+    height: auto !important;
+}

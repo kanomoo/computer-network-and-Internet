@@ -11,14 +11,10 @@
             "id": "c72bfd3d0baf9d28",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Wiki/Interactive Lab Guide - Chapter 3 Application Layer Protocols.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Interactive Lab Guide - Chapter 3 Application Layer Protocols"
+              "title": "แท็บใหม่"
             }
           },
           {
@@ -35,8 +31,7 @@
               "title": "01_Lecture_06_Chapter_5_Network_Control_Plane_v9"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -95,8 +90,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "b4d7bc379989aa37",
@@ -201,10 +195,10 @@
       "bases:สร้างฐานใหม่": false
     }
   },
-  "active": "81bb17e90059fe54",
+  "active": "c72bfd3d0baf9d28",
   "lastOpenFiles": [
-    "05_Wiki/Chapter_05_Network_Control_Plane/00_Chapter_05_Reading_Guide.md",
     "05_Wiki/Chapter_05_Network_Control_Plane/01_Lecture_06_Chapter_5_Network_Control_Plane_v9.md",
+    "05_Wiki/Chapter_05_Network_Control_Plane/00_Chapter_05_Reading_Guide.md",
     "05_Wiki/Chapter_04_Network_Data_Plane/02_Subnetting_and_FLSM_Master_Guide_Video_and_Example.md",
     "02_Slides/Chapter_04_Network_Data_Plane/Current_Year_Course_v9.0/~$bnetting_Solutions_Quiz1_Quiz2.doc",
     "02_Slides/Chapter_04_Network_Data_Plane/Current_Year_Course_v9.0/Subnetting_Solutions_Quiz1_Quiz2.pdf",

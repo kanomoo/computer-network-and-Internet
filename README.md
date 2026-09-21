@@ -27,7 +27,11 @@ computer-network-&-Internet/
 │   │   ├── 📁 Current_Year_Course_v9.0/     # [ปีปัจจุบัน v9.0] สไลด์ 1-102, PPTX v9.0
 │   │   └── 📁 Archive_Old_Curriculum/       # [ปีเก่า] สไลด์ PDF เดิม
 │   ├── 📂 Chapter_05_Network_Control_Plane/
+│   │   ├── 📁 Current_Year_Course_v9.0/     # [ปีปัจจุบัน v9.0] สไลด์ 1-121, PPTX v9.0
+│   │   └── 📁 Archive_Old_Curriculum/       # [ปีเก่า] สไลด์ PDF เดิม
 │   ├── 📂 Chapter_06_Link_Layer/
+│   │   ├── 📁 Current_Year_Course_v9.0/     # [ปีปัจจุบัน v9.0] สไลด์ 1-111, PPTX v9.0, CRC Handout & Quiz
+│   │   └── 📁 Archive_Old_Curriculum/       # [ปีเก่า] สไลด์ PDF เดิม
 │   ├── 📂 Chapter_07_Wireless/
 │   └── 📂 CCNA_Special_Topics/              # สไลด์ฝึกปฏิบัติการ IP Address & Subnet
 │
@@ -67,7 +71,7 @@ computer-network-&-Internet/
 | **Chapter_03** | `00_Chapter_03_Reading_Guide.md` | Transport Layer, UDP Checksum, TCP Handshake & Flow/Congestion Control |
 | **Chapter_04** | `00_Chapter_04_Reading_Guide.md` | Network Data Plane, ถอดรหัส Video.md & เฉลยแบบฝึกหัด Subnetting Example.md |
 | **Chapter_05** | `00_Chapter_05_Reading_Guide.md` | Network Control Plane, Dijkstra Shortest Path, Distance Vector |
-| **Chapter_06** | `00_Chapter_06_Reading_Guide.md` | Link Layer, MAC, Switches, VLAN, WiFi 802.11, CRC Polynomial Division |
-| **Comprehensive_Exam** | `Exam Preparation Guide & Question Bank` | คลังข้อสอบ 80 ข้อเสมือนจริง และสมุดรวมวิธีทำโจทย์คำนวณ Workbook |
+| **Chapter_06** | `00_Chapter_06_Reading_Guide.md` | Link Layer, MAC, Switches, VLAN 802.1Q, VXLAN, MPLS, Leaf/Spine Datacenter, CRC Quiz 1-4 |
+| **Comprehensive_Exam** | `Exam Preparation Guide & Question Bank` | คลังข้อสอบ 80 ข้อเสมือนจริง และสมุดรวมวิธีทำโจทย์คำนวณ Workbook (CRC Step-by-Step) |
 
 ---

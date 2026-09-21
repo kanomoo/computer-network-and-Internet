@@ -15,6 +15,8 @@ type: index
 > - **สไลด์บทที่ 1 & 2:** [Chapter_1_Fundamental-Network_models_1-89.html](file:///c:/Project/computer-network-&-Internet/New/Chapter_1_Fundamental-Network_models_1-89.html) *(สไลด์ที่ 1–89)*
 > - **สไลด์บทที่ 3 (Application):** [Chapter_2_Application_Layer_1-119.html](file:///c:/Project/computer-network-&-Internet/New/Chapter_2_Application_Layer_1-119.html) *(สไลด์ที่ 1–119)*
 > - **สไลด์บทที่ 4 (Transport):** [Chapter_3_ Transport_Layer_1-154.html](file:///c:/Project/computer-network-&-Internet/New/Chapter_3_%20Transport_Layer_1-154.html) *(สไลด์ที่ 1–154)*
+> - **สไลด์บทที่ 5 (Network Control Plane v9.0):** `02_Slides/Chapter_05_Network_Control_Plane/Current_Year_Course_v9.0/` *(สไลด์ 1–121)*
+> - **สไลด์บทที่ 6 (Link Layer & LANs v9.0):** `02_Slides/Chapter_06_Link_Layer/Current_Year_Course_v9.0/` *(สไลด์ 1–111, PPTX และ CRC Handout)*
 > - **บทเรียนแบบโต้ตอบใหม่ (Interactive Courseware):**
 >   - [ch1.html](file:///c:/Project/computer-network-&-Internet/New/ch1.html) *(Chapter 1 Fundamentals: 25 Interactive Sections)*
 >   - [ch2.html](file:///c:/Project/computer-network-&-Internet/New/ch2.html) *(Chapter 2 Network Models: 23 Interactive Sections)*
@@ -23,7 +25,7 @@ type: index
 > - **แบบทดสอบจริงจาก Classroom:** [exam.md](file:///c:/Project/computer-network-&-Internet/New/exam.md) *(Quiz Chapter 3 20 ข้อ)*
 > - **บทเรียนเว็บโต้ตอบ:** [brosing-msg.html](file:///c:/Project/computer-network-&-Internet/New/brosing-msg.html), [email.html](file:///c:/Project/computer-network-&-Internet/New/email.html), [tcpipmodel.html](file:///c:/Project/computer-network-&-Internet/New/tcpipmodel.html)
 > - **การบ้านและแบบฝึกหัด:** [Assignments.pptx](file:///c:/Project/computer-network-&-Internet/Assignments.pptx)
-> - **คอร์สเรียนเว็บแอปพลิเคชัน:** [computer-network-course](file:///c:/Project/computer-network-&-Internet/computer-network-course/index.html)
+> - **คอร์สเรียนเว็บแอปพลิเคชัน:** [Web_Course_Links.md](file:///home/few/Projects/computer-network-and-Internet/06_Web_Course/Web_Course_Links.md)
 
 > [!SUMMARY] คลังความรู้และคู่มือเตรียมสอบวิชา Computer Network and Internet ระดับสมบูรณ์แบบ
 > นี่คือสารบัญดัชนีหลัก (**Master Index**) ที่รวบรวม **Mega Guides** สำหรับวิชาเครือข่ายคอมพิวเตอร์และอินเทอร์เน็ต (Computer Network & Internet) โดยสรุปและวิเคราะห์อย่างละเอียดจากทุกสไลด์ ทุกหน้า ทุกหัวข้อ (ไม่มีการข้าม 100%) ตามเนื้อหาการสอนของอาจารย์ใน `New/` และหนังสืออ้างอิง *Computer Networking: A Top-Down Approach (Kurose & Ross 8th Edition)*:
@@ -59,10 +61,11 @@ mindmap
       "TCP Handshake, Teardown & FSM"
       "Seq/ACK, Flow Control & Congestion Control"
     "Part 5: Core & Lower Layers"
-      "Lecture 5: Network Layer & Routing"
-      "Subnetting, VLSM, IPv4/IPv6, BGP"
-      "Lecture 6: Link Layer & Wireless"
-      "CRC, Ethernet, Switches, VLAN, WiFi"
+      "Lecture 5: Network Data Plane & Control Plane"
+      "Subnetting, VLSM, IPv4/IPv6, BGP, SDN"
+      "01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9"
+      "CRC Modulo-2, Ethernet, Switches, VLAN, MPLS, Datacenter"
+      "Lecture 6: Link Layer & Wireless (WiFi, Cellular)"
     "Part 6: Calculations & Exam Bank"
       "Calculations & Trace Workbook"
       "Exam Prep & 80-Question Bank"

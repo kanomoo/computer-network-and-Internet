@@ -25,8 +25,9 @@ type: checklist
 - [x] **[[Lecture 4 - Transport Layer Protocols and Mechanics]]** — บริการ Transport Layer, Mux/Demux (2-tuple vs 4-tuple), UDP Header & Checksum, Principles of RDT (rdt 1.0 - 3.0), GBN vs SR, โครงสร้าง TCP Header & Flags, 3-Way Handshake, Sequence & ACK Numbers, Cumulative ACK, RTT Estimation, Fast Retransmit, Flow Control (rwnd), Congestion Control (AIMD, Slow Start, Congestion Avoidance, Fast Recovery, ECN, BBR) (สไลด์ 1–154)
 - [x] **[[01_Lecture_05_Chapter_4_Network_Data_Plane_v9]]** — Data Plane, Router Architecture, Switching Fabrics, Buffer Sizing, IPv4 Header & Fragmentation, Subnetting & CIDR, DHCP, NAT, IPv6, Generalized Forwarding (สไลด์ 1–102)
 - [x] **[[01_Lecture_06_Chapter_5_Network_Control_Plane_v9]]** — Control Plane, Dijkstra Link-State, Bellman-Ford Distance Vector, Count-to-Infinity & Poisoned Reverse, Hierarchical OSPF, BGP-4 Policy Routing, SDN OpenFlow Control Plane, ICMP & Traceroute, SNMP & NETCONF/YANG (สไลด์ 1–121)
-- [x] **[[Lecture 6 - Link Layer, Local Area Networks, and Wireless]]** — Link Layer Services, Error Detection (Parity, Checksum, CRC Modulo-2 Trace), Multiple Access (ALOHA, CSMA/CD Minimum Frame Size & Backoff, CSMA/CA RTS/CTS), MAC Addressing, ARP Protocol, Ethernet Switch Self-Learning, VLAN 802.1Q Tagging, Wi-Fi 802.11 Architecture, Bluetooth, Cellular 4G/5G & Mobility
-- [x] **[[Calculations and Trace Workbook]]** — รวมสูตรวิธีคำนวณและ Trace Table: Delays, Internet Checksum, TCP Handshake & Byte Stream, Subnetting VLSM, Dijkstra Routing, CRC Polynomial Division
+- [x] **[[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9]]** — Link Layer Services & NIC, 1D/2D Parity, CRC Modulo-2, Multiple Access (TDMA, FDMA, Slotted/Pure ALOHA, CSMA/CD Minimum Frame 64B & Backoff, Taking-Turns, DOCSIS), MAC Addressing, ARP Multi-Subnet Routing, Ethernet Switch Self-Learning & Campus Hierarchies, VLAN 802.1Q, VXLAN & EVPN, MPLS Label Swapping, Data Center Networks (Leaf/Spine, Facebook F16, ECMP, DCTCP, RoCE, ORION), และ "A Day in the Life of a Web Request" (สไลด์ 1–111)
+- [x] **[[Lecture 6 - Link Layer, Local Area Networks, and Wireless]]** — บันทึกภาพรวม Link Layer และเทคโนโลยีเครือข่ายไร้สาย (Wi-Fi 802.11 Architecture, Frame Format, CSMA/CA RTS/CTS, Bluetooth & Cellular 4G/5G Mobility)
+- [x] **[[Calculations and Trace Workbook]]** — รวมสูตรวิธีคำนวณและ Trace Table: Delays, Internet Checksum, TCP Handshake & Byte Stream, Subnetting VLSM, Dijkstra Routing, CRC Polynomial Division (Quiz 1–4 ครบทั้ง Sender & Receiver)
 - [x] **[[Exam Preparation Guide and Master 80-Question Bank]]** — รวมข้อสอบเสมือนจริง 80 ข้อ (Close Book Prep) + เฉลยและวิเคราะห์ข้อสอบ Quiz 1–11, Post-Test, Quiz Chapter 3 อย่างละเอียด
 
 ### 🔹 Interactive Courseware & Lab Guides (ระบบบทเรียนและชุดแล็บโต้ตอบใหม่):
@@ -128,4 +129,46 @@ type: checklist
 - [x] กลไกการทำงานของคำสั่ง Traceroute (TTL Exceeded ICMP Type 11 & Port Unreachable Type 3 Code 3)
 - [x] การบริหารจัดการเครือข่าย FCAPS และสถาปัตยกรรม SNMP (Manager, Agent, MIB, SMI, PDU Types, SNMPv3 Security)
 - [x] สถาปัตยกรรมการตั้งค่าเครือข่ายยุคใหม่: ภาษาโมเดล YANG และโปรโตคอล NETCONF (RPC over SSH)
+
+### บทที่ 6: Link Layer and Local Area Networks (v9.0 สไลด์ 1–111 สมบูรณ์ 100%)
+- [x] บริการของ Link Layer: Framing, Link Access (MAC), Reliable Delivery, Flow Control, Error Detection, Error Correction (FEC), Half/Full-Duplex
+- [x] ตำแหน่งการติดตั้ง Link Layer บนฮาร์ดแวร์การ์ดแลน (NIC Architecture) และการปฏิสัมพันธ์กับโฮสต์ OS
+- [x] เทคนิคการตรวจจับข้อผิดพลาด: 1D Parity (Odd/Even), 2D Parity Matrix กับการตรวจและแก้ 1-bit error, Internet Checksum
+- [x] ทฤษฎีและการคำนวณ Cyclic Redundancy Check (CRC): Modulo-2 Arithmetic, XOR Division, Generator Polynomial $G$, คุณสมบัติพหุนามที่เหมาะสม
+- [x] ตัวอย่างคำนวณหารยาว CRC Modulo-2 ฝั่งส่ง (Sender) และฝั่งรับ (Receiver Verification: Remainder $= 0$) ครบทั้ง 4 ข้อจาก Quiz ภาควิชา
+- [x] Multiple Access Protocols: อนุกรมวิธาน 3 กลุ่ม (Channel Partitioning, Random Access, Taking-Turns)
+- [x] Channel Partitioning: TDMA และ FDMA ข้อดี/ข้อจำกัดที่โหลดต่ำและโหลดสูง
+- [x] Random Access: Slotted ALOHA ($S = G e^{-G} \implies 36.8\%$) และ Pure ALOHA ($S = G e^{-2G} \implies 18.4\%$) พร้อมบทพิสูจน์คณิตศาสตร์
+- [x] CSMA: Carrier Sense และการเกิด Collision จาก Propagation Delay
+- [x] Ethernet CSMA/CD: กลไกฟังขณะส่ง, Jam Signal 48 บิต, Binary Exponential Backoff ($K \times 512$ bit times)
+- [x] การพิสูจน์สูตรขนาดเฟรมขั้นต่ำของอีเทอร์เน็ต: $L_{\min} = 2 \cdot d_{\text{prop}} \cdot R = 64$ Bytes (512 บิต)
+- [x] ประสิทธิภาพของ CSMA/CD: $\text{Efficiency} = 1 / (1 + 5 d_{\text{prop}} / d_{\text{trans}})$
+- [x] Taking-Turns Protocols: Polling (Master-Slave, Overhead, Latency, Single Point of Failure) และ Token Passing (Ring, Token Overhead, Latency, Token Loss)
+- [x] สถาปัตยกรรมเคเบิลโมเด็ม DOCSIS: FDM Downstream Broadcast และ TDM/FDM Upstream Mini-slots พร้อม Request Frames
+- [x] MAC Addressing: 48 บิต (6 ไบต์), OUI 24-bit + Vendor Serial 24-bit, เปรียบเทียบ Flat MAC vs Hierarchical IP, Portability, Broadcast `FF:FF:FF:FF:FF:FF`
+- [x] โปรโตคอล ARP (RFC 826): Broadcast Request, Unicast Reply, ตาราง ARP Cache Table และ Soft-State TTL
+- [x] การส่งข้อมูลข้ามเครือข่ายย่อยแบบ Step-by-Step (Routing to Another Subnet): การทำงานของ Host A $\to$ Router R $\to$ Host B, การเปลี่ยน L2 Frame Headers Hop-by-Hop และการคงค่า IP Datagram
+- [x] วิวัฒนาการโทโปโลยี Ethernet: Bus ด้วยสาย Coax $\to$ Star ด้วย Ethernet Switch
+- [x] โครงสร้างเฟรมอีเทอร์เน็ต IEEE 802.3: Preamble 7B, SFD 1B, Dest MAC 6B, Src MAC 6B, Type 2B, Payload 46–1500B, FCS/CRC-32 4B
+- [x] คุณลักษณะ Unreliable และ Connectionless ของ Ethernet
+- [x] มาตรฐาน IEEE 802.3: 10BASE-T, 100BASE-TX, 1000BASE-T, 10GBASE-T/LR, 40G/100G
+- [x] การทำงานของ Ethernet Switch: การขจัด Collision Domain, Dedicated Full-Duplex Links, Output Buffering
+- [x] ตารางการส่งต่อของสวิตช์ (Switch Forwarding Table) และกลไกการเรียนรู้ด้วยตนเอง (Self-Learning) จาก Source MAC
+- [x] ตรรกะการคัดกรองและการส่งต่อ: Filtering (Drop), Selective Forwarding (Unicast), Unknown Unicast Flooding, Broadcast Flooding
+- [x] การเชื่อมต่อสวิตช์แบบหลายชั้น (Hierarchical Switches) และการ Trace ตาราง Forwarding
+- [x] กรณีศึกษาเครือข่ายระดับแคมปัส UMass Campus Network (Access, Distribution, Core)
+- [x] การเปรียบเทียบเชิงลึก: L2 Switch vs L3 Router
+- [x] Virtual LANs (VLANs): แรงจูงใจ, Port-Based VLANs, Trunking, แท็ก IEEE 802.1Q (TPID 0x8100, PCP, DEI, VID 12-bit = 4,096 VLANs)
+- [x] การส่งข้อมูลข้าม VLAN (Inter-VLAN Routing): Router-on-a-Stick (Sub-interfaces) vs L3 Switch SVI
+- [x] เทคโนโลยีเสมือนศูนย์ข้อมูลสมัยใหม่: VXLAN Overlay (RFC 7348), 24-bit VNI (16 ล้านเครือข่าย), MAC-in-UDP Encapsulation Port 4789, VTEP Tunneling, BGP EVPN Control Plane
+- [x] Multiprotocol Label Switching (MPLS): แรงจูงใจ, Shim Header 32 บิต (Label 20-bit, TC 3-bit, S-bit, TTL 8-bit), LSR, Ingress/Egress LER, Label Swapping (LFIB), MPLS-TE Explicit Routing, LDP & RSVP-TE Signaling
+- [x] สถาปัตยกรรมเครือข่ายศูนย์ข้อมูล (Data Center Networks): ความท้าทาย East-West Traffic, Bisection Bandwidth, TOR Switches
+- [x] สถาปัตยกรรม 2-Layer Leaf/Spine (Clos Network): การเชื่อมต่อสมมาตร, Deterministic 3-Hop Latency, Horizontal Scalability
+- [x] กรณีศึกษาผังศูนย์ข้อมูลจริง: Facebook F16 Data Center Topology (16-Pack Fabric, 4:1 Oversubscription)
+- [x] เทคนิค Equal-Cost Multi-Path (ECMP) Hash-based Load Balancing
+- [x] นวัตกรรมโปรโตคอลศูนย์ข้อมูล: DCTCP (ECN-based Congestion Control) และ RoCE (RDMA over Converged Ethernet Zero-Copy/OS Bypass)
+- [x] ระบบควบคุมศูนย์ข้อมูลด้วยซอฟต์แวร์: Google ORION SDN Control Plane
+- [x] การสังเคราะห์ระดับมหาภาค: "A Day in the Life of a Web Request" (Trace ละเอียด 5 ขั้น: DHCP $\to$ ARP $\to$ DNS $\to$ TCP Handshake $\to$ HTTP Request/Reply)
+- [x] บทพิสูจน์ทางคณิตศาสตร์: Slotted ALOHA Maximum Efficiency Derivation ($1/e \approx 36.8\%$) และ Pure ALOHA Derivation ($1/(2e) \approx 18.4\%$)
+
 

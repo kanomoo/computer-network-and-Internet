@@ -23,14 +23,18 @@ type: reading-guide
 1. **Step 1: ศึกษาเนื้อหาหลักสูตรปัจจุบัน v9.0 ฉบับสมบูรณ์ (สไลด์ 1–111 ละเอียดยิบ 100%)**
    - 📄 [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9]] *(ฉบับทางการล่าสุด v9.0 ครอบคลุมสไลด์อาจารย์ + Kurose & Ross 8th Ed)*
    - 📄 [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] *(บันทึกภาพรวมดั้งเดิมที่ครอบคลุมเนื้อหา Wireless/Wi-Fi/Cellular เพิ่มเติม)*
-2. **Step 2: ฝึกทำโจทย์การคำนวณหารยาวพหุนาม CRC Modulo-2 (สไลด์, Quiz ภาควิชา 4 ข้อ และ Homework 5)**
-   - 📄 ศึกษาวิธีทำแบบ Step-by-Step ทั้งฝั่งส่ง (Sender) และฝั่งรับ (Receiver Verification: Remainder $= 0$) ใน [[Calculations and Trace Workbook#6. การคำนวณ Cyclic Redundancy Check (CRC)]]
+2. **Step 2: ศึกษาและฝึกทำโจทย์การคำนวณหารยาวพหุนาม CRC Modulo-2 (สไลด์ภาควิชา 1–14 หน้า, Quiz 4 ข้อ และ Homework 5)**
+   - 📄 [[02_Lecture_06_CRC_Cyclic_Redundancy_Check_Special_Guide]] *(คู่มือเฉพาะทางเจาะลึก CRC ครบ 14 หน้าสไลด์ภาควิชา พร้อมเฉลยข้อสอบ Quiz ครบทั้ง 4 ข้อ)*
+   - 📄 สรุปเนื้อหาใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#Slide 15: Cyclic Redundancy Check (CRC)|สไลด์ 15–16 ของเลกเชอร์หลัก]]
+   - 📄 รวมโจทย์ฝึกทำแบบ Step-by-Step ใน [[Calculations and Trace Workbook#6. การคำนวณ Cyclic Redundancy Check (CRC)]]
 3. **Step 3: ศึกษากลไกการส่งข้อมูลข้ามเครือข่ายย่อย (Routing to Another Subnet Step-by-Step)**
-   - 📄 ใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#4.5 การส่งข้อมูลข้ามเครือข่ายย่อย (Routing to Another Subnet Step-by-Step)]]
+   - 📄 ใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#Slide 48: Routing to Another Subnet: Addressing|สไลด์ 48–53: Routing to Another Subnet Step-by-Step]]
 4. **Step 4: ทำความเข้าใจ VLAN 802.1Q, VXLAN Data Center Virtualization และ MPLS Label Swapping**
-   - 📄 ใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#7. เครือข่ายเสมือน VLAN และระบบเสมือนศูนย์ข้อมูลยุคใหม่ (Slides 76–85)]] และ [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#8. การสลับป้ายชื่อโปรโตคอลหลายชั้น (Multiprotocol Label Switching: MPLS - Slides 86–91)]]
+   - 📄 ใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#08. Virtual LANs (VLANs), VXLAN & EVPN Context (สไลด์ 74–82)|หัวข้อ 08: VLANs/VXLAN (สไลด์ 74–82)]] และ [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#09. Link Virtualization: MPLS (สไลด์ 83–89)|หัวข้อ 09: MPLS (สไลด์ 83–89)]]
 5. **Step 5: ทบทวนการบูรณาการครบ 5 เลเยอร์ "A Day in the Life of a Web Request"**
-   - 📄 ใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#10. การสังเคราะห์ระดับมหาภาค: "A Day in the Life of a Web Request" (Slides 101–109)]]
+   - 📄 ใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#11. Synthesis: A Day in the Life of a Web Request (สไลด์ 99–107)|หัวข้อ 11: Web Request Synthesis (สไลด์ 99–107)]]
+6. **Step 6: การพิสูจน์ทางคณิตศาสตร์ประสิทธิภาพ Pure ALOHA ($S = 1/(2e) \approx 18.4\%$)**
+   - 📄 ใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#Slide 111: Pure ALOHA Efficiency — Derivation|สไลด์ 111: Pure ALOHA Efficiency Derivation]]
 
 ---
 

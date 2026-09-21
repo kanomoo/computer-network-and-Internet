@@ -114,7 +114,9 @@ mindmap
    - [[01_Lecture_06_Chapter_5_Network_Control_Plane_v9]] — Control Plane Architectures, Dijkstra LS, Bellman-Ford DV, OSPF, BGP, SDN OpenFlow, ICMP, SNMP, NETCONF/YANG
 7. **`Chapter_06_Link_Layer_and_Wireless/`**
    - [[00_Chapter_06_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 6
-   - [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] — Link Services, CRC Modulo-2, CSMA/CD, CSMA/CA, ARP, Switches, VLAN, WiFi 802.11
+   - [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9]] — โน้ตวิกิฉบับหลักสูตรปัจจุบัน v9.0 ครบ 111 สไลด์แบบเรียงหน้าอย่างสมบูรณ์แบบ
+   - [[02_Lecture_06_CRC_Cyclic_Redundancy_Check_Special_Guide]] — คู่มือเจาะลึกพิเศษ Cyclic Redundancy Check (CRC) สไลด์ภาควิชา 1–14 หน้า พร้อมเฉลยข้อสอบ Quiz ครบทั้ง 4 ข้อ
+   - [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] — โน้ตบรรยายดั้งเดิมครอบคลุมเนื้อหา Wireless / Wi-Fi เพิ่มเติม
 8. **`Comprehensive_Exam_and_Calculations/`**
    - [[00_Exam_and_Calculations_Guide]] — สรุปแนวทางการฝึกคำนวณและข้อสอบ
    - [[Calculations and Trace Workbook]] — รวมสูตรวิธีคำนวณ Step-by-Step พร้อม Trace Table ครบทุกบท

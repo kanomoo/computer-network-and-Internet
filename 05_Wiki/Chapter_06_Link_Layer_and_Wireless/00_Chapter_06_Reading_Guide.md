@@ -25,6 +25,7 @@ type: reading-guide
    - 📄 [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] *(บันทึกภาพรวมดั้งเดิมที่ครอบคลุมเนื้อหา Wireless/Wi-Fi/Cellular เพิ่มเติม)*
 2. **Step 2: ศึกษาและฝึกทำโจทย์การคำนวณหารยาวพหุนาม CRC Modulo-2 (สไลด์ภาควิชา 1–14 หน้า, Quiz 4 ข้อ และ Homework 5)**
    - 📄 [[02_Lecture_06_CRC_Cyclic_Redundancy_Check_Special_Guide]] *(คู่มือเฉพาะทางเจาะลึก CRC ครบ 14 หน้าสไลด์ภาควิชา พร้อมเฉลยข้อสอบ Quiz ครบทั้ง 4 ข้อ)*
+   - 📄 [[03_Assignment_CRC_Calculation_Complete_Solutions]] *(เฉลยการบ้านและโจทย์คำนวณ CRC ประจำสัปดาห์ 3 ข้อ พร้อมแสดงการหารยาว Modulo-2 ทั้งฝั่งส่งและฝั่งรับอย่างละเอียดสมบูรณ์)*
    - 📄 สรุปเนื้อหาใน [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9#Slide 15: Cyclic Redundancy Check (CRC)|สไลด์ 15–16 ของเลกเชอร์หลัก]]
    - 📄 รวมโจทย์ฝึกทำแบบ Step-by-Step ใน [[Calculations and Trace Workbook#6. การคำนวณ Cyclic Redundancy Check (CRC)]]
 3. **Step 3: ศึกษากลไกการส่งข้อมูลข้ามเครือข่ายย่อย (Routing to Another Subnet Step-by-Step)**

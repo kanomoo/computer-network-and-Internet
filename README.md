@@ -75,3 +75,13 @@ computer-network-&-Internet/
 | **Comprehensive_Exam** | `Exam Preparation Guide & Question Bank` | คลังข้อสอบ 80 ข้อเสมือนจริง และสมุดรวมวิธีทำโจทย์คำนวณ Workbook (CRC Step-by-Step) |
 
 ---
+
+## 🎙️ ข้อมูลการถอดความเสียงและการบูรณาการ (Voice Data Integration)
+- 📄 [**VOICE_DATA_INTEGRATION_ARCHITECTURE.md**](file:///C:/Project/computer-network-&-Internet/VOICE_DATA_INTEGRATION_ARCHITECTURE.md) — สถาปัตยกรรมบูรณาการข้อมูลเสียงคำต่อคำสู่ระบบ Wiki
+- `Transcripts/20260914_132959.txt` — การบรรยายสด Distance Vector & Hierarchical Routing (84m 12s)
+- `Transcripts/20260921_135415.txt` — การบรรยายสด Data Link Layer, Error Detection (Parity, Checksum, CRC) & MAC Protocols (117m)
+- `05_Wiki/Chapter_05_Network_Control_Plane/Distance_Vector_and_BGP_Lecture_Notes.md` — โน้ตสรุป Bellman-Ford & Count-to-Infinity
+- `05_Wiki/Chapter_06_Link_Layer_and_Wireless/CRC_Calculation_and_MAC_Protocols.md` — คู่มือการคำนวณ CRC Step-by-Step และ Multiple Access
+
+---
+*ปรับปรุงข้อมูลล่าสุด: 23 กันยายน 2569*

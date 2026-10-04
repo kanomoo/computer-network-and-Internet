@@ -23,10 +23,12 @@ type: reading-guide
 1. **โน้ตบรรยายสรุปหลักสูตรฉบับสมบูรณ์ (Master Lecture Guide):**
    - 👉 [[01_Lecture_06_Chapter_5_Network_Control_Plane_v9]] — สรุปเนื้อหาเจาะลึกครบถ้วน 100% จากสไลด์ 1–121 พร้อมไดอะแกรม Mermaid, Trace Table, และกลไก Low-level
 2. **คลังแบบฝึกหัดและการบ้านคำนวณ:**
+   - 👉 [[Homework4_Dijkstra_Assignment_Solution]] — เฉลยละเอียดการบ้าน Homework 4 (Dijkstra Algorithm) พร้อมภาพลายมือส่งงานจริง, ตารางสรุป 3 นาทีจากคลิป YouTube, ตาราง Trace Table และตาราง Forwarding Table
    - 👉 [[Calculations and Trace Workbook#5. การคำนวณ Dijkstra's Algorithm Step-by-Step Trace]] — เฉลยและขั้นตอนการสร้างตาราง Trace Table สำหรับการบ้าน Homework 4
-3. **ไฟล์สไลด์ต้นฉบับ:**
+3. **ไฟล์สไลด์และการบ้านต้นฉบับ:**
    - สไลด์บทเรียนหลักสูตรปัจจุบัน v9.0: `02_Slides/Chapter_05_Network_Control_Plane/Current_Year_Course_v9.0/Chapter_5_v9.0_Network_Layer_Control_Plane.pptx`
    - บทอ่านสไลด์ฉบับเต็ม: `02_Slides/Chapter_05_Network_Control_Plane/Current_Year_Course_v9.0/Chapter_5_Network_Layer_Control_Plane_1-121.html`
+   - โฟลเดอร์การบ้านและการส่งงาน: `03_Homework/Current_Year_Assignments/Homework4.docx` และภาพงาน `03_Homework/Current_Year_Assignments/work/`
 
 ---
 

@@ -20,9 +20,9 @@ type: reading-guide
 
 ## 🚦 ลำดับการอ่านบทที่ 6 (Recommended Reading Flow)
 
-1. **Step 1: ศึกษาเนื้อหาหลักสูตรปัจจุบัน v9.0 ฉบับสมบูรณ์ (สไลด์ 1–111 ละเอียดยิบ 100%)**
-   - 📄 [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9]] *(ฉบับทางการล่าสุด v9.0 ครอบคลุมสไลด์อาจารย์ + Kurose & Ross 8th Ed)*
-   - 📄 [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] *(บันทึกภาพรวมดั้งเดิมที่ครอบคลุมเนื้อหา Wireless/Wi-Fi/Cellular เพิ่มเติม)*
+1. **Step 1: ศึกษาเนื้อหาหลักสูตรปัจจุบัน v9.0 ฉบับสมบูรณ์ (สไลด์ 1–111 ละเอียดยิบ 100% พร้อมโน้ตสดจากอาจารย์)**
+   - 📄 [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9]] *(ฉบับทางการล่าสุด v9.0 อัปเดตผสานโน้ตสดจากอาจารย์ในคาบเรียน 28/09/2026 ครบ 20 จุดสำคัญ: ARP 9 ขั้นตอน, IP vs MAC, Default Gateway ARP, Switch 4-Step Forwarding, TPID 0x8100, VXLAN Overlay)*
+   - 📁 ไฟล์สไลด์อัปเดตล่าสุด: [`02_Slides/Chapter_06_Link_Layer/Current_Year_Course_v9.0/Chapter_6_v9.0_Datalink_Layer(updated-28092026).pptx`](file:///c:/Project/computer-network-&-Internet/02_Slides/Chapter_06_Link_Layer/Current_Year_Course_v9.0/Chapter_6_v9.0_Datalink_Layer(updated-28092026).pptx)
 2. **Step 2: ศึกษาและฝึกทำโจทย์การคำนวณหารยาวพหุนาม CRC Modulo-2 (สไลด์ภาควิชา 1–14 หน้า, Quiz 4 ข้อ และ Homework 5)**
    - 📄 [[02_Lecture_06_CRC_Cyclic_Redundancy_Check_Special_Guide]] *(คู่มือเฉพาะทางเจาะลึก CRC ครบ 14 หน้าสไลด์ภาควิชา พร้อมเฉลยข้อสอบ Quiz ครบทั้ง 4 ข้อ)*
    - 📄 [[03_Assignment_CRC_Calculation_Complete_Solutions]] *(เฉลยการบ้านและโจทย์คำนวณ CRC ประจำสัปดาห์ 3 ข้อ พร้อมแสดงการหารยาว Modulo-2 ทั้งฝั่งส่งและฝั่งรับอย่างละเอียดสมบูรณ์)*

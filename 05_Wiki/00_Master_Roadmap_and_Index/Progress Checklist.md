@@ -171,4 +171,42 @@ type: checklist
 - [x] การสังเคราะห์ระดับมหาภาค: "A Day in the Life of a Web Request" (Trace ละเอียด 5 ขั้น: DHCP $\to$ ARP $\to$ DNS $\to$ TCP Handshake $\to$ HTTP Request/Reply)
 - [x] บทพิสูจน์ทางคณิตศาสตร์: Slotted ALOHA Maximum Efficiency Derivation ($1/e \approx 36.8\%$) และ Pure ALOHA Derivation ($1/(2e) \approx 18.4\%$)
 
+### บทที่ 7: Wireless and Mobile Networks (v9.0 สไลด์ 1–154 สมบูรณ์ 100%)
+- [x] บริบทและสถิติการเติบโตของเครือข่ายเคลื่อนที่ (Cellular 5:1 Wired, Wi-Fi 80% ครัวเรือน, Mobile Web 60%)
+- [x] 6 ขอบเขตการประยุกต์ใช้งานเครือข่ายไร้สาย (Wide-area, Local-area, Fixed Wireless, Satellite, Cable Replacement, IoT)
+- [x] 4 องค์ประกอบหลักของระบบเครือข่ายไร้สาย (Wireless Hosts, Base Stations, Wireless Links, Wireless Radios เช่น iPhone 16 กับ 11 radios)
+- [x] การเปรียบเทียบระยะทางและอัตราข้อมูลของลิงก์ไร้สาย (Indoor, Outdoor, Midrange, Long Range, Space)
+- [x] ทฤษฎีคลื่นแม่เหล็กไฟฟ้าและคุณสมบัติคลื่นวิทยุ ($\lambda = c/f$, แอมพลิจูด, เฟส $0^\circ-360^\circ$, กำลังส่ง mW และ dBm)
+- [x] นิยามความแตกต่างระหว่าง Radio Bandwidth (Hz/MHz), Link Bandwidth (bps/Mbps), Spectrum และ Channel
+- [x] สัญญาณกวน (Interference) vs สัญญาณรบกวน (Noise: Thermal Noise $kTB$) และอัตราส่วน $\text{SNR} = 10 \log_{10}(S/N)$
+- [x] ทฤษฎีความจุสูงสุดของช่องสัญญาณแชนนอน: $C = B \log_2(1+\text{SNR})$
+- [x] การลดทอนตามระยะทาง (Path Loss $\propto (f \cdot d)^2$) และปัญหาโหนดซ่อนเร้น (Hidden Terminal Problem)
+- [x] การแพร่กระจายหลายทิศทาง (Multipath Propagation), Delay Spread และการเกิด Inter-Symbol Interference (ISI)
+- [x] เทคโนโลยีสายอากาศ MIMO: Spatial Diversity (เพื่อ Reliability) vs Spatial Multiplexing (เพื่อ Throughput), SU-MIMO vs MU-MIMO
+- [x] การจัดสรรย่านความถี่ Wi-Fi (2.4 GHz ช่อง 1, 6, 11, 5 GHz UNII Bands, 6 GHz Wi-Fi 6E/7) และ 5G (Low-band, Sub-6 GHz, mmWave)
+- [x] การเข้ารหัสแก้ไขข้อผิดพลาด (EDC, FEC) และการมอดูเลชันดิจิทัล (ASK, BPSK, QPSK, 16/64/256/1024/4096-QAM)
+- [x] แผนภาพกลุ่มดาว (Constellation Diagrams) และการปรับมอดูเลชันตามสภาพช่องสัญญาณ (Adaptive Modulation & Coding: AMC)
+- [x] วิวัฒนาการ Multiple Access: FDM vs OFDM (Subcarriers ตั้งฉากทางคณิตศาสตร์) vs OFDMA (Resource Blocks 2D Frequency-Time)
+- [x] โพรโทคอล CSMA/CA และเหตุผลทางฟิสิกส์ที่ Wi-Fi ไม่สามารถใช้ CSMA/CD ได้ (Self-Interference และ Hidden Terminal)
+- [x] กลไกการหลีกเลี่ยงการชนด้วย RTS/CTS Handshake และตัวตั้งเวลาเสมือน Network Allocation Vector (NAV)
+- [x] Multi-User RTS (MU-RTS / Trigger Frame ใน 802.11ax/be)
+- [x] โครงสร้างเฟรม IEEE 802.11 และหน้าที่ของ Address ทั้ง 4 ช่อง (Receiver, Transmitter, Default Gateway Router, Mesh/WDS)
+- [x] การสังเคราะห์ระบบเครือข่ายไร้สาย: "A Day in the Life of a Web Request over Wi-Fi"
+- [x] สถาปัตยกรรมเครือข่าย 5G (UE, gNodeB, 5G Core)
+- [x] ลำดับชั้นช่องสัญญาณ 5G: Logical Channels (BCCH, PCCH, CCCH, DTCH), Transport Channels (BCH, PCH, DL-SCH, UL-SCH, RACH), Physical Channels (PBCH, PDCCH, PDSCH, PRACH, PUCCH, PUSCH)
+- [x] โปรโตคอลสแตกของ 5G RAN: User Plane (SDAP QoS flows, PDCP RoHC & Security, RLC Segmentation & ARQ, MAC HARQ, PHY) และ Control Plane (RRC, NAS)
+- [x] สถาปัตยกรรมแยกส่วน Split RAN (CU, DU, RU), อินเทอร์เฟซ eCPRI / F1 / N3, Open RAN (O-RAN) และ SD-RAN พร้อม RIC
+- [x] การเกาะสัญญาณขอบเครือข่าย: Beaconing vs Probing และขั้นตอน 5G Edge Access (PSS/SSS, MIB, SIBs, RACH 4-step)
+- [x] การจัดตารางเวลาคลื่นวิทยุ (RAN Scheduling): CQI & SINR, QCI/5QI, Strict Priority, Maximum Throughput, Blind Equal Throughput (BET), Proportional Fair (PF)
+- [x] กลไกการประหยัดพลังงานแบตเตอรี่ในอุปกรณ์ไร้สาย: DRX (Discontinuous Reception) Sleep/Awake Cycles และ Inactivity Timer
+- [x] สถาปัตยกรรมแกนกลาง 5G Core (5GC): การแยกส่วน CUPS, Service-Based Architecture (SBA บน HTTP/2 REST APIs)
+- [x] หน้าที่ของ Network Functions ใน 5GC: UPF (User Plane Anchor), AMF (Access/Mobility), SMF (Session/IP Allocation), UDM & AUSF (SIM Authentication, SUPI/SUCI), PCF, NRF
+- [x] อุโมงค์ส่งข้อมูลผู้ใช้ GTP-U ผ่าน UDP Port 2152 และขั้นตอน 5G Registration / PDU Session Establishment Flow
+- [x] สเปกตรัมของการเคลื่อนที่ (The Spectrum of Mobility), การโรมมิ่งใน Wi-Fi (IEEE 802.11r Fast BSS Transition)
+- [x] ลำดับขั้นตอนการทำ Handover ในเครือข่าย 5G (Measurement Reporting $\to$ Handover Preparation $\to$ Handover Execution พร้อม Data Forwarding $\to$ Handover Completion)
+- [x] เครือข่ายเฉพาะกิจไร้สาย (Wireless Ad-hoc Networks)
+- [x] เทคโนโลยีบลูทูธ (Bluetooth Classic & BLE): ย่าน 2.4 GHz ISM, FHSS กระโดด 1,600 ครั้ง/วินาที ข้าม 79 หรือ 40 ช่อง, Piconet (1 Master + 7 Slaves), Scatternet, L2CAP Channeling & SAR
+- [x] เครือข่ายดาวเทียม: การเปรียบเทียบวงโคจร GEO (35,786 กม., RTT ~500 ms) vs LEO Starlink (500–1,200 กม., RTT ~20–40 ms, Phased Array Antennas, Laser Inter-Satellite Links ISL Space Backbone)
+- [x] เครือข่าย IoT ไร้สาย: LoRa/LoRaWAN (CSS, Sub-GHz, 10–15 กม., แบต 10 ปี), NB-IoT (3GPP 180 kHz Sub-carrier), Zigbee (802.15.4 Mesh 2.4 GHz)
+
 

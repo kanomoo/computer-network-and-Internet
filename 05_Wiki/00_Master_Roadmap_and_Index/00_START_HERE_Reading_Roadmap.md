@@ -47,8 +47,9 @@ flowchart TD
 | **`Chapter_02_Application_Layer/`** | บทที่ 3 (สไลด์บท 2) | • [[00_Chapter_02_Reading_Guide]]<br>• `01_Lecture_03_Application_Layer_Protocols`<br>• `02_Interactive_Lab_Guide_Chapter_3` |
 | **`Chapter_03_Transport_Layer/`** | บทที่ 4 (สไลด์บท 3) | • [[00_Chapter_03_Reading_Guide]]<br>• `01_Lecture_04_Transport_Layer_Protocols_and_Mechanics` |
 | **`Chapter_04_Network_Data_Plane/`** | บทที่ 5 (สไลด์บท 4 Data Plane) | • [[00_Chapter_04_Reading_Guide]]<br>• `01_Lecture_05_Chapter_4_Network_Data_Plane_v9`<br>• `02_Subnetting_and_FLSM_Master_Guide_Video_and_Example` ⭐ *(เฉลย Video.md & Example.md)* |
-| **`Chapter_05_Network_Control_Plane/`** | บทที่ 5 (Control Plane & Routing) | • [[00_Chapter_05_Reading_Guide]] |
-| **`Chapter_06_Link_Layer_and_Wireless/`** | บทที่ 6 & 7 (Link & Wireless) | • [[00_Chapter_06_Reading_Guide]]<br>• `01_Lecture_06_Link_Layer_LANs_and_Wireless` |
+| **`Chapter_05_Network_Control_Plane/`** | บทที่ 5 (Control Plane & Routing) | • [[00_Chapter_05_Reading_Guide]]<br>• `01_Lecture_06_Chapter_5_Network_Control_Plane_v9`<br>• `Homework4_Dijkstra_Assignment_Solution` ⭐ *(เฉลยละเอียด Homework 4 & Forwarding Table)* |
+| **`Chapter_06_Link_Layer_and_Wireless/`** | บทที่ 6 (Link Layer & LANs) | • [[00_Chapter_06_Reading_Guide]]<br>• `01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9` *(อัปเดตสไลด์ 28/09/2026 ผสาน 20 โน้ตสดจากอาจารย์)*<br>• `02_Lecture_06_CRC_Cyclic_Redundancy_Check_Special_Guide`<br>• `03_Assignment_CRC_Calculation_Complete_Solutions` |
+| **`Chapter_07_Wireless_and_Mobile_Networks/`** | บทที่ 7 (Wireless & Mobile Networks) | • [[00_Chapter_07_Reading_Guide]]<br>• `01_Lecture_07_Wireless_and_Mobile_Networks_v9` ⭐ *(สไลด์ v9.0 ครบ 154 สไลด์: Wi-Fi, 5G RAN/Core, MIMO, OFDMA, Handover, BLE, Starlink, IoT)* |
 | **`Comprehensive_Exam_and_Calculations/`** | คลังข้อสอบ & สูตรคำนวณ | • `Calculations and Trace Workbook`<br>• `Exam Preparation Guide and Master 80-Question Bank`<br>• `Master Exam Review - Chapters 1 to 4` |
 
 ---

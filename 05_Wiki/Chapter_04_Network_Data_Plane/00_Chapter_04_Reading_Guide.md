@@ -42,6 +42,7 @@ graph TD
      - ถอดรหัสคลิปสอน [Video.md](file:///c:/Project/computer-network-&-Internet/02_Slides/Chapter_04_Network_Data_Plane/Current_Year_Course_v9.0/Video.md) (EP 1 Class C และ EP 2 Class B)
      - เทคนิคการหา **Magic Number (Block Size)** เพื่อหา Subnet ID, First IP, Last IP, Broadcast IP ภายใน 10 วินาที
      - เฉลยละเอียดระดับ Step-by-Step ของ **Quiz 1 (CIDR & Subnet Addressing 6 ข้อ)** และ **Quiz 2 (Subnetting Calculation 3 ข้อใหญ่)** ใน [Example.md](file:///c:/Project/computer-network-&-Internet/02_Slides/Chapter_04_Network_Data_Plane/Current_Year_Course_v9.0/Example.md)
+     - เอกสารส่งงานฉบับสมบูรณ์: [`Subnetting_Solutions_Quiz1_Quiz2.pdf`](file:///c:/Project/computer-network-&-Internet/03_Homework/Current_Year_Assignments/Subnetting_Solutions_Quiz1_Quiz2.pdf) และภาพโจทย์ Google Classroom [`Screenshot 2026-10-04 224301_Subnetting_Quiz_Prompt.png`](file:///c:/Project/computer-network-&-Internet/03_Homework/Current_Year_Assignments/work/Screenshot%202026-10-04%20224301_Subnetting_Quiz_Prompt.png)
 
 2. **[[01_Lecture_05_Chapter_4_Network_Data_Plane_v9]]**
    - **สิ่งที่ได้:**

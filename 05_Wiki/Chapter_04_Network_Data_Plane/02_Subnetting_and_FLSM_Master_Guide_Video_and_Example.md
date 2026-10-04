@@ -21,6 +21,8 @@ type: lecture-guide
 > เอกสารฉบับนี้จัดทำขึ้นเพื่ออธิบายหลักการคำนวณ **IPv4 Subnetting**, การทำงานของ **FLSM (Fixed Length Subnet Masking)** ใน Class C และ Class B จากคลิปวิดีโอของอาจารย์ พร้อมปูพื้นฐานกลไก **Bit Borrowing**, **Magic Number (Block Size)**, **Bitwise AND Operation** และเฉลยโจทย์ข้อสอบ **Quiz 1 (CIDR & Subnet Addressing)** และ **Quiz 2 (Subnetting Calculation)** ทุกข้อแบบ Step-by-Step พร้อมตารางสรุปสมบูรณ์ 100%
 
 > [!TIP] **เอกสารทางการดาวน์โหลดและพิมพ์ใบงาน (Word / Excel / PDF)**
+> - 📕 **ไฟล์รายงานเฉลยส่งงานทางการ PDF (Google Classroom Submission):** [Subnetting_Solutions_Quiz1_Quiz2.pdf](file:///c:/Project/computer-network-&-Internet/03_Homework/Current_Year_Assignments/Subnetting_Solutions_Quiz1_Quiz2.pdf)
+> - 📸 **ภาพโจทย์และการมอบหมายงานบน Google Classroom:** [Screenshot 2026-10-04 224301_Subnetting_Quiz_Prompt.png](file:///c:/Project/computer-network-&-Internet/03_Homework/Current_Year_Assignments/work/Screenshot%202026-10-04%20224301_Subnetting_Quiz_Prompt.png)
 > - 📄 **ใบงานและเฉลย HTML Printable Worksheet (กดปุ่ม Print เพื่อพิมพ์เป็น PDF A4 สมบูรณ์):** [Subnetting_Worksheet_Chapter04.html](file:///c:/Project/computer-network-&-Internet/03_Homework/Current_Year_Assignments/Subnetting_Worksheet_Chapter04.html)
 > - 📊 **ไฟล์ Microsoft Excel แบบหลายแผ่นงาน (.xls):** [Subnetting_Solutions_Quiz1_Quiz2.xls](file:///c:/Project/computer-network-&-Internet/03_Homework/Current_Year_Assignments/Subnetting_Solutions_Quiz1_Quiz2.xls)
 > - 📝 **ไฟล์เอกสารรายงาน Microsoft Word (.doc):** [Subnetting_Solutions_Quiz1_Quiz2.doc](file:///c:/Project/computer-network-&-Internet/03_Homework/Current_Year_Assignments/Subnetting_Solutions_Quiz1_Quiz2.doc)

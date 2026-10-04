@@ -65,10 +65,12 @@ mindmap
       "Subnetting, VLSM, IPv4/IPv6, BGP, SDN"
       "01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9"
       "CRC Modulo-2, Ethernet, Switches, VLAN, MPLS, Datacenter"
-      "Lecture 6: Link Layer & Wireless (WiFi, Cellular)"
+      "01_Lecture_07_Wireless_and_Mobile_Networks_v9"
+      "Wi-Fi, 5G RAN/Core, MIMO, OFDMA, Handover, Satellites, IoT"
     "Part 6: Calculations & Exam Bank"
       "Calculations & Trace Workbook"
       "Exam Prep & 80-Question Bank"
+      "Homework 1-5 & Quiz Solutions"
 
 ```
 
@@ -112,13 +114,17 @@ mindmap
 6. **`Chapter_05_Network_Control_Plane/`**
    - [[00_Chapter_05_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 5
    - [[01_Lecture_06_Chapter_5_Network_Control_Plane_v9]] — Control Plane Architectures, Dijkstra LS, Bellman-Ford DV, OSPF, BGP, SDN OpenFlow, ICMP, SNMP, NETCONF/YANG
+   - [[Homework4_Dijkstra_Assignment_Solution]] ⭐ — เฉลยการบ้านชุดที่ 4 (Dijkstra's Shortest Path Algorithm & Forwarding Table) พร้อมภาพลายมือส่งงานจริง และคลิปสรุป 3 นาที
 7. **`Chapter_06_Link_Layer_and_Wireless/`**
    - [[00_Chapter_06_Reading_Guide]] — แนะนำลำดับการอ่านบทที่ 6
-   - [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9]] — โน้ตวิกิฉบับหลักสูตรปัจจุบัน v9.0 ครบ 111 สไลด์แบบเรียงหน้าอย่างสมบูรณ์แบบ
+   - [[01_Lecture_06_Chapter_6_Link_Layer_and_LANs_v9]] — โน้ตวิกิฉบับหลักสูตรปัจจุบัน v9.0 ครบ 111 สไลด์แบบเรียงหน้าอย่างสมบูรณ์แบบ (อัปเดต 28/09/2026 ผสาน 20 โน้ตสดจากอาจารย์)
    - [[02_Lecture_06_CRC_Cyclic_Redundancy_Check_Special_Guide]] — คู่มือเจาะลึกพิเศษ Cyclic Redundancy Check (CRC) สไลด์ภาควิชา 1–14 หน้า พร้อมเฉลยข้อสอบ Quiz ครบทั้ง 4 ข้อ
    - [[03_Assignment_CRC_Calculation_Complete_Solutions]] — เฉลยการบ้านและการคำนวณ CRC 3 ข้อ พร้อมแสดงวิธีหารยาว Modulo-2 ทั้งฝั่งส่งและฝั่งรับอย่างละเอียดสมบูรณ์
-   - [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] — โน้ตบรรยายดั้งเดิมครอบคลุมเนื้อหา Wireless / Wi-Fi เพิ่มเติม
-8. **`Comprehensive_Exam_and_Calculations/`**
+   - [[01_Lecture_06_Link_Layer_LANs_and_Wireless]] — โน้ตบรรยายดั้งเดิมครอบคลุมเนื้อหา Link Layer และ Wireless ภาพรวม
+8. **`Chapter_07_Wireless_and_Mobile_Networks/`** ⭐ **(ใหม่ล่าสุด)**
+   - [[00_Chapter_07_Reading_Guide]] — แผนที่นำทางการอ่านบทที่ 7, ตารางสูตรสำคัญ, และเช็กลิสต์เตรียมสอบ
+   - [[01_Lecture_07_Wireless_and_Mobile_Networks_v9]] — โน้ตวิกิฉบับสมบูรณ์ v9.0 ครบ 154 สไลด์ (Radio Physical Layer, Electromagnetics, SNR, Shannon Capacity, Path Loss, Hidden Terminal, Multipath, MIMO, OFDMA, CSMA/CA, 802.11 4-Address Frame, 5G RAN, Split RAN, Scheduling Algorithms, 5G Core CUPS & SBA, Handover, Bluetooth BLE, Starlink LEO, IoT LPWAN)
+9. **`Comprehensive_Exam_and_Calculations/`**
    - [[00_Exam_and_Calculations_Guide]] — สรุปแนวทางการฝึกคำนวณและข้อสอบ
    - [[Calculations and Trace Workbook]] — รวมสูตรวิธีคำนวณ Step-by-Step พร้อม Trace Table ครบทุกบท
    - [[Exam Preparation Guide and Master 80-Question Bank]] — คลังข้อสอบ 80 ข้อเสมือนจริง พร้อมเฉลยละเอียด

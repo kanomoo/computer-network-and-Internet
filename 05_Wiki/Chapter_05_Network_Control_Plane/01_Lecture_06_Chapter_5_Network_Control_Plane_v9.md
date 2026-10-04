@@ -1177,9 +1177,10 @@ graph LR
 # 12. เชื่อมโยงโจทย์การคำนวณและการบ้าน (Homework 4 Connection & Exam Review)
 
 > [!TIP]
-> **การฝึกทำโจทย์คำนวณเพิ่มเติม:**
-> สำหรับโจทย์การคำนวณตาราง Dijkstra Step-by-Step แบบเต็มรูปแบบที่ใช้ในการบ้าน **Homework 4** สามารถดูวิธีทำและขั้นตอนการเติมตารางอย่างละเอียดได้ใน:
-> 👉 [[Calculations and Trace Workbook#5. การคำนวณ Dijkstra's Algorithm Step-by-Step Trace]]
+> **การฝึกทำโจทย์คำนวณและการบ้านจริง:**
+> สำหรับเฉลยละเอียดการบ้าน **Homework 4** พร้อมภาพถ่ายผลงานส่งจริงของนักศึกษา ตารางสรุป 3 นาทีจากคลิป YouTube และการสร้าง Forwarding Table จากสไลด์หน้า 26 สามารถดูได้ที่:
+> 👉 [[Homework4_Dijkstra_Assignment_Solution]] — เฉลยการบ้านชุดที่ 4: Dijkstra's Shortest Path Algorithm & Forwarding Table
+> 👉 [[Calculations and Trace Workbook#5. การคำนวณ Dijkstra's Algorithm Step-by-Step Trace]] — ขั้นตอนและสูตรคำนวณ Dijkstra สำหรับเตรียมสอบ
 > 
 > **หัวข้อที่มักออกข้อสอบบ่อยใน Chapter 5:**
 > 1. **Dijkstra Trace Table:** เติมตาราง $N', D(v), p(v)$ ในแต่ละขั้นตอนให้ถูกต้องแม่นยำ

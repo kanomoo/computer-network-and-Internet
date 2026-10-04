@@ -1659,6 +1659,10 @@ MAC address เรียกได้อีกหลายชื่อ เช่�
 
 ## Slide 42: MAC Addresses on a LAN
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **IP address vs MAC address:** IP address = network prefix + host portion (Hierarchical address), ส่วน MAC address = flat address (ไม่ขึ้นกับสถานที่หรือ topology)
+> - **MAC address ผูกกับ interface ไม่ใช่กับ “ตัวเครื่อง”:** ถ้าแล็ปท็อปมีทั้ง Ethernet และ Wi-Fi ก็จะมี network interfaces หลายตัว และแต่ละ interface สามารถมี MAC และ IP ของตนเองได้แยกกันอย่างอิสระ
+
 > [!NOTE] **สไลด์ที่ 42 จาก 111 สไลด์ (Slide 42 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** MAC Addresses on a LAN
@@ -1772,6 +1776,10 @@ ARP table เก็บการจับคู่ address ของบาง nod
 
 ## Slide 45: ARP Protocol in Action — Step 1: Broadcast Query
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **หน้าที่ของอุปกรณ์ในกระบวนการ ARP:** Host/Router เป็นคนสร้างและถาม ARP (ARP query/reply) ส่วน Switch เป็นเพียงคนช่วยกระจาย broadcast frame ไปตามพอร์ตใน VLAN เดียวกัน
+> - **ประเภทการสื่อสาร:** ARP query ส่งแบบ **Broadcast** (ทุกคนได้รับ), ส่วน ARP reply ส่งแบบ **Unicast** (ตอบกลับหาผู้ถามโดยตรง)
+
 > [!NOTE] **สไลด์ที่ 45 จาก 111 สไลด์ (Slide 45 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** ARP Protocol in Action — Step 1: Broadcast Query
@@ -1825,6 +1833,17 @@ ARP table เก็บการจับคู่ address ของบาง nod
 ---
 
 ## Slide 46: ARP Protocol in Action — Step 2: ARP Reply
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ — สรุปขั้นตอน ARP แบบละเอียดยิบ (Instructor Step-by-Step Flow):**
+> 1. เครื่อง $A$ ต้องการส่งข้อมูลไปยังเครื่อง $B$
+> 2. เครื่อง $A$ รู้ IP ของ $B$ แต่ยังไม่รู้ MAC address ของ $B$
+> 3. $A$ ตรวจสอบ ARP cache ในเครื่องตนเองก่อนว่ามี MAC ของ $B$ หรือไม่
+> 4. ถ้ายังไม่มี $A$ จะส่ง **ARP Request** แบบ **Broadcast** เพื่อถามว่า *“ใครมี IP ของ B?”*
+> 5. Switch รับ ARP Request แล้ว flood กระจายออกไปยัง port อื่นใน VLAN เดียวกัน
+> 6. ทุกเครื่องใน LAN ได้รับ ARP Request แต่มีเพียงเครื่อง $B$ เท่านั้นที่พบว่า IP ตรงกับของตนเอง
+> 7. เครื่อง $B$ ส่ง **ARP Reply** กลับไปยัง $A$ แบบ **Unicast** พร้อมแจ้ง MAC address ของ $B$
+> 8. $A$ บันทึกคู่ของ IP ของ $B$ และ MAC ของ $B$ ลงใน ARP cache
+> 9. $A$ จึงส่ง Ethernet frame บรรจุข้อมูลจริงไปยัง $B$ โดยใช้ Destination MAC = MAC ของ $B$ สำเร็จ
 
 > [!NOTE] **สไลด์ที่ 46 จาก 111 สไลด์ (Slide 46 of 111)**
 >
@@ -1891,6 +1910,9 @@ ARP table เก็บการจับคู่ address ของบาง nod
 ---
 
 ## Slide 48: Routing to Another Subnet: Addressing
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **กฎเหล็กการส่งข้าม Subnet:** ถ้าปลายทางอยู่ **คนละ Subnet** เครื่อง $A$ จะ **ไม่ได้ ARP หา MAC ของเครื่องปลายทางโดยตรง** แต่จะส่งไปยัง Default Gateway (Router $R$) ดังนั้นเครื่อง $A$ จะต้อง **ARP หา MAC ของ Default Gateway แทน** เสมอ!
 
 > [!NOTE] **สไลด์ที่ 48 จาก 111 สไลด์ (Slide 48 of 111)**
 >
@@ -2162,6 +2184,9 @@ B รับ Link-Layer frame ที่ส่งมาจาก R จากนั
 
 ## Slide 55: Ethernet
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **ประวัติศาสตร์ Ethernet:** ช่วงต้นทศวรรษ 1970 ที่ศูนย์วิจัย **Xerox PARC** มีทีมวิจัยหลายคนทำงานเรื่องเครือข่ายคอมพิวเตอร์ร่วมกัน โดย **Bob Metcalfe** เป็นบุคคลสำคัญที่เสนอแนวคิด Ethernet เพื่อเชื่อมต่อเครื่องคอมพิวเตอร์เข้ากับเครื่องพิมพ์เลเซอร์
+
 > [!NOTE] **สไลด์ที่ 55 จาก 111 สไลด์ (Slide 55 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** Ethernet
@@ -2201,6 +2226,9 @@ B รับ Link-Layer frame ที่ส่งมาจาก R จากนั
 
 ## Slide 56: Ethernet: Physical Topology
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **Ethernet ปัจจุบัน:** เครือข่าย Ethernet ยุคใหม่ที่ใช้ **Switch + Point-to-Point Link + Full-Duplex** จึง **ไม่เกิด Collision** แบบ shared Ethernet เดิมอีกต่อไป
+
 > [!NOTE] **สไลด์ที่ 56 จาก 111 สไลด์ (Slide 56 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** Ethernet: Physical Topology
@@ -2232,6 +2260,9 @@ B รับ Link-Layer frame ที่ส่งมาจาก R จากนั
 ---
 
 ## Slide 57: Ethernet Frame Structure
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **บทบาทของ Preamble และ SFD:** บิตวิ่งมาเป็นสายยาว ๆ บนสายสื่อสาร ฝั่งรับจึงต้องมีตัวช่วยบอกว่า frame จะเริ่มตรงไหน โดย **Preamble (7 Bytes)** ช่วยตั้งจังหวะการรับส่ง (Clock Synchronization) และ **SFD (Start Frame Delimiter, 1 Byte = 10101011)** เป็นตัวบอกจุดเริ่มต้นของ Frame ตัวจริง
 
 > [!NOTE] **สไลด์ที่ 57 จาก 111 สไลด์ (Slide 57 of 111)**
 >
@@ -2278,6 +2309,9 @@ Preamble ช่วยให้ receiver synchronize กับสัญญาณ 
 ---
 
 ## Slide 58: Ethernet Frame Structure — Addresses, Type and CRC
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **ขนาดของ Ethernet Frame:** Preamble และ SFD อยู่ก่อนหน้า MAC frame และ **มักไม่นับรวม** ในขนาด **64–1518 Bytes** ของ Ethernet MAC Frame มาตรฐานแบบ Untagged (Payload 46–1500 ไบต์ + Header/Trailer 18 ไบต์)
 
 > [!NOTE] **สไลด์ที่ 58 จาก 111 สไลด์ (Slide 58 of 111)**
 >
@@ -2353,6 +2387,11 @@ receiving NIC **ไม่ส่ง ACK หรือ NAK** กลับไปย�
 
 ## Slide 60: 802.3 Ethernet Standards: Link & Physical Layers
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **คู่เทียบมาตรฐาน IEEE:**  
+>   - **IEEE 802.3 (มาตรฐาน)** = **Ethernet (เทคโนโลยี)** = **Wired LAN (ประเภทสื่อสัญญาณแบบมีสาย)**  
+>   - **IEEE 802.11 (มาตรฐาน)** = **Wi-Fi (เทคโนโลยี)** = **Wireless LAN (ประเภทสื่อสัญญาณแบบไร้สาย)**
+
 > [!NOTE] **สไลด์ที่ 60 จาก 111 สไลด์ (Slide 60 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** 802.3 Ethernet Standards: Link & Physical Layers
@@ -2425,6 +2464,9 @@ receiving NIC **ไม่ส่ง ACK หรือ NAK** กลับไปย�
 ---
 
 ## Slide 62: Ethernet Switch
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **คุณลักษณะของ Switch:** Switch จัดเป็น **Layer-2 Device** ทำงานแบบ **Store-and-Forward** โดยรับเฟรมเข้ามาทั้งเฟรม ตรวจสอบ CRC ถูกต้อง แล้วจึงส่งต่อไปยังพอร์ตปลายทาง
 
 > [!NOTE] **สไลด์ที่ 62 จาก 111 สไลด์ (Slide 62 of 111)**
 >
@@ -2518,6 +2560,11 @@ Switch สามารถเรียนรู้ข้อมูลที่ต�
 
 ## Slide 65: Switch Forwarding Table
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **ตาราง Forwarding เปรียบเทียบ:**  
+>   - **Switch (Layer 2):** ใช้ **MAC Table (CAM Table)** เพื่อ forward **Frame**  
+>   - **Router (Layer 3):** ใช้ **Routing Table / Forwarding Table (FIB)** เพื่อ forward **Packet**
+
 > [!NOTE] **สไลด์ที่ 65 จาก 111 สไลด์ (Slide 65 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** Switch Forwarding Table
@@ -2561,6 +2608,9 @@ Switch สามารถเรียนรู้ข้อมูลที่ต�
 
 ## Slide 66: Switch: Self-Learning
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **หัวใจของการเรียนรู้:** Switch เรียนรู้จาก **Source MAC Address** ของเฟรมที่วิ่งเข้ามาที่พอร์ต แล้วบันทึกลงใน MAC Table พร้อมจับคู่กับ Incoming Port หมายเลขนั้น
+
 > [!NOTE] **สไลด์ที่ 66 จาก 111 สไลด์ (Slide 66 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** Switch: Self-Learning
@@ -2598,6 +2648,9 @@ Switch สามารถเรียนรู้ข้อมูลที่ต�
 ---
 
 ## Slide 67: Switch: Frame Filtering and Forwarding
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **3 จังหวะการทำงานของ Switch:** (1) Learn Source $	o$ (2) Lookup Destination $	o$ (3) Decide Action (Filter, Forward, หรือ Flood)
 
 > [!NOTE] **สไลด์ที่ 67 จาก 111 สไลด์ (Slide 67 of 111)**
 >
@@ -2696,6 +2749,12 @@ Self-learning ไม่ได้ใช้ได้เฉพาะ LAN ที่�
 
 ## Slide 70: Self-Learning Multi-Switch Example
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ — 4 ลำดับการประมวลผล Switch Filtering & Forwarding:**
+> 1. **บันทึก Source MAC + Incoming Port** ลงใน MAC Table เสมอ
+> 2. **ค้นหา Destination MAC** ใน MAC Table ของสวิตช์
+> 3. **ถ้าไม่พบ (Unknown Destination):** $	o$ ทำการ **Flood** ออกไปยังทุกพอร์ต ยกเว้นพอร์ตขาเข้า (Incoming Port)
+> 4. **เมื่อโฮสต์ปลายทางส่งเฟรมตอบกลับมา:** $	o$ สวิตช์จะบันทึก MAC ของปลายทาง + พอร์ตขาเข้า ทำให้รอบถัดไปส่งแบบ Unicast ได้โดยไม่ต้อง Flood อีกต่อไป
+
 > [!NOTE] **สไลด์ที่ 70 จาก 111 สไลด์ (Slide 70 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** Self-Learning Multi-Switch Example
@@ -2742,6 +2801,13 @@ Self-learning ไม่ได้ใช้ได้เฉพาะ LAN ที่�
 
 ## Slide 71: UMass Campus Network — Detail
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **ระดับชั้น Campus Network:**
+>   - **Building Closets (Access Layer):** จุดที่ Access Switches เชื่อมต่อกับเครื่องคอมพิวเตอร์และอุปกรณ์ของผู้ใช้งาน
+>   - **Aggregation (Distribution Layer):** รวบรวม Uplinks จากหลายอาคาร/หลาย Access Switches
+>   - **Core Layer:** แกนกลางความเร็วสูงที่เชื่อมต่อระบบเครือข่ายส่วนหลักของทั้งวิทยาเขตเข้าด้วยกัน
+>   - **Border Layer:** จุดเชื่อมต่อขอบเขต Campus Network ออกสู่อินเทอร์เน็ตและเครือข่ายภายนอก
+
 > [!NOTE] **สไลด์ที่ 71 จาก 111 สไลด์ (Slide 71 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** UMass Campus Network — Detail
@@ -2783,6 +2849,12 @@ Self-learning ไม่ได้ใช้ได้เฉพาะ LAN ที่�
 ---
 
 ## Slide 72: UMass Campus Network — Protocols and Link Speeds
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **ขอบเขตการทำงานร่วมกัน 3 ระดับ:**
+>   1. **Intra-domain Routing Protocol (เช่น OSPF):** ควบคุมและแลกเปลี่ยนเส้นทางภายใน AS
+>   2. **Layer-2 Domain:** ควบคุมการส่งต่อ Ethernet Frames ภายในสวิตช์และ VLAN
+>   3. **BGP Routing:** กระจายและแลกเปลี่ยนเส้นทางระหว่าง AS ตามนโยบายธุรกิจระดับโลก
 
 > [!NOTE] **สไลด์ที่ 72 จาก 111 สไลด์ (Slide 72 of 111)**
 >
@@ -2883,6 +2955,9 @@ Self-learning ไม่ได้ใช้ได้เฉพาะ LAN ที่�
 ---
 
 ## Slide 75: Virtual LANs (VLANs): Motivation — Scaling
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **แรงจูงใจสำคัญที่สุดของ VLAN:** แก้ไขปัญหาของ **Single Broadcast Domain** เมื่อเครือข่าย LAN ขยายใหญ่ขึ้น ทราฟฟิก Broadcast เช่น **ARP Request, DHCP Discover, และ Unknown MAC Switch Flooding** จะกินแบนด์วิดท์มหาศาลและสร้างความเสี่ยงด้านความปลอดภัย การแบ่ง VLAN ช่วยจำกัดขอบเขต Broadcast Domain ให้อยู่เฉพาะกลุ่ม
 
 > [!NOTE] **สไลด์ที่ 75 จาก 111 สไลด์ (Slide 75 of 111)**
 >
@@ -3019,6 +3094,12 @@ Ports สามารถถูก **dynamically assigned among VLANs** ได้
 
 ## Slide 79: VLANs Spanning Multiple Switches
 
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **Trunk Port:** เปรียบเสมือน “กระโปรงหลังรถ” ที่ขนสัมภาระของหลายคนไปด้วยกันได้ โดย Trunk ถูกกำหนดไว้ที่พอร์ต/อินเทอร์เฟซของสวิตช์เพื่อเชื่อมต่อระหว่างสวิตช์
+> - **คู่เทียบมาตรฐาน IEEE:**  
+>   - **IEEE 802.1:** มาตรฐานสำหรับ Switch/Bridge, VLAN Architecture และ LAN Control  
+>   - **IEEE 802.1Q:** มาตรฐานเจาะจงสำหรับ **VLAN Tagging**
+
 > [!NOTE] **สไลด์ที่ 79 จาก 111 สไลด์ (Slide 79 of 111)**
 >
 > **ชื่อหัวข้อสไลด์:** VLANs Spanning Multiple Switches
@@ -3060,6 +3141,9 @@ Trunk port ทำหน้าที่ **carries frames between VLANs defined ov
 ---
 
 ## Slide 80: 802.1Q VLAN Frame Format
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **TPID (Tag Protocol Identifier):** แท็กขนาด 2 ไบต์แรกใน 802.1Q Header จะมีค่าคงที่เสมอคือ **`0x8100`** เพื่อบ่งชี้ให้อุปกรณ์ทราบว่าเฟรมนี้เป็น **802.1Q-Tagged Frame**
 
 > [!NOTE] **สไลด์ที่ 80 จาก 111 สไลด์ (Slide 80 of 111)**
 >
@@ -3125,6 +3209,9 @@ Trunk port ทำหน้าที่ **carries frames between VLANs defined ov
 ---
 
 ## Slide 81: VXLAN Overlay and EVPN Context
+
+> [!TIP] **โน้ตข้อความสอนสดจากอาจารย์ (Instructor Classroom Annotation - Updated 28/09/2026):**
+> - **VXLAN (Virtual eXtensible LAN):** คือเทคโนโลยีที่สร้าง **Layer-2 Overlay บน Layer-3 IP Network (Underlay)** ทำให้เครื่องคอมพิวเตอร์หรือ Virtual Machine ที่อยู่คนละ Data Center / คนละ Subnet สามารถทำงานเสมือนว่าอยู่ใน **Layer-2 Broadcast Domain เดียวกัน** ได้อย่างสมบูรณ์แบบ โดยกลไกคือการนำ Ethernet Frame ทั้งหมดมา **ห่อหุ้ม (Encapsulate) เข้าไปใน UDP/IP Packet** (ใช้ UDP Port 4789) แล้วส่งผ่านเครือข่าย IP ตามปกติ
 
 > [!NOTE] **สไลด์ที่ 81 จาก 111 สไลด์ (Slide 81 of 111)**
 >

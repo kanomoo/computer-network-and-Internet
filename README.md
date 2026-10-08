@@ -59,6 +59,8 @@ computer-network-&-Internet/
 └── 📁 08_Archive/                   # แฟ้มเก็บไฟล์สำรองและไฟล์ชั่วคราว
 ```
 
+> 🔗 **Google Classroom Hub**: การบ้าน สไลด์ และแนวข้อสอบ 80 ข้อจากอาจารย์ซิงค์ไว้ที่ [KMUTNB-Classroom/02_Computer_Network_060243123](../KMUTNB-Classroom/02_Computer_Network_060243123/) และสรุปไว้ใน [Classroom Coursework & Announcements](05_Wiki/Classroom_Coursework_and_Announcements_Sync.md)
+
 ---
 
 ## 🚀 สรุปเนื้อหาสำคัญในคลังความรู้ (`05_Wiki/`)
